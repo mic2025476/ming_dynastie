@@ -1,0 +1,18 @@
+{% extends "mingsite/base.html" %}
+{% block title %}Standorte – Ming Dynastie{% endblock %}
+{% block content %}
+<h1>Unsere Standorte</h1>
+<ul class="locations">
+  {% for loc in locations %}
+    <li>
+      <h2><a href="{% url 'locations:detail' slug=loc.slug %}">{{ loc.name }}</a></h2>
+      <p>{{ loc.address|linebreaksbr }}</p>
+      <p>{{ loc.opening_hours }}</p>
+      <p>
+        {% if loc.menu_pdf %}<a href="{{ loc.menu_pdf }}" target="_blank">Speisekarten</a>{% endif %}
+        {% if loc.order_url %} · <a href="{{ loc.order_url }}" target="_blank">Online bestellen</a>{% endif %}
+      </p>
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}

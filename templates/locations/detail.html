@@ -1,0 +1,26 @@
+{% extends "mingsite/base.html" %}
+{% block title %}{{ loc.name }} – Ming Dynastie{% endblock %}
+{% block content %}
+<article class="location">
+  <h1>{{ loc.name }}</h1>
+  {% if loc.hero_image %}<img src="{{ loc.hero_image.url }}" alt="{{ loc.name }}" style="max-width:100%">{% endif %}
+  <p>{{ loc.address|linebreaksbr }}</p>
+  <p>{{ loc.opening_hours }}</p>
+  <p>
+    {% if loc.menu_pdf %}<a href="{{ loc.menu_pdf }}" target="_blank">Speisekarten</a>{% endif %}
+    {% if loc.order_url %} · <a href="{{ loc.order_url }}" target="_blank">Online bestellen</a>{% endif %}
+    {% if loc.map_url %} · <a href="{{ loc.map_url }}" target="_blank">Karte</a>{% endif %}
+  </p>
+{% if loc.menus.all %}
+  <h2>Speisekarten</h2>
+  <ul>
+    {% for m in loc.menus.all %}
+      {% if m.is_active %}
+        <li><a href="{{ m.pdf.url }}" target="_blank" rel="noopener">{{ m.title }}</a></li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+{% endif %}
+
+</article>
+{% endblock %}

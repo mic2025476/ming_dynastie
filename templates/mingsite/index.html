@@ -1,0 +1,28 @@
+<section id="locations">
+  <h2>Unsere Locations</h2>
+  <div class="cards">
+    {% for loc in locations %}
+      <article class="card">
+        <h3><a href="{% url 'locations:detail' slug=loc.slug %}">{{ loc.name }}</a></h3>
+        <p>{{ loc.address|linebreaksbr }}</p>
+        <p>{{ loc.opening_hours }}</p>
+        <p>
+          {% if loc.menu_pdf %}<a href="{{ loc.menu_pdf }}" target="_blank">Speisekarten</a>{% endif %}
+          {% if loc.order_url %} · <a href="{{ loc.order_url }}" target="_blank">Online bestellen</a>{% endif %}
+        </p>
+        {% if loc.menus.all %}
+        <ul>
+            {% for m in loc.menus.all %}
+            {% if m.is_active %}
+                <li><a href="{{ m.pdf.url }}" target="_blank" rel="noopener">{{ m.title }}</a></li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+      </article>
+    {% empty %}
+      <p>Standorte werden bald hinzugefügt.</p>
+    {% endfor %}
+  </div>
+</section>

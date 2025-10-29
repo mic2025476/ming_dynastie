@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}Ming Dynastie{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'mingsite/css/style.css' %}">
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="{% url 'mingsite:index' %}">Start</a>
+      <!-- we’ll add real nav as we build pages -->
+    </nav>
+  </header>
+  <main>{% block content %}{% endblock %}</main>
+  <footer><small>&copy; {% now "Y" %} Ming Dynastie</small></footer>
+</body>
+</html>
+
+<nav>
+  <a href="{% url 'mingsite:index' %}">Start</a>
+  <a href="{% url 'locations:list' %}">Locations</a>
+  <a href="{% url 'menus:list' %}">Speisekarte</a>
+  <a href="{% url 'gallery:grid' %}">Galerie</a>
+  <a href="{% url 'reservations:request' %}">Kontakt/Reservierung</a>
+  <a href="{% url 'legal:impressum' %}">Impressum</a>
+</nav>

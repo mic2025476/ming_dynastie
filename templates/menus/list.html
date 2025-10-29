@@ -1,0 +1,23 @@
+{% extends "mingsite/base.html" %}
+{% block title %}Speisekarten – Ming Dynastie{% endblock %}
+{% block content %}
+<h1>Speisekarten</h1>
+{% if grouped %}
+  {% for loc, docs in grouped.items %}
+    <section class="menu-block">
+      <h2>{{ loc.name }}</h2>
+      <ul>
+        {% for d in docs %}
+          <li>
+            <a href="{{ d.pdf.url }}" target="_blank" rel="noopener">
+              {{ d.title }}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </section>
+  {% endfor %}
+{% else %}
+  <p>Speisekarten werden bald hinzugefügt.</p>
+{% endif %}
+{% endblock %}
