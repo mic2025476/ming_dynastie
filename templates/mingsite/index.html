@@ -1,28 +1,310 @@
-<section id="locations">
-  <h2>Unsere Locations</h2>
-  <div class="cards">
-    {% for loc in locations %}
-      <article class="card">
-        <h3><a href="{% url 'locations:detail' slug=loc.slug %}">{{ loc.name }}</a></h3>
-        <p>{{ loc.address|linebreaksbr }}</p>
-        <p>{{ loc.opening_hours }}</p>
-        <p>
-          {% if loc.menu_pdf %}<a href="{{ loc.menu_pdf }}" target="_blank">Speisekarten</a>{% endif %}
-          {% if loc.order_url %} · <a href="{{ loc.order_url }}" target="_blank">Online bestellen</a>{% endif %}
-        </p>
-        {% if loc.menus.all %}
-        <ul>
-            {% for m in loc.menus.all %}
-            {% if m.is_active %}
-                <li><a href="{{ m.pdf.url }}" target="_blank" rel="noopener">{{ m.title }}</a></li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-        {% endif %}
+{% extends "mingsite/base.html" %}
+{% load static %}
+{% block title %}Ming Dynastie – Chinesisches Restaurant{% endblock %}
 
-      </article>
-    {% empty %}
-      <p>Standorte werden bald hinzugefügt.</p>
+{% block content %}
+  <section class="hero" id="start" aria-labelledby="hero-title">
+    <div class="hero__slides" role="presentation">
+      {% for slide in hero.slides %}
+        {% with slide.image as img %}
+          {% if img|slice:':4' == 'http' %}
+            {% with resolved=img %}
+              <div class="hero__slide{% if forloop.first %} is-active{% endif %}" style="background-image: url('{{ resolved }}');">
+                <img src="{{ resolved }}" alt="{{ slide.alt }}">
+              </div>
+            {% endwith %}
+          {% else %}
+            {% static img as resolved %}
+            <div class="hero__slide{% if forloop.first %} is-active{% endif %}" style="background-image: url('{{ resolved }}');">
+              <img src="{{ resolved }}" alt="{{ slide.alt }}">
+            </div>
+          {% endif %}
+        {% endwith %}
+      {% endfor %}
+    </div>
+    <div class="hero__overlay hero__overlay--gradient"></div>
+    <div class="hero__nav-wrapper">
+      <div class="hero__nav container">
+        <div class="hero__social">
+          {% for social in hero.social_links %}
+            <a class="hero__social-link hero__social-link--{{ social.slug }}" href="{{ social.href }}" title="{{ social.title }}" target="_blank" rel="noopener">
+              {% if social.slug == 'instagram' %}
+                <svg viewBox="0 0 448 512" aria-hidden="true"><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9S160.5 370.8 224.1 370.8 339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1S7.2 151 5.4 186.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8z"/></svg>
+              {% elif social.slug == 'facebook' %}
+                <svg viewBox="0 0 264 512" aria-hidden="true"><path d="M76.7 64V-165H0V-256H76.7V-327.7C76.7-405.6 124.3-448 193.8-448 227.1-448 255.7-445.5 264-444.4V-363H215.8C178-363 170.7-345 170.7-318.7V-256H256L244.3-165H170.7V64"/></svg>
+              {% elif social.slug == 'whatsapp' %}
+                <svg viewBox="0 0 1000 1000" aria-hidden="true"><path d="M1000 637.1c0 269-219.8 487.1-490.9 487.1-86.1 0-166.9-22-237.3-60.6L0 1150l88.6-261.4C43.9 815.2 18.2 729.1 18.2 637.1 18.2 368.1 238 150 509.1 150 780.2 150 1000 368.1 1000 637.1zM509.1 227.5C281.5 227.5 96.4 411.2 96.4 637.1c0 89.6 29.2 172.6 78.6 240.1L123.4 971.7 282 921.3c65.2 42.8 143.3 67.8 227.1 67.8 227.6 0 412.7-183.7 412.7-409.5S736.7 227.5 509.1 227.5zM757 749.3c-3 5-11.1 8-23.1 13.9-12 6-71.2 34.9-82.2 38.8-11.1 4-19.1 6-27.1-6s-31.1-38.8-38.1-46.8-14-9-26.1-3c-12 6-50.8 18.6-96.8 59.3-35.8 31.7-59.9 70.7-66.9 82.7s-0.7 18.5 5.3 24.4c5.4 5.4 12 13.9 18.1 20.9s8 12 12 19.9 2 14.9-1 20.9c-3 6-27.1 64.7-37.1 88.6-10 23.9-20 19.9-27.1 19.9-7 0-15 1-23.1 1-8 0-21.1-3-32.1-14.9s-42.1-40.9-42.1-99.6c0-58.8 43.1-115.5 49.1-123.5 5.9-8 108.3-174.7 307.3-237.5 24.1-7.4 42.4-11 56.3-11 24 0 40.8 11.3 47 17.8 3.3 3.4 13.1 17.4 13.1 33.5s-8.3 31.9-11.3 36.7z"/></svg>
+              {% endif %}
+            </a>
+          {% endfor %}
+        </div>
+        <nav class="hero__menu">
+          {% for item in hero.nav_links %}
+            <a class="hero__menu-link" href="{{ item.href }}">{{ item.label }}</a>
+          {% endfor %}
+        </nav>
+        <div class="hero__contact">
+          {% for link in hero.contact_links %}
+            {% if link.type == 'phone' %}
+              <a class="hero__contact-link" href="{{ link.href }}" title="{{ link.title }}">
+                <svg viewBox="0 0 512 512" aria-hidden="true"><path d="M391 351l-57-25c-10-4-22-1-28 7l-25 32c-66-33-120-87-153-153l32-25c8-6 11-18 7-28l-25-57c-7-16-26-22-40-12l-43 29c-9 6-14 17-12 28 30 159 159 288 318 318 11 2 22-3 28-12l29-43c10-14 4-33-12-40z"/></svg>
+                <span>{{ link.display }}</span>
+              </a>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="hero__content container">
+      <div class="hero__lead">
+        <div class="hero__lead-logo">
+          {% static hero.logo as hero_logo %}
+          <img src="{{ hero_logo }}" alt="Ming Dynastie Schriftzug">
+        </div>
+        <p class="hero__eyebrow">{{ hero.subheadline }}</p>
+        <h1 class="hero__title" id="hero-title">{{ hero.headline }}</h1>
+        <p class="hero__description">{{ hero.description }}</p>
+        <hr class="hero__rule">
+        <p class="hero__description hero__description--secondary">{{ hero.secondary_description }}</p>
+        <div class="hero__actions">
+          {% for cta in hero.ctas %}
+            <a class="button{% if cta.variant == 'outline' %} button--outline{% endif %}" href="{{ cta.href }}">{{ cta.label }}</a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="social-bar">
+    {% for social in hero.social_links %}
+      <a class="social-bar__link social-bar__link--{{ social.slug }}" href="{{ social.href }}" target="_blank" rel="noopener" title="{{ social.title }}">
+        {% if social.slug == 'instagram' %}
+          <svg viewBox="0 0 448 512" aria-hidden="true"><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9S160.5 370.8 224.1 370.8 339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1S7.2 151 5.4 186.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8z"/></svg>
+        {% elif social.slug == 'facebook' %}
+          <svg viewBox="0 0 264 512" aria-hidden="true"><path d="M76.7 64V-165H0V-256H76.7V-327.7C76.7-405.6 124.3-448 193.8-448 227.1-448 255.7-445.5 264-444.4V-363H215.8C178-363 170.7-345 170.7-318.7V-256H256L244.3-165H170.7V64"/></svg>
+        {% elif social.slug == 'whatsapp' %}
+          <svg viewBox="0 0 1000 1000" aria-hidden="true"><path d="M1000 637.1c0 269-219.8 487.1-490.9 487.1-86.1 0-166.9-22-237.3-60.6L0 1150l88.6-261.4C43.9 815.2 18.2 729.1 18.2 637.1 18.2 368.1 238 150 509.1 150 780.2 150 1000 368.1 1000 637.1zM509.1 227.5C281.5 227.5 96.4 411.2 96.4 637.1c0 89.6 29.2 172.6 78.6 240.1L123.4 971.7 282 921.3c65.2 42.8 143.3 67.8 227.1 67.8 227.6 0 412.7-183.7 412.7-409.5S736.7 227.5 509.1 227.5zM757 749.3c-3 5-11.1 8-23.1 13.9-12 6-71.2 34.9-82.2 38.8-11.1 4-19.1 6-27.1-6s-31.1-38.8-38.1-46.8-14-9-26.1-3c-12 6-50.8 18.6-96.8 59.3-35.8 31.7-59.9 70.7-66.9 82.7s-0.7 18.5 5.3 24.4c5.4 5.4 12 13.9 18.1 20.9s8 12 12 19.9 2 14.9-1 20.9c-3 6-27.1 64.7-37.1 88.6-10 23.9-20 19.9-27.1 19.9-7 0-15 1-23.1 1-8 0-21.1-3-32.1-14.9s-42.1-40.9-42.1-99.6c0-58.8 43.1-115.5 49.1-123.5 5.9-8 108.3-174.7 307.3-237.5 24.1-7.4 42.4-11 56.3-11 24 0 40.8 11.3 47 17.8 3.3 3.4 13.1 17.4 13.1 33.5s-8.3 31.9-11.3 36.7z"/></svg>
+        {% endif %}
+      </a>
     {% endfor %}
   </div>
-</section>
+
+  <section id="speisekarte" class="section section--catering">
+    <div class="container catering-grid">
+      {% for card in catering_cards %}
+        <article class="catering-card catering-card--{{ card.align }}">
+          <div class="catering-card__image">
+            <img src="{{ card.image }}" alt="{{ card.title }}">
+          </div>
+          <div class="catering-card__content">
+            <h2 class="catering-card__title">{{ card.title }}</h2>
+            {% for paragraph in card.copy %}
+              <p>{{ paragraph }}</p>
+            {% endfor %}
+            <a class="button button--rounded" href="{{ card.button.href }}">{{ card.button.label }}</a>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section id="locations" class="section section--locations">
+    <div class="container">
+      <header class="section__header">
+        <h2 class="section__title section__title--accent">Unsere Locations</h2>
+      </header>
+      <div class="card-grid location-grid">
+        {% for location in locations %}
+          <article class="location-card" id="{{ location.anchor }}">
+            <div class="location-card__media">
+              <img src="{{ location.image }}" alt="{{ location.name }}">
+            </div>
+            <div class="location-card__body">
+              <h3 class="location-card__title">{{ location.name }}</h3>
+              <hr class="location-card__rule">
+              <ul class="location-card__details">
+                {% for line in location.address_lines %}
+                  <li>{{ line }}</li>
+                {% endfor %}
+                <li>{{ location.hours }}</li>
+              </ul>
+              <a class="link-arrow" href="{{ location.menu_href }}">{{ location.menu_label }}</a>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section id="delivery" class="section section--delivery">
+    <div class="container">
+      <header class="section__header">
+        <p class="section__eyebrow">Takeaway &amp; Delivery</p>
+        <h2 class="section__title">Lieferdienste</h2>
+        <p class="section__subtitle">{{ delivery.note }}</p>
+      </header>
+      <div class="delivery-grid">
+        {% for service in delivery.services %}
+          <article class="delivery-card">
+            <h3 class="delivery-card__title">{{ service.location }}</h3>
+            <ul class="delivery-card__links">
+              {% for link in service.links %}
+                <li>
+                  <a href="{{ link.url }}" target="_blank" rel="noopener">
+                    {% if link.logo %}
+                      {% static link.logo as partner_logo %}
+                      <img src="{{ partner_logo }}" alt="{{ link.logo_alt|default:link.name }}">
+                    {% endif %}
+                    <span>{{ link.name }}</span>
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section id="feast" class="section section--feast">
+    <div class="container feast-grid">
+      <div class="feast-grid__media">
+        {% for image in feast.images %}
+          <div class="feast-grid__image">
+            <img src="{{ image }}" alt="{{ feast.title }}">
+          </div>
+        {% endfor %}
+      </div>
+      <div class="feast-grid__content">
+        <h2 class="section__title section__title--light">{{ feast.title }}</h2>
+        <p>{{ feast.description }}</p>
+        <div class="feast-grid__actions">
+          {% for link in feast.menu_links %}
+            <a class="button button--outline-light" href="{{ link.url }}">{{ link.label }}</a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="galerie" class="section section--gallery">
+    <div class="container">
+      <header class="section__header">
+        <h2 class="section__title section__title--light">Galerie</h2>
+      </header>
+      <div class="gallery-grid">
+        {% for image in gallery_images %}
+          <figure class="gallery-grid__item">
+            <img src="{{ image }}" alt="Ming Dynastie Impression">
+          </figure>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--testimonials">
+    <div class="container">
+      <header class="section__header">
+        <h2 class="section__title section__title--accent">Kundenmeinungen aus unserem Gästebuch</h2>
+      </header>
+      <div class="testimonial-carousel">
+        {% for testimonial in testimonials %}
+          <article class="testimonial-card">
+            <blockquote>“{{ testimonial.quote }}”</blockquote>
+            {% if testimonial.author %}
+              <p class="testimonial-card__author">{{ testimonial.author }}</p>
+            {% endif %}
+          </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section id="kontakt" class="section section--contact">
+    <div class="container contact-grid">
+      {% for reservation in reservations %}
+        <div class="contact-card" id="{{ reservation.id }}">
+          <h3>{{ reservation.title }}</h3>
+          <ul class="contact-card__details">
+            <li><strong>Adresse:</strong> {{ reservation.address }}</li>
+            <li><strong>Telefon:</strong> <a href="tel:{{ reservation.phone|cut:' ' }}">{{ reservation.phone }}</a></li>
+            <li><strong>E-Mail:</strong> <a href="mailto:{{ reservation.email }}">{{ reservation.email }}</a></li>
+          </ul>
+          <form class="contact-card__form" method="post" action="#">
+            {% csrf_token %}
+            <div class="form-grid">
+              <label>
+                <span>Name*</span>
+                <input type="text" name="name" required>
+              </label>
+              <label>
+                <span>E-Mail*</span>
+                <input type="email" name="email" required>
+              </label>
+              <label>
+                <span>Telefon</span>
+                <input type="tel" name="phone">
+              </label>
+              <label>
+                <span>Datum*</span>
+                <input type="date" name="date" required>
+              </label>
+              <label>
+                <span>Uhrzeit*</span>
+                <input type="time" name="time" required>
+              </label>
+              <label>
+                <span>Personen*</span>
+                <input type="number" name="guests" min="1" required>
+              </label>
+              <label class="form-grid__wide">
+                <span>Nachricht (nicht für Reservierungen)*</span>
+                <textarea name="message" rows="4" required></textarea>
+              </label>
+            </div>
+            <button type="submit" class="button">Senden</button>
+          </form>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}
+
+{% block footer %}
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <div class="site-footer__brand">
+        {% static site_logo as footer_logo %}
+        <img src="{{ footer_logo }}" alt="Ming Dynastie Logo">
+        <p>&copy; {% now "Y" %} {{ footer.company }}</p>
+      </div>
+      <nav class="site-footer__nav">
+        {% for link in footer.links %}
+          <a href="{{ link.href }}">{{ link.label }}</a>
+        {% endfor %}
+      </nav>
+      <div class="site-footer__payments">
+        {% for icon in footer.payment_icons %}
+          <img src="{{ icon }}" alt="Akzeptierte Zahlungsarten">
+        {% endfor %}
+      </div>
+    </div>
+  </footer>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script>
+    (function () {
+      const slides = document.querySelectorAll('.hero__slide');
+      let activeIndex = 0;
+      function showNextSlide() {
+        slides[activeIndex].classList.remove('is-active');
+        activeIndex = (activeIndex + 1) % slides.length;
+        slides[activeIndex].classList.add('is-active');
+      }
+      if (slides.length > 1) {
+        setInterval(showNextSlide, 6000);
+      }
+    }());
+  </script>
+{% endblock %}
