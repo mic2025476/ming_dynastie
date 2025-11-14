@@ -22,7 +22,12 @@ DEBUG = True
 from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-ALLOWED_HOSTS = ['*']
+# Allow your domain and proxy headers
+ALLOWED_HOSTS = ["ming-group.de", "www.ming-group.de"]
+CSRF_TRUSTED_ORIGINS = ["https://ming-group.de", "https://www.ming-group.de"]
+
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 
 # Application definition
@@ -125,7 +130,6 @@ USE_I18N = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -134,14 +138,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 TEMPLATES[0]['DIRS'] = [BASE_DIR / 'templates']
 
-STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']  # where we keep source static files
-STATIC_ROOT = BASE_DIR / 'staticfiles'    # collected static (prod)
-
-MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / 'media'           # uploaded files
 
 DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+FORCE_SCRIPT_NAME = "/ming"
+
+# Static and media URLs (must include /ming prefix)
+STATIC_URL = "/ming/static/"
+MEDIA_URL  = "/ming/media/"
+
+import os
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+STATIC_ROOT = os.path.join(BASE_DIR, "static_collected")
+MEDIA_ROOT  = os.path.join(BASE_DIR, "media")
