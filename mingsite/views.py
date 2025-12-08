@@ -36,16 +36,19 @@ def index(request):
                     "slug": "instagram",
                     "title": "Instagram",
                     "href": "https://www.instagram.com/ming_dynastie/",
+                    "icon": "mingsite/icons/instagram.png",
                 },
                 {
                     "slug": "facebook",
                     "title": "Facebook",
                     "href": "https://www.facebook.com/restaurantmingdynastie",
+                    "icon": "mingsite/icons/facebook.png",
                 },
                 {
                     "slug": "whatsapp",
                     "title": "WhatsApp",
                     "href": "https://wa.me/17675933522",
+                    "icon": "mingsite/icons/whatsapp.png",
                 },
             ],
             "nav_links": [
