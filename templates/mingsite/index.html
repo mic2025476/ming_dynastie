@@ -22,47 +22,68 @@
         {% endwith %}
       {% endfor %}
     </div>
-    <div class="hero__overlay hero__overlay--gradient"></div>
-    <div class="hero__nav-wrapper">
-      <div class="hero__nav container">
-        <div class="hero__social">
-          {% for social in hero.social_links %}
-          <a class="hero__social-link hero__social-link--{{ social.slug }}"
-            href="{{ social.href }}" title="{{ social.title }}" target="_blank" rel="noopener">
-              {% static social.icon as icon_path %}
-              <img src="{{ icon_path }}" alt="{{ social.title }}">
-          </a>
 
-          {% endfor %}
-        </div>
-        <nav class="hero__menu">
-          {% for item in hero.nav_links %}
-            <a class="hero__menu-link" href="{{ item.href }}">{{ item.label }}</a>
-          {% endfor %}
-        </nav>
-        <div class="hero__contact">
-          {% for link in hero.contact_links %}
-            {% if link.type == 'phone' %}
-              <a class="hero__contact-link" href="{{ link.href }}" title="{{ link.title }}">
-                <svg viewBox="0 0 512 512" aria-hidden="true"><path d="M391 351l-57-25c-10-4-22-1-28 7l-25 32c-66-33-120-87-153-153l32-25c8-6 11-18 7-28l-25-57c-7-16-26-22-40-12l-43 29c-9 6-14 17-12 28 30 159 159 288 318 318 11 2 22-3 28-12l29-43c10-14 4-33-12-40z"/></svg>
-                <span>{{ link.display }}</span>
-              </a>
-            {% endif %}
-          {% endfor %}
-        </div>
-      </div>
-    </div>
+    <div class="hero__overlay hero__overlay--gradient"></div>
+
+<div class="hero__nav-wrapper" id="siteHeader">
+  <div class="hero__nav container">
+
+    <a class="hero__brand" href="#start" aria-label="Start">
+      {% static hero.logo as nav_logo %}
+      <img src="{{ nav_logo }}" alt="Ming Dynastie Logo">
+    </a>
+
+<nav class="hero__menu" aria-label="Hauptnavigation">
+  {% for item in hero.nav_links %}
+    <a class="hero__menu-link" href="{{ item.href }}"><span>{{ item.label }}</span></a>
+  {% endfor %}
+</nav>
+
+<!-- Mobile hamburger -->
+<button class="nav-toggle" id="navToggle"
+        type="button"
+        aria-label="Open menu"
+        aria-controls="mobileDrawer"
+        aria-expanded="false">
+  <span class="nav-toggle__icon" aria-hidden="true"></span>
+</button>
+
+<!-- Mobile drawer -->
+<div class="mobile-drawer" id="mobileDrawer" aria-hidden="true">
+  <div class="mobile-drawer__backdrop" data-drawer-close></div>
+
+  <div class="mobile-drawer__panel" role="dialog" aria-modal="true" aria-label="Menu">
+    <button class="mobile-drawer__close" type="button" aria-label="Close menu" data-drawer-close>✕</button>
+
+    <nav class="mobile-drawer__nav" aria-label="Mobile navigation">
+      {% for item in hero.nav_links %}
+        <a class="mobile-drawer__link" href="{{ item.href }}">{{ item.label }}</a>
+      {% endfor %}
+    </nav>
+  </div>
+</div>
+
+
+  </div>
+</div>
+
+
+
     <div class="hero__content container">
       <div class="hero__lead">
         <div class="hero__lead-logo">
           {% static hero.logo as hero_logo %}
           <img src="{{ hero_logo }}" alt="Ming Dynastie Schriftzug">
         </div>
+
         <p class="hero__eyebrow">{{ hero.subheadline }}</p>
         <h1 class="hero__title" id="hero-title">{{ hero.headline }}</h1>
         <p class="hero__description">{{ hero.description }}</p>
+
         <hr class="hero__rule">
+
         <p class="hero__description hero__description--secondary">{{ hero.secondary_description }}</p>
+
         <div class="hero__actions">
           {% for cta in hero.ctas %}
             <a class="button{% if cta.variant == 'outline' %} button--outline{% endif %}" href="{{ cta.href }}">{{ cta.label }}</a>
@@ -74,12 +95,11 @@
 
   <div class="social-bar">
     {% for social in hero.social_links %}
-<a class="social-bar__link social-bar__link--{{ social.slug }}"
-   href="{{ social.href }}" target="_blank" rel="noopener" title="{{ social.title }}">
-    {% static social.icon as icon_path %}
-    <img src="{{ icon_path }}" alt="{{ social.title }}">
-</a>
-
+      <a class="social-bar__link social-bar__link--{{ social.slug }}"
+         href="{{ social.href }}" target="_blank" rel="noopener" title="{{ social.title }}">
+        {% static social.icon as icon_path %}
+        <img src="{{ icon_path }}" alt="{{ social.title }}">
+      </a>
     {% endfor %}
   </div>
 
@@ -134,7 +154,6 @@
     <div class="container">
       <header class="section__header">
         <p class="section__eyebrow">Takeaway &amp; Delivery</p>
-        <h2 class="section__title">Lieferdienste</h2>
         <p class="section__subtitle">{{ delivery.note }}</p>
       </header>
       <div class="delivery-grid">
@@ -160,26 +179,6 @@
     </div>
   </section>
 
-  <section id="feast" class="section section--feast">
-    <div class="container feast-grid">
-      <div class="feast-grid__media">
-        {% for image in feast.images %}
-          <div class="feast-grid__image">
-            <img src="{{ image }}" alt="{{ feast.title }}">
-          </div>
-        {% endfor %}
-      </div>
-      <div class="feast-grid__content">
-        <h2 class="section__title section__title--light">{{ feast.title }}</h2>
-        <p>{{ feast.description }}</p>
-        <div class="feast-grid__actions">
-          {% for link in feast.menu_links %}
-            <a class="button button--outline-light" href="{{ link.url }}">{{ link.label }}</a>
-          {% endfor %}
-        </div>
-      </div>
-    </div>
-  </section>
 
   <section id="galerie" class="section section--gallery">
     <div class="container">
@@ -195,110 +194,1682 @@
       </div>
     </div>
   </section>
+<!-- ===== Galerie Lightbox (Modal) ===== -->
+<div class="gallery-lightbox" id="galleryLightbox" aria-hidden="true">
+  <div class="gallery-lightbox__backdrop" data-glb-close></div>
 
-  <section class="section section--testimonials">
-    <div class="container">
-      <header class="section__header">
-        <h2 class="section__title section__title--accent">Kundenmeinungen aus unserem Gästebuch</h2>
-      </header>
-      <div class="testimonial-carousel">
-        {% for testimonial in testimonials %}
-          <article class="testimonial-card">
-            <blockquote>“{{ testimonial.quote }}”</blockquote>
-            {% if testimonial.author %}
-              <p class="testimonial-card__author">{{ testimonial.author }}</p>
-            {% endif %}
-          </article>
-        {% endfor %}
-      </div>
+  <div class="gallery-lightbox__panel" role="dialog" aria-modal="true" aria-label="Galerie">
+    <button class="gallery-lightbox__close" type="button" aria-label="Schließen" data-glb-close>×</button>
+
+    <button class="gallery-lightbox__nav gallery-lightbox__nav--prev" type="button" aria-label="Vorheriges Bild" data-glb-prev>
+      ‹
+    </button>
+
+    <img class="gallery-lightbox__img" id="galleryLightboxImg" alt="Galerie Bild">
+
+    <button class="gallery-lightbox__nav gallery-lightbox__nav--next" type="button" aria-label="Nächstes Bild" data-glb-next>
+      ›
+    </button>
+
+    <div class="gallery-lightbox__counter" id="galleryLightboxCounter">1/1</div>
+  </div>
+</div>
+
+<section class="section section--testimonials" id="gaestebuch">
+  <div class="container">
+    <header class="section__header">
+      <h2 class="section__title section__title--accent">Kundenmeinungen aus unserem Gästebuch</h2>
+    </header>
+
+    <div class="guestbook-grid" id="guestbookGrid">
+      <!-- row 1: quote / photo / quote / photo -->
+<article class="guestbook-tile guestbook-tile--quote" data-type="quote">
+  <div class="guestbook-tile__inner">
+    <p class="guestbook-quote">"</p>
+    <p class="guestbook-text"></p>
+    <p class="guestbook-author"></p>
+  </div>
+</article>
+
+
+<figure class="guestbook-tile guestbook-tile--photo" data-type="photo">
+  <div class="guestbook-tile__inner">
+    <img alt="Ming Dynastie Impression">
+  </div>
+</figure>
+
+
+
+<article class="guestbook-tile guestbook-tile--quote" data-type="quote">
+  <div class="guestbook-tile__inner">
+    <p class="guestbook-quote">"</p>
+    <p class="guestbook-text"></p>
+    <p class="guestbook-author"></p>
+  </div>
+</article>
+
+
+<figure class="guestbook-tile guestbook-tile--photo" data-type="photo">
+  <div class="guestbook-tile__inner">
+    <img alt="Ming Dynastie Impression">
+  </div>
+</figure>
+
+      <!-- row 2: photo / quote / photo / quote -->
+<figure class="guestbook-tile guestbook-tile--photo" data-type="photo">
+  <div class="guestbook-tile__inner">
+    <img alt="Ming Dynastie Impression">
+  </div>
+</figure>
+
+<article class="guestbook-tile guestbook-tile--quote" data-type="quote">
+  <div class="guestbook-tile__inner">
+    <p class="guestbook-quote">"</p>
+    <p class="guestbook-text"></p>
+    <p class="guestbook-author"></p>
+  </div>
+</article>
+
+<figure class="guestbook-tile guestbook-tile--photo" data-type="photo">
+  <div class="guestbook-tile__inner">
+    <img alt="Ming Dynastie Impression">
+  </div>
+</figure>
+
+<article class="guestbook-tile guestbook-tile--quote" data-type="quote">
+  <div class="guestbook-tile__inner">
+    <p class="guestbook-quote">"</p>
+    <p class="guestbook-text"></p>
+    <p class="guestbook-author"></p>
+  </div>
+</article>
     </div>
-  </section>
+  </div>
 
-  <section id="kontakt" class="section section--contact">
-    <div class="container contact-grid">
-      {% for reservation in reservations %}
-        <div class="contact-card" id="{{ reservation.id }}">
-          <h3>{{ reservation.title }}</h3>
-          <ul class="contact-card__details">
-            <li><strong>Adresse:</strong> {{ reservation.address }}</li>
-            <li><strong>Telefon:</strong> <a href="tel:{{ reservation.phone|cut:' ' }}">{{ reservation.phone }}</a></li>
-            <li><strong>E-Mail:</strong> <a href="mailto:{{ reservation.email }}">{{ reservation.email }}</a></li>
-          </ul>
-          <form class="contact-card__form" method="post" action="#">
-            {% csrf_token %}
-            <div class="form-grid">
-              <label>
-                <span>Name*</span>
-                <input type="text" name="name" required>
-              </label>
-              <label>
-                <span>E-Mail*</span>
-                <input type="email" name="email" required>
-              </label>
-              <label>
-                <span>Telefon</span>
-                <input type="tel" name="phone">
-              </label>
-              <label>
-                <span>Datum*</span>
-                <input type="date" name="date" required>
-              </label>
-              <label>
-                <span>Uhrzeit*</span>
-                <input type="time" name="time" required>
-              </label>
-              <label>
-                <span>Personen*</span>
-                <input type="number" name="guests" min="1" required>
-              </label>
-              <label class="form-grid__wide">
-                <span>Nachricht (nicht für Reservierungen)*</span>
-                <textarea name="message" rows="4" required></textarea>
-              </label>
-            </div>
-            <button type="submit" class="button">Senden</button>
-          </form>
+  <!-- data for the animation (quotes + food photos) -->
+  <script id="guestbookTestimonials" type="application/json">
+  [
+    {% for t in testimonials %}
+      {"quote":"{{ t.quote|escapejs }}","author":"{{ t.author|default:''|escapejs }}"}{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ]
+  </script>
+
+  <script id="guestbookImages" type="application/json">
+  [
+    {% for img in gallery_images %}
+      "{{ img|escapejs }}"{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ]
+  </script>
+</section>
+
+
+
+<section id="kontakt" class="section section--contact">
+  <div class="container">
+    <header class="section__header section__header--center">
+      <h2 class="section__title section__title--kontakt">Kontakt</h2>
+    </header>
+
+    <div class="kontakt-grid">
+      <!-- Card 1 -->
+      <article class="kontakt-card">
+        <div class="kontakt-card__map">
+          <!-- Replace src with your real Google Maps embed link -->
+          <iframe
+            src="https://www.google.com/maps/embed?pb=YOUR_JANNOWITZ_EMBED"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen
+          ></iframe>
         </div>
-      {% endfor %}
+
+        <div class="kontakt-card__body">
+          <h3 class="kontakt-card__title">Ming Dynastie Jannowitzbrücke</h3>
+          <div class="kontakt-card__rule"></div>
+
+          <p class="kontakt-card__text">Brückenstraße 6<br>10179 Berlin</p>
+
+          <p class="kontakt-card__text">
+            Tel.: 030 - 308 756 80<br>
+            Fax: 030 - 308 756 81
+          </p>
+
+          <p class="kontakt-card__text">Mo - So: 12:00 - 22:00 Uhr</p>
+
+          <p class="kontakt-card__small">
+            Reservierungen ab sieben Personen können per E-Mail angefragt werden.
+          </p>
+
+          <a class="kontakt-card__btn" href="mailto:info@ming-dynastie.de">E-MAIL SCHREIBEN</a>
+        </div>
+      </article>
+
+      <!-- Card 2 -->
+      <article class="kontakt-card">
+        <div class="kontakt-card__map">
+          <!-- Replace src with your real Google Maps embed link -->
+          <iframe
+            src="https://www.google.com/maps/embed?pb=YOUR_EUROPA_EMBED"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen
+          ></iframe>
+        </div>
+
+        <div class="kontakt-card__body">
+          <h3 class="kontakt-card__title">Ming Dynastie Europa-Center</h3>
+          <div class="kontakt-card__rule"></div>
+
+          <p class="kontakt-card__text">Tauentzienstraße 9-12<br>10789 Berlin</p>
+
+          <p class="kontakt-card__text">
+            Tel.: 030 - 257 598 86<br>
+            Fax: 030 - 25 759 899
+          </p>
+
+          <p class="kontakt-card__text">Mo - So: 12:00 - 22:00 Uhr</p>
+
+          <p class="kontakt-card__small">
+            Reservierungen ab sieben Personen können per E-Mail angefragt werden.
+          </p>
+
+          <a class="kontakt-card__btn" href="mailto:info@ming-dynastie.de">E-MAIL SCHREIBEN</a>
+        </div>
+      </article>
     </div>
-  </section>
+  </div>
+</section>
+
 {% endblock %}
 
 {% block footer %}
-  <footer class="site-footer">
-    <div class="container site-footer__inner">
-      <div class="site-footer__brand">
+<footer class="ming-footer">
+  <div class="ming-footer__top">
+    <div class="container ming-footer__top-inner">
+
+
+      <div class="ming-footer__logo">
         {% static site_logo as footer_logo %}
         <img src="{{ footer_logo }}" alt="Ming Dynastie Logo">
-        <p>&copy; {% now "Y" %} {{ footer.company }}</p>
       </div>
-      <nav class="site-footer__nav">
-        {% for link in footer.links %}
-          <a href="{{ link.href }}">{{ link.label }}</a>
-        {% endfor %}
-      </nav>
-      <div class="site-footer__payments">
-        {% for icon in footer.payment_icons %}
-          <img src="{{ icon }}" alt="Akzeptierte Zahlungsarten">
-        {% endfor %}
+
+      <div class="ming-footer__rule"></div>
+
+      <div class="ming-footer__bottom">
+        <div class="ming-footer__left">
+          <div class="ming-footer__copyright">
+            &copy; {% now "Y" %} {{ footer.company }}
+          </div>
+
+          <div class="ming-footer__links">
+            {% for link in footer.links %}
+              <a href="{{ link.href }}">{{ link.label }}</a>
+            {% endfor %}
+          </div>
+        </div>
+
       </div>
+
     </div>
-  </footer>
+  </div>
+</footer>
 {% endblock %}
 
+
 {% block extra_scripts %}
+  <style>
+    /* Mobile UI polish for reservation card (UI only, no logic changes) */
+    @media (max-width: 900px) {
+      .contact-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.25rem !important;
+      }
+      .contact-card {
+        width: 100%;
+      }
+      .form-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0.9rem !important;
+      }
+      .form-grid__wide {
+        grid-column: 1 / -1 !important;
+      }
+      .form-actions {
+        display: flex;
+        justify-content: center;
+        margin-top: 1rem;
+      }
+      #jannowitz-submit {
+        width: min(220px, 100%);
+      }
+    }
+
+    /* Status box (works desktop + mobile) */
+    #jannowitz-status.form-status {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    #jannowitz-status.form-status--ok {
+      background: rgba(46, 125, 50, 0.12);
+      border: 1px solid rgba(46, 125, 50, 0.25);
+      color: #1b5e20;
+    }
+    #jannowitz-status.form-status--err {
+      background: rgba(211, 47, 47, 0.10);
+      border: 1px solid rgba(211, 47, 47, 0.25);
+      color: #b71c1c;
+    }
+/* ===== Header like screenshot (sticky + white on scroll) ===== */
+.hero__nav-wrapper{
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  bottom: auto !important;
+
+  height: 120px;            /* 🔥 bigger so it doesn't cut */
+  z-index: 9999;
+
+  background: transparent;
+  box-shadow: none;
+  transition: background .2s ease, box-shadow .2s ease;
+
+  overflow: hidden;         /* 🔥 prevents "half on image" look */
+}
+
+/* kill any overlay pseudo elements if they exist in base css */
+.hero__nav-wrapper::before,
+.hero__nav-wrapper::after{
+  content: none !important;
+}
+
+
+/* when scrolled: white bar like screenshot */
+.hero__nav-wrapper.is-scrolled{
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(0,0,0,.08);
+}
+
+.hero__nav{
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 18px 0;          /* 🔥 gives room for the red lines */
+}
+
+/* logo left */
+.hero__brand{
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+.hero__brand img{
+  height: 56px;
+  width: auto;
+  display: block;
+}
+
+/* menu center */
+.hero__menu{
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 48px;
+}
+
+/* link typography */
+.hero__menu-link{
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  font-weight: 500;
+  font-size: 18px;
+  color: rgba(255,255,255,.92);   /* TOP: white on hero */
+}
+
+/* AFTER scroll: dark text on white header */
+.hero__nav-wrapper.is-scrolled .hero__menu-link{
+  color: #444;
+}
+
+.hero__menu-link span{
+  position: relative;
+  display: inline-block;
+  padding: 10px 0;
+}
+
+/* red top & bottom lines for active/hover (like screenshot) */
+.hero__menu-link span::before,
+.hero__menu-link span::after{
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #b61f2a;
+  transform: scaleX(0);
+  transition: transform .18s ease;
+}
+.hero__menu-link span::before{ top: -6px; }
+.hero__menu-link span::after{ bottom: -6px; }
+
+.hero__menu-link:hover span::before,
+.hero__menu-link:hover span::after,
+.hero__menu-link.is-active span::before,
+.hero__menu-link.is-active span::after{
+  transform: scaleX(1);
+}
+
+/* mobile: keep it usable */
+@media (max-width: 900px){
+  .hero__nav{ min-height: 76px; }
+  .hero__brand img{ height: 44px; }
+  .hero__menu{
+    justify-content: flex-start;
+    gap: 20px;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+  }
+  .hero__menu::-webkit-scrollbar{ display:none; }
+  .hero__menu-link{ font-size: 15px; }
+}
+.hero{
+  padding-top: 120px;
+}
+
+section{
+  scroll-margin-top: 120px; /* so clicking #links doesn't hide titles under header */
+}
+/* ===== Locations section like ming-dynastie.de (your 2nd screenshot) ===== */
+
+.section--locations{
+  padding: 70px 0 90px;
+  background: #efefef;
+  /* soft pattern vibe (CSS-only) */
+  background-image:
+    radial-gradient(circle at 15% 35%, rgba(255,255,255,.6) 0 2px, transparent 3px 100%),
+    radial-gradient(circle at 75% 65%, rgba(255,255,255,.55) 0 2px, transparent 3px 100%),
+    radial-gradient(circle at 45% 15%, rgba(255,255,255,.35) 0 1px, transparent 2px 100%);
+  background-size: 120px 120px, 140px 140px, 90px 90px;
+}
+
+/* two-column grid */
+.location-grid{
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 40px;
+  align-items: start;
+}
+
+/* card look */
+.location-card{
+  background: rgba(255,255,255,.92);
+  border-radius: 26px;
+  overflow: hidden;
+  box-shadow: 0 18px 45px rgba(0,0,0,.18);
+  transform: translateZ(0);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.location-card:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 26px 65px rgba(0,0,0,.20);
+}
+
+/* image */
+.location-card__media{
+  aspect-ratio: 16 / 9;
+  background: #ddd;
+}
+.location-card__media img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* body */
+.location-card__body{
+  padding: 26px 32px 26px;
+}
+
+.location-card__title{
+  margin: 0 0 14px;
+  font-size: 30px;
+  font-weight: 500;
+  color: #2f2f2f;
+}
+
+/* blue divider line under title */
+.location-card__rule{
+  border: 0;
+  height: 2px;
+  background: rgba(39, 84, 170, .65);
+  margin: 0 0 18px;
+}
+
+/* details */
+.location-card__details{
+  list-style: none;
+  padding: 0;
+  margin: 0 0 18px;
+}
+.location-card__details li{
+  font-size: 18px;
+  line-height: 1.65;
+  color: #2f2f2f;
+}
+
+/* first address lines red like screenshot */
+.location-card__details li:nth-child(-n+2){
+  color: #a11f24;
+}
+
+/* hours slightly muted */
+.location-card__details li:last-child{
+  color: rgba(0,0,0,.65);
+  margin-top: 18px;
+}
+
+/* bottom right arrow link */
+.link-arrow{
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  width: 100%;
+  color: #a11f24;
+  font-weight: 700;
+  text-decoration: none;
+}
+.link-arrow::after{
+  content: "››";
+  font-size: 22px;
+  line-height: 1;
+  transform: translateY(1px);
+}
+.link-arrow:hover{
+  text-decoration: underline;
+}
+
+/* responsive */
+@media (max-width: 1000px){
+  .location-grid{
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+  .location-card__title{ font-size: 26px; }
+  .location-card__body{ padding: 22px 22px 22px; }
+}
+/* ===== DELIVERY: match ming-dynastie.de brightness (single source of truth) ===== */
+.section--delivery{
+  position: relative !important;
+  padding: 90px 0 90px !important;
+  color: #fff !important;
+
+  background-position: center !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+
+  overflow: hidden !important;
+}
+
+/* remove darkening — use a LIGHT wash instead */
+.section--delivery::before{
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+
+  /* brighter + slightly warm like the reference */
+  background: rgba(255,255,255,.22) !important;
+  mix-blend-mode: screen !important;
+
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+
+/* boost ONLY the background brightness (does not affect text/cards) */
+.section--delivery::after{
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+
+  background: transparent !important;
+
+  /* this is the key */
+  -webkit-backdrop-filter: brightness(1.45) saturate(1.15) contrast(1.05) !important;
+  backdrop-filter: brightness(1.35) saturate(1.15) contrast(1.05) !important;
+
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+
+/* keep delivery content above overlays */
+.section--delivery .container{
+  position: relative !important;
+  z-index: 1 !important;
+}
+/* ===== GALERIE (match ming-dynastie.de screenshot) ===== */
+
+/* full-width red section already exists in base, so only layout + hover fix */
+.section--gallery{
+  padding: 70px 0 90px !important;
+}
+
+/* big centered title like screenshot */
+.section--gallery .section__header{
+  text-align: center !important;
+  margin-bottom: 34px !important;
+}
+.section--gallery .section__title{
+  font-size: 64px !important;
+  line-height: 1 !important;
+  margin: 0 !important;
+}
+
+/* grid like screenshot: 4 columns, 2 rows */
+.gallery-grid{
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+  align-items: stretch !important;
+}
+
+/* kill any base styles that make them "small rounded cards" */
+.gallery-grid__item{
+  margin: 0 !important;
+  border-radius: 0 !important;
+  overflow: hidden !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  position: relative !important;
+
+  /* consistent tile height like screenshot */
+  aspect-ratio: 4 / 3 !important;
+}
+
+/* image fills the tile */
+.gallery-grid__item img{
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+
+  /* IMPORTANT: prevent "all images change color" hover bug */
+  filter: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+  transition: transform .18s ease, filter .18s ease !important;
+}
+
+/* hovered image gets the light wash (others DO NOT change) */
+.gallery-grid__item::after{
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background: transparent !important;
+  transition: background .18s ease !important;
+  pointer-events: none !important;
+}
+
+.gallery-grid__item:hover img{
+  transform: scale(1.02) !important;
+}
+
+.gallery-grid__item:hover::after{
+  /* light “pink/white wash” like screenshot */
+  background: rgba(255, 255, 255, 0.35) !important;
+}
+
+/* EXTRA SAFETY: if any base css dims ALL images on hover, cancel it */
+.gallery-grid:hover img{
+  filter: none !important;
+  opacity: 1 !important;
+}
+
+/* responsive */
+@media (max-width: 1100px){
+  .gallery-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+@media (max-width: 600px){
+  .gallery-grid{ grid-template-columns: 1fr !important; }
+  .section--gallery .section__title{ font-size: 44px !important; }
+}
+/* =========================
+   GALERIE – layout + hover
+   ========================= */
+
+/* keep tiles like reference (big rectangular) */
+.gallery-grid{
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+}
+
+.gallery-grid__item{
+  position: relative !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  border-radius: 0 !important;
+  aspect-ratio: 4 / 3 !important;
+  cursor: pointer !important;
+}
+
+.gallery-grid__item img{
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+/* overlay layer on each tile */
+.gallery-grid__item::after{
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background: transparent !important;
+  transition: background .15s ease !important;
+  pointer-events: none !important;
+}
+
+/* IMPORTANT: When hovering the grid, tint ALL items red... */
+.gallery-grid:hover .gallery-grid__item::after{
+  background: rgba(182, 31, 42, 0.22) !important; /* red tint */
+}
+
+/* ...but keep the hovered item NORMAL (no tint) */
+.gallery-grid:hover .gallery-grid__item:hover::after{
+  background: transparent !important;
+}
+
+/* no image color changes on hover (only overlays) */
+.gallery-grid:hover img{
+  filter: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* responsive */
+@media (max-width: 1100px){
+  .gallery-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+@media (max-width: 600px){
+  .gallery-grid{ grid-template-columns: 1fr !important; }
+}
+
+
+/* =========================
+   LIGHTBOX (modal)
+   ========================= */
+
+.gallery-lightbox{
+  position: fixed;
+  inset: 0;
+  z-index: 20000; /* above header */
+  display: none;
+}
+
+.gallery-lightbox.is-open{
+  display: block;
+}
+
+.gallery-lightbox__backdrop{
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.78);
+}
+
+/* centered white panel like screenshot */
+.gallery-lightbox__panel{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  width: min(1180px, 92vw);
+  height: min(720px, 82vh);
+
+  background: rgba(255,255,255,.92);
+  box-shadow: 0 30px 80px rgba(0,0,0,.55);
+  border-radius: 4px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* big image */
+.gallery-lightbox__img{
+  max-width: 100%;
+  max-height: 100%;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* close X top-right */
+.gallery-lightbox__close{
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  z-index: 2;
+
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: transparent;
+  color: rgba(0,0,0,.65);
+  font-size: 34px;
+  cursor: pointer;
+}
+
+/* arrows */
+.gallery-lightbox__nav{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+
+  width: 56px;
+  height: 90px;
+
+  border: 0;
+  background: rgba(0,0,0,.35);
+  color: #fff;
+  font-size: 44px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.gallery-lightbox__nav--prev{ left: 10px; }
+.gallery-lightbox__nav--next{ right: 10px; }
+
+/* counter bottom-right */
+.gallery-lightbox__counter{
+  position: absolute;
+  right: 14px;
+  bottom: 10px;
+  z-index: 2;
+  color: rgba(0,0,0,.65);
+  font-size: 14px;
+}
+/* ===== Gästebuch (match reference layout + sizing) ===== */
+
+.section--testimonials{
+  padding: 60px 0 80px !important;
+  background: #e9e9e9 !important;
+  /* subtle pattern like the reference */
+  background-image:
+    radial-gradient(circle at 12% 28%, rgba(255,255,255,.55) 0 2px, transparent 3px 100%),
+    radial-gradient(circle at 68% 40%, rgba(255,255,255,.45) 0 2px, transparent 3px 100%),
+    radial-gradient(circle at 40% 78%, rgba(255,255,255,.35) 0 2px, transparent 3px 100%);
+  background-size: 140px 140px, 160px 160px, 180px 180px;
+}
+
+.section--testimonials .section__header{
+  text-align: center !important;
+  margin-bottom: 28px !important;
+}
+
+.section--testimonials .section__title--accent{
+  color: #8d1a1f !important;
+  font-size: 40px !important;
+  line-height: 1.05 !important;
+  margin: 0 !important;
+  font-weight: 700 !important;
+}
+
+/* IMPORTANT: remove default figure margins (this is a big reason it looks broken) */
+.guestbook-grid,
+.guestbook-grid figure,
+.guestbook-grid article{
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* 4x2 collage grid – tiles touch */
+.guestbook-grid{
+  --gb-gap: 14px; /* <-- the small consistent space */
+  gap: var(--gb-gap) !important;
+}
+
+/* exact same height for ALL tiles */
+.guestbook-tile{
+  position: relative;
+  height: 250px !important;
+  overflow: visible !important;   /* IMPORTANT */
+  border-radius: 0 !important;
+  z-index: 0;
+}
+
+.guestbook-tile__inner{
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 14px;
+  transform: translateZ(0);
+  transition: transform 260ms ease, box-shadow 260ms ease;
+  box-shadow: 0 10px 26px rgba(0,0,0,.14);
+}
+/* photo tiles */
+.guestbook-tile--photo{
+  background: transparent !important;
+}
+.guestbook-tile--photo img{
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+/* quote tiles (light transparent panel like reference) */
+.guestbook-tile--quote .guestbook-tile__inner{
+  background: rgba(255,255,255,.70);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  padding: 22px 22px;
+}
+
+.guestbook-quote{ display: none !important; }
+
+.guestbook-text{
+  margin: 0 0 16px !important;
+  color: #1f3f90 !important;      /* blue like reference */
+  font-size: 18px !important;
+  line-height: 1.45 !important;
+  font-weight: 700 !important;
+}
+
+.guestbook-author{
+  margin: 0 !important;
+  color: #222 !important;
+  font-size: 18px !important;
+  font-weight: 500 !important;
+}
+
+/* reveal-once animation (like the video, no continuous swapping) */
+.guestbook-tile{
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity .35s ease, transform .35s ease;
+  transition-delay: var(--d, 0ms);
+}
+.guestbook-tile.is-revealed{
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* responsive */
+@media (max-width: 1100px){
+  .guestbook-grid{ grid-template-columns: repeat(2, 1fr) !important; }
+  .section--testimonials .section__title--accent{ font-size: 42px !important; }
+}
+@media (max-width: 650px){
+  .guestbook-grid{ grid-template-columns: 1fr !important; }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .guestbook-tile__inner{ transition: none !important; }
+}
+
+/* ===== FIX: Gästebuch grid + “fill the gap” hover ===== */
+#gaestebuch .guestbook-grid{
+  --gb-gap: 14px;
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: var(--gb-gap) !important;
+  align-items: stretch !important;
+}
+
+/* equal size tiles */
+#gaestebuch .guestbook-tile{
+  height: 250px !important;
+  position: relative !important;
+  overflow: visible !important; /* allow expansion into the gap */
+  z-index: 0;
+}
+
+/* inner clips content */
+#gaestebuch .guestbook-tile__inner{
+  height: 100% !important;
+  width: 100% !important;
+  overflow: hidden !important;
+  border-radius: 14px !important;
+  position: relative !important;
+  z-index: 2 !important;
+
+  /* IMPORTANT: cancel any scaling you added earlier */
+  transform: none !important;
+}
+
+/* this is the expanding layer that “covers” the gap */
+#gaestebuch .guestbook-tile::after{
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  border-radius: 14px !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+
+  transition: inset 260ms ease, box-shadow 260ms ease, border-radius 260ms ease !important;
+  box-shadow: 0 10px 26px rgba(0,0,0,.14) !important;
+  background: transparent !important;
+}
+
+/* quote tiles keep the light panel look */
+#gaestebuch .guestbook-tile--quote::after{
+  background: rgba(255,255,255,.70) !important;
+}
+
+/* hover: expand exactly into the gap (so the gap disappears visually) */
+#gaestebuch .guestbook-tile:hover{
+  z-index: 20;
+}
+#gaestebuch .guestbook-tile:hover::after{
+  inset: calc(var(--gb-gap) / -2) !important;  /* fills the gap */
+  border-radius: 18px !important;
+  box-shadow: 0 22px 60px rgba(0,0,0,.22) !important;
+}
+
+/* photo fills */
+#gaestebuch .guestbook-tile--photo img{
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+/* responsive */
+@media (max-width: 1100px){
+  #gaestebuch .guestbook-grid{
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+@media (max-width: 650px){
+  #gaestebuch .guestbook-grid{
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ===== Kontakt section like screenshot ===== */
+.section--contact{
+  padding: 60px 0 90px !important;
+  background: #ececec !important;
+  background-image:
+    radial-gradient(circle at 12% 28%, rgba(255,255,255,.60) 0 2px, transparent 3px 100%),
+    radial-gradient(circle at 70% 42%, rgba(255,255,255,.45) 0 2px, transparent 3px 100%),
+    radial-gradient(circle at 38% 78%, rgba(255,255,255,.35) 0 2px, transparent 3px 100%);
+  background-size: 160px 160px, 190px 190px, 220px 220px;
+}
+
+.section__header--center{
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.section__title--kontakt{
+  font-size: 44px;
+  color: #1f3f90; /* blue like screenshot */
+  font-weight: 700;
+  margin: 0;
+}
+
+.kontakt-grid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 56px;
+  align-items: start;
+}
+
+/* card */
+.kontakt-card{
+  background: rgba(255,255,255,.85);
+  border-radius: 0;
+  overflow: hidden;
+  box-shadow: 0 14px 36px rgba(0,0,0,.12);
+}
+
+/* map area */
+.kontakt-card__map{
+  width: 100%;
+  height: 230px;
+  background: #ddd;
+}
+.kontakt-card__map iframe{
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* body */
+.kontakt-card__body{
+  padding: 22px 26px 26px;
+}
+
+.kontakt-card__title{
+  margin: 0 0 12px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #111;
+}
+
+.kontakt-card__rule{
+  height: 2px;
+  width: 100%;
+  background: rgba(31,63,144,.35);
+  margin: 0 0 16px;
+}
+
+.kontakt-card__text{
+  margin: 0 0 14px;
+  color: #333;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+.kontakt-card__small{
+  margin: 10px 0 18px;
+  color: #444;
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.kontakt-card__btn{
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: #8d1a1f;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: .06em;
+}
+
+/* responsive */
+@media (max-width: 980px){
+  .kontakt-grid{ grid-template-columns: 1fr; gap: 22px; }
+  .section__title--kontakt{ font-size: 36px; }
+}
+
+/* ===== Footer like screenshot (red block + lantern row) ===== */
+.ming-footer{
+  margin-top: 0;
+}
+
+/* big red section */
+.ming-footer__top{
+  position: relative;
+  background: #8f1f2a;
+  color: rgba(255,255,255,.9);
+}
+
+/* subtle pattern overlay (keeps it “not flat”, without darkening) */
+.ming-footer__top::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:.12;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,.25) 0 2px, transparent 3px),
+    radial-gradient(circle at 70% 40%, rgba(255,255,255,.18) 0 2px, transparent 3px),
+    radial-gradient(circle at 40% 80%, rgba(255,255,255,.18) 0 2px, transparent 3px);
+  background-size: 220px 220px;
+}
+
+.ming-footer__top-inner{
+  position: relative;
+  padding: 90px 0 40px;
+  text-align: center;
+}
+
+.ming-footer__kicker{
+  margin: 0 0 42px;
+  font-size: 18px;
+  letter-spacing: .3px;
+  color: rgba(255,255,255,.9);
+}
+
+.ming-footer__lanterns{
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: min(90px, 6vw);
+  margin: 0 auto 48px;
+  flex-wrap: wrap;
+}
+
+.ming-footer__lantern{
+  text-decoration: none;
+  color: rgba(255,255,255,.95);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  min-width: 180px;
+}
+
+.ming-footer__lantern-icon{
+  color: #d6a864; /* gold */
+  display: inline-flex;
+}
+
+.lantern-svg{
+  width: 78px;
+  height: 140px;
+  display: block;
+}
+
+.ming-footer__lantern-text{
+  font-weight: 700;
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+.ming-footer__lantern-sub{
+  font-weight: 600;
+  font-size: 12px;
+  opacity: .9;
+}
+
+.ming-footer__logo{
+  margin: 28px 0 22px;
+  display: flex;
+  justify-content: center;
+}
+.ming-footer__logo img{
+  height: 70px;
+  width: auto;
+  opacity: .9;
+}
+
+.ming-footer__rule{
+  height: 1px;
+  width: min(780px, 86%);
+  margin: 24px auto 18px;
+  background: rgba(255,255,255,.28);
+}
+
+/* bottom row */
+.ming-footer__bottom{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.ming-footer__left{
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ming-footer__copyright{
+  font-size: 13px;
+  color: rgba(255,255,255,.85);
+}
+
+.ming-footer__links{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ming-footer__links a{
+  font-size: 13px;
+  color: rgba(255,255,255,.9);
+  text-decoration: none;
+}
+.ming-footer__links a:hover{
+  text-decoration: underline;
+}
+
+.ming-footer__payments{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
+}
+.ming-footer__payments img{
+  height: 18px;
+  width: auto;
+  opacity: .95;
+}
+
+/* responsive */
+@media (max-width: 900px){
+  .ming-footer__top-inner{ padding: 70px 0 34px; }
+  .ming-footer__bottom{
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .ming-footer__payments{
+    justify-content: flex-start;
+  }
+}
+/* =========================
+   MOBILE DRAWER NAV
+========================= */
+
+/* hamburger hidden on desktop */
+.nav-toggle{
+  display: none;
+  margin-left: auto;
+  width: 46px;
+  height: 46px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,.92); /* matches hero top */
+}
+
+/* when header is white (scrolled), hamburger becomes dark */
+.hero__nav-wrapper.is-scrolled .nav-toggle{
+  color: #444;
+}
+
+.nav-toggle__icon{
+  position: relative;
+  width: 24px;
+  height: 2px;
+  background: currentColor;
+  display: block;
+  border-radius: 99px;
+}
+.nav-toggle__icon::before,
+.nav-toggle__icon::after{
+  content:"";
+  position:absolute;
+  left:0;
+  width:24px;
+  height:2px;
+  background: currentColor;
+  border-radius: 99px;
+}
+.nav-toggle__icon::before{ top:-7px; }
+.nav-toggle__icon::after{ top: 7px; }
+
+/* Drawer base */
+.mobile-drawer{
+  position: fixed;
+  inset: 0;
+  z-index: 10050; /* above header/social */
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .18s ease;
+}
+
+.mobile-drawer.is-open{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mobile-drawer__backdrop{
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+}
+
+.mobile-drawer__panel{
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(86vw, 360px);
+  height: 100%;
+  background: #fff;
+  box-shadow: -20px 0 40px rgba(0,0,0,.18);
+  transform: translateX(100%);
+  transition: transform .22s ease;
+  padding: 18px 18px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mobile-drawer.is-open .mobile-drawer__panel{
+  transform: translateX(0);
+}
+
+.mobile-drawer__close{
+  margin-left: auto;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 12px;
+  background: rgba(0,0,0,.06);
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.mobile-drawer__nav{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 6px;
+}
+
+.mobile-drawer__link{
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  font-weight: 600;
+  font-size: 15px;
+  color: #333;
+  padding: 14px 12px;
+  border-radius: 12px;
+}
+
+.mobile-drawer__link:hover{
+  background: rgba(182,31,42,.08);
+}
+
+/* lock background scroll when drawer open */
+body.drawer-open{
+  overflow: hidden;
+}
+
+/* =========================
+   SOCIAL BAR (RIGHT SIDE) - MOBILE TWEAK
+========================= */
+
+.social-bar{
+  position: fixed;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  z-index: 9998;
+}
+
+.social-bar__link{
+  width: 50px;
+  height: 50px;
+  border-radius: 999px;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 10px 20px rgba(0,0,0,.12);
+}
+
+.social-bar__link img{
+
+  object-fit: contain;
+}
+
+/* MOBILE BREAKPOINT */
+@media (max-width: 900px){
+  /* hide the desktop horizontal menu and show hamburger */
+  .hero__menu{ display: none; }
+  .nav-toggle{ display: inline-flex; }
+
+  /* keep header layout clean on mobile */
+  .hero__nav{
+    justify-content: space-between;
+    gap: 14px;
+  }
+
+  /* slightly smaller social icons on mobile */
+  .social-bar{
+    right: 10px;
+    gap: 10px;
+  }
+}
+
+  </style>
+
   <script>
-    (function () {
-      const slides = document.querySelectorAll('.hero__slide');
-      let activeIndex = 0;
-      function showNextSlide() {
-        slides[activeIndex].classList.remove('is-active');
-        activeIndex = (activeIndex + 1) % slides.length;
-        slides[activeIndex].classList.add('is-active');
+(function () {
+  const toggle = document.getElementById("navToggle");
+  const drawer = document.getElementById("mobileDrawer");
+  if (!toggle || !drawer) return;
+
+  const closeTargets = drawer.querySelectorAll("[data-drawer-close]");
+  const drawerLinks = drawer.querySelectorAll("a");
+
+  function openDrawer(){
+    drawer.classList.add("is-open");
+    drawer.setAttribute("aria-hidden", "false");
+    toggle.setAttribute("aria-expanded", "true");
+    document.body.classList.add("drawer-open");
+  }
+
+  function closeDrawer(){
+    drawer.classList.remove("is-open");
+    drawer.setAttribute("aria-hidden", "true");
+    toggle.setAttribute("aria-expanded", "false");
+    document.body.classList.remove("drawer-open");
+  }
+
+  toggle.addEventListener("click", () => {
+    if (drawer.classList.contains("is-open")) closeDrawer();
+    else openDrawer();
+  });
+
+  closeTargets.forEach(el => el.addEventListener("click", closeDrawer));
+  drawerLinks.forEach(a => a.addEventListener("click", closeDrawer));
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && drawer.classList.contains("is-open")) closeDrawer();
+  });
+})();
+
+(function () {
+  const grid = document.getElementById("guestbookGrid");
+  if (!grid) return;
+
+  const tiles = Array.from(grid.querySelectorAll(".guestbook-tile"));
+  const quoteTiles = Array.from(grid.querySelectorAll(".guestbook-tile--quote"));
+  const photoTiles = Array.from(grid.querySelectorAll(".guestbook-tile--photo"));
+
+  const tDataEl = document.getElementById("guestbookTestimonials");
+  const iDataEl = document.getElementById("guestbookImages");
+  if (!tDataEl || !iDataEl) return;
+
+  const testimonials = JSON.parse(tDataEl.textContent || "[]").filter(x => x && x.quote);
+  const images = JSON.parse(iDataEl.textContent || "[]").filter(Boolean);
+  if (!testimonials.length || !images.length) return;
+
+  // Fill once (no swapping)
+  let tIndex = 0, iIndex = 0;
+
+  quoteTiles.forEach(tile => {
+    const t = testimonials[tIndex++ % testimonials.length];
+    tile.querySelector(".guestbook-text").textContent = `“${t.quote}”`;
+    tile.querySelector(".guestbook-author").textContent = t.author || "";
+  });
+
+  photoTiles.forEach(tile => {
+    const img = tile.querySelector("img");
+    img.src = images[iIndex++ % images.length];
+  });
+
+  // Stagger delays like the video
+  tiles.forEach((tile, idx) => tile.style.setProperty("--d", `${idx * 60}ms`));
+
+  // Reveal once on scroll into view
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        tiles.forEach(t => t.classList.add("is-revealed"));
+        io.disconnect();
       }
-      if (slides.length > 1) {
-        setInterval(showNextSlide, 6000);
+    });
+  }, { threshold: 0.25 });
+
+  io.observe(grid);
+})();
+(function () {
+  const items = Array.from(document.querySelectorAll(".gallery-grid__item img"));
+  if (!items.length) return;
+
+  const lb = document.getElementById("galleryLightbox");
+  const lbImg = document.getElementById("galleryLightboxImg");
+  const lbCounter = document.getElementById("galleryLightboxCounter");
+
+  let index = 0;
+
+  function render() {
+    lbImg.src = items[index].src;
+    lbCounter.textContent = `${index + 1}/${items.length}`;
+  }
+
+  function openAt(i) {
+    index = i;
+    render();
+    lb.classList.add("is-open");
+    lb.setAttribute("aria-hidden", "false");
+    document.documentElement.style.overflow = "hidden";
+  }
+
+  function close() {
+    lb.classList.remove("is-open");
+    lb.setAttribute("aria-hidden", "true");
+    document.documentElement.style.overflow = "";
+  }
+
+  function prev() {
+    index = (index - 1 + items.length) % items.length;
+    render();
+  }
+
+  function next() {
+    index = (index + 1) % items.length;
+    render();
+  }
+
+  // open on click
+  items.forEach((img, i) => {
+    img.style.cursor = "pointer";
+    img.addEventListener("click", () => openAt(i));
+  });
+
+  // buttons / backdrop close
+  lb.addEventListener("click", (e) => {
+    if (e.target.matches("[data-glb-close]")) close();
+    if (e.target.matches("[data-glb-prev]")) prev();
+    if (e.target.matches("[data-glb-next]")) next();
+  });
+
+  // keyboard
+  window.addEventListener("keydown", (e) => {
+    if (!lb.classList.contains("is-open")) return;
+
+    if (e.key === "Escape") close();
+    if (e.key === "ArrowLeft") prev();
+    if (e.key === "ArrowRight") next();
+  });
+})();
+(function () {
+  const header = document.getElementById("siteHeader");
+  const links = Array.from(document.querySelectorAll(".hero__menu-link"));
+  if (!header) return;
+
+  function setScrolled() {
+    header.classList.toggle("is-scrolled", window.scrollY > 180);
+  }
+
+  function setActive(hash) {
+    links.forEach(a => a.classList.toggle("is-active", a.getAttribute("href") === hash));
+  }
+
+  setScrolled();
+  setActive(location.hash || "#start");
+
+  window.addEventListener("scroll", setScrolled, { passive: true });
+  window.addEventListener("hashchange", () => setActive(location.hash || "#start"));
+
+  links.forEach(a => a.addEventListener("click", () => setActive(a.getAttribute("href"))));
+})();
+(function () {
+  const form = document.getElementById("jannowitz-form");
+  if (!form) return;
+
+  const btn = document.getElementById("jannowitz-submit");
+  const btnText = btn.querySelector(".btn-text");
+  const btnLoader = btn.querySelector(".btn-loader");
+  const statusBox = document.getElementById("jannowitz-status");
+  if (!statusBox) return;
+
+  function setLoading(isLoading) {
+    btn.disabled = isLoading;
+    btnText.style.display = isLoading ? "none" : "inline";
+    btnLoader.style.display = isLoading ? "inline" : "none";
+  }
+
+  function showStatus(html, ok=true) {
+    statusBox.innerHTML = html;
+    statusBox.className = ok ? "form-status form-status--ok" : "form-status form-status--err";
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    statusBox.innerHTML = "";
+
+    setLoading(true);
+
+    try {
+      const res = await fetch(form.action, {
+        method: "POST",
+        body: new FormData(form),
+        headers: {
+          "X-Requested-With": "XMLHttpRequest",
+        }
+      });
+
+      const data = await res.json();
+
+      if (data.ok) {
+        showStatus(data.message, true);
+        form.reset();
+      } else {
+        let html = "<b>Bitte prüfen Sie die Eingaben:</b><ul>";
+        for (const [field, errors] of Object.entries(data.errors || {})) {
+          html += `<li><b>${field}</b>: ${errors.join(", ")}</li>`;
+        }
+        html += "</ul>";
+        showStatus(html, false);
       }
-    }());
+    } catch (err) {
+      showStatus("Serverfehler. Bitte versuchen Sie es erneut.", false);
+    } finally {
+      setLoading(false);
+    }
+  });
+})();
+
+(function () {
+  const slides = document.querySelectorAll('.hero__slide');
+  let activeIndex = 0;
+  function showNextSlide() {
+    slides[activeIndex].classList.remove('is-active');
+    activeIndex = (activeIndex + 1) % slides.length;
+    slides[activeIndex].classList.add('is-active');
+  }
+  if (slides.length > 1) {
+    setInterval(showNextSlide, 6000);
+  }
+}());
   </script>
 {% endblock %}
