@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 def impressum(request):
-    return render(request, "ming/legal/impressum.html")
+    return render(request, "legal/impressum.html")
 
 def datenschutz(request):
-    return render(request, "ming/legal/datenschutz.html")
+    return render(request, "legal/datenschutz.html")
