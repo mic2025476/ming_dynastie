@@ -140,7 +140,7 @@ TEMPLATES[0]['DIRS'] = [BASE_DIR / 'templates']
 
 STATICFILES_DIRS = [BASE_DIR / 'static']  # where we keep source static files
 
-DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
+DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
