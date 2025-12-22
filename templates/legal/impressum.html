@@ -1,31 +1,16 @@
 {% extends "mingsite/base.html" %}
-{% load static %}
-
 {% block title %}Impressum{% endblock %}
 
 {% block content %}
-  <!-- ===== Legal Hero (same top image header styling from style.css) ===== -->
+<section class="section">
+  <div class="container">
+    <header class="section__header">
+      <h1 class="section__title section__title--accent">Impressum</h1>
+    </header>
 
-  <!-- Social bar (same as index.html) -->
-  <div class="social-bar">
-    {% for social in hero.social_links %}
-      <a class="social-bar__link social-bar__link--{{ social.slug }}"
-         href="{{ social.href }}" target="_blank" rel="noopener" title="{{ social.title }}">
-        {% static social.icon as icon_path %}
-        <img src="{{ icon_path }}" alt="{{ social.title }}">
-      </a>
-    {% endfor %}
-  </div>
-
-  <!-- ===== Legal Content ===== -->
-  <section class="legal-page" role="main" aria-labelledby="legal-title">
-    <div class="legal-container">
-
-      <h1 id="legal-title">Impressum</h1>
-
+    <div class="contact-card">
       <p>
-        Ming Dynastie Jannowitzbrücke GmbH<br>
-        vertreten durch Ihren Geschäftsführer Nick Fu<br>
+        Ming Dynastie Jannowitzbrücke GmbH vertreten durch Ihren Geschäftsführer Nick Fu<br>
         Brückenstraße 6<br>
         10179 Berlin
       </p>
@@ -44,7 +29,8 @@
 
       <h2>Gestaltung &amp; Umsetzung</h2>
       <p>
-        Erstellt von Websitebutler mit Sitejet
+        Erstellt von <a href="https://www.websitebutler.de" target="_blank" rel="noopener">Websitebutler</a> mit
+        <a href="https://www.sitejet.io" target="_blank" rel="noopener">Sitejet</a>
       </p>
 
       <h2>Urheberrecht</h2>
@@ -66,40 +52,15 @@
         Bei direkten oder indirekten Verweisen auf fremde Websites ("Hyperlinks"), die außerhalb des Verantwortungsbereiches des Autors liegen, würde eine Haftungsverpflichtung ausschließlich in dem Fall in Kraft treten, in dem der Autor von den Inhalten Kenntnis hat und es ihm technisch möglich und zumutbar wäre, die Nutzung im Falle rechtswidriger Inhalte zu verhindern.
       </p>
       <p>
-        Der Autor erklärt hiermit ausdrücklich, dass zum Zeitpunkt der Linksetzung keine illegalen Inhalte auf den zu verlinkenden Seiten erkennbar waren. Auf die aktuelle und zukünftige Gestaltung, die Inhalte oder die Urheberschaft der gelinkten/verknüpften Seiten hat der Autor keinerlei Einfluss. Deshalb distanziert er sich hiermit ausdrücklich von allen Inhalten aller gelinkten/verknüpften Seiten, die nach der Linksetzung verändert wurden. Diese Feststellung gilt für alle innerhalb des eigenen Internetangebotes gesetzten Links und Verweise sowie für Fremdeinträge in vom Autor eingerichteten Gästebüchern, Diskussionsforen und Mailinglisten. Für illegale, fehlerhafte oder unvollständige Inhalte und insbesondere für Schäden, die aus der Nutzung oder Nichtnutzung solcherart dargebotener Informationen entstehen, haftet allein der Anbieter der Seite, auf welche verwiesen wurde, nicht derjenige, der über Links auf die jeweilige Veröffentlichung lediglich verweist.
+        Der Autor erklärt hiermit ausdrücklich, dass zum Zeitpunkt der Linksetzung keine illegalen Inhalte auf den zu verlinkenden Seiten erkennbar waren. Auf die aktuelle und zukünftige Gestaltung, die Inhalte oder die Urheberschaft der gelinkten/verknüpften Seiten hat der Autor keinerlei Einfluss. Deshalb distanziert er sich hiermit ausdrücklich von allen Inhalten aller gelinkten/verknüpften Seiten, die nach der Linksetzung verändert wurden.
       </p>
-
-    </div>
-  </section>
-{% endblock %}
-
-{% block footer %}
-<footer class="ming-footer">
-  <div class="ming-footer__top">
-    <div class="container ming-footer__top-inner">
-
-      <div class="ming-footer__logo">
-        {% static site_logo as footer_logo %}
-        <img src="{{ footer_logo }}" alt="Ming Dynastie Logo">
-      </div>
-
-      <div class="ming-footer__rule"></div>
-
-      <div class="ming-footer__bottom">
-        <div class="ming-footer__left">
-          <div class="ming-footer__copyright">
-            &copy; {% now "Y" %} {{ footer.company }}
-          </div>
-
-          <div class="ming-footer__links">
-            {% for link in footer.links %}
-              <a href="{{ link.href }}">{{ link.label }}</a>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-
+      <p>
+        Diese Feststellung gilt für alle innerhalb des eigenen Internetangebotes gesetzten Links und Verweise sowie für Fremdeinträge in vom Autor eingerichteten Gästebüchern, Diskussionsforen und Mailinglisten.
+      </p>
+      <p>
+        Für illegale, fehlerhafte oder unvollständige Inhalte und insbesondere für Schäden, die aus der Nutzung oder Nichtnutzung solcherart dargebotener Informationen entstehen, haftet allein der Anbieter der Seite, auf welche verwiesen wurde, nicht derjenige, der über Links auf die jeweilige Veröffentlichung lediglich verweist.
+      </p>
     </div>
   </div>
-</footer>
+</section>
 {% endblock %}
