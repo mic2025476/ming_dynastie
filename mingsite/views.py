@@ -252,8 +252,8 @@ def index(request):
         "footer": {
             "company": "Ming Dynastie Jannowitzbrücke GmbH",
             "links": [
-                {"label": "Impressum", "href": "/legal/impressum/"},
-                {"label": "Datenschutz", "href": "/legal/datenschutz/"},
+                {"label": "Impressum", "href": "/ming/legal/impressum/"},
+                {"label": "Datenschutz", "href": "/ming/legal/datenschutz/"},
             ],
             "payment_icons": [
                 "https://cdn2.site-media.eu/images/800x600%2C2200x1013%2B0%2B83/5260798/payment-icons.png",

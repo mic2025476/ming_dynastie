@@ -38,8 +38,8 @@ def build_site_context():
         "footer": {
             "company": "Ming Dynastie Jannowitzbrücke GmbH",
             "links": [
-                {"label": "Impressum", "href": "/legal/impressum/"},
-                {"label": "Datenschutz", "href": "/legal/datenschutz/"},
+                {"label": "Impressum", "href": "/ming/legal/impressum/"},
+                {"label": "Datenschutz", "href": "/ming/legal/datenschutz/"},
             ],
             "payment_icons": [
                 "https://cdn2.site-media.eu/images/800x600%2C2200x1013%2B0%2B83/5260798/payment-icons.png",
@@ -51,10 +51,10 @@ def impressum(request):
     context = build_site_context()
     context["site_nav"] = context["hero"]["nav_links"]
     context["site_logo"] = context["hero"]["logo"]
-    return render(request, "legal/impressum.html", context)
+    return render(request, "ming/legal/impressum.html", context)
 
 def datenschutz(request):
     context = build_site_context()
     context["site_nav"] = context["hero"]["nav_links"]
     context["site_logo"] = context["hero"]["logo"]
-    return render(request, "legal/datenschutz.html", context)
+    return render(request, "ming/legal/datenschutz.html", context)
