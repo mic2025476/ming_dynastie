@@ -522,16 +522,17 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 48px;
+  gap: 32px;
 }
 
 /* link typography */
 .hero__menu-link{
   text-decoration: none;
   text-transform: uppercase;
-  letter-spacing: .12em;
+  letter-spacing: .08em;
+  white-space: nowrap;
   font-weight: 500;
-  font-size: 18px;
+  font-size: 16px;
   color: rgba(255,255,255,.92);   /* TOP: white on hero */
 }
 
@@ -543,7 +544,7 @@
 .hero__menu-link span{
   position: relative;
   display: inline-block;
-  padding: 10px 0;
+  padding: 8px 0;
 }
 
 /* red top & bottom lines for active/hover (like screenshot) */
@@ -558,8 +559,9 @@
   transform: scaleX(0);
   transition: transform .18s ease;
 }
-.hero__menu-link span::before{ top: -6px; }
-.hero__menu-link span::after{ bottom: -6px; }
+.hero__menu-link span::before { top: 0; }
+.hero__menu-link span::after  { bottom: 0; }
+
 
 .hero__menu-link:hover span::before,
 .hero__menu-link:hover span::after,
@@ -1635,6 +1637,20 @@ body.drawer-open{
     right: 10px;
     gap: 10px;
   }
+}
+
+/* REMOVE the TOP red line everywhere (active + inactive) */
+.hero__menu-link::before,
+.hero__menu-link span::before{
+  content: none !important;
+  display: none !important;
+}
+
+/* If that top line was drawn as a border or inset shadow, kill it too */
+.hero__menu-link,
+.hero__menu-link span{
+  border-top: 0 !important;
+  box-shadow: none !important;
 }
 
   </style>

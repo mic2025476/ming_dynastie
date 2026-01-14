@@ -47,7 +47,7 @@ def index(request):
                 {
                     "slug": "whatsapp",
                     "title": "WhatsApp",
-                    "href": "https://wa.me/17675933522",
+                    "href": "https://wa.me/01771688168",
                     "icon": "mingsite/icons/whatsapp.png",
                 },
             ],
@@ -131,30 +131,17 @@ def index(request):
         ],
         "delivery": {
             "note": (
-                "Bestellungen können Sie auf der 0177-1688168 per WhatsApp, SMS oder WeChat "
-                "aufgeben. Telefonische Bestellungen werden derzeit nicht angenommen."
+                
             ),
             "services": [
                 {
                     "location": "Ming Dynastie Jannowitzbrücke",
                     "links": [
                         {
-                            "name": "Wolt",
-                            "url": "https://wolt.com/de/deu/berlin/restaurant/ming-dynastie",
-                            "logo": "mingsite/img/logo-wolt.jpg",
-                            "logo_alt": "Wolt",
-                        },
-                        {
                             "name": "Uber Eats",
                             "url": "https://www.ubereats.com/de/store/ming-dynastie-jannowitzbrucke/PYnM4OPTV8OXtpngj8PQ2g",
                             "logo": "mingsite/img/logo-ubereats.png",
                             "logo_alt": "Uber Eats",
-                        },
-                        {
-                            "name": "Lieferando",
-                            "url": "https://www.lieferando.de/speisekarte/ming-dynastie-new-owner",
-                            "logo": "mingsite/img/logo-lieferando.png",
-                            "logo_alt": "Lieferando",
                         },
                     ],
                 },
@@ -162,22 +149,10 @@ def index(request):
                     "location": "Ming Dynastie Europa-Center",
                     "links": [
                         {
-                            "name": "Wolt",
-                            "url": "https://wolt.com/de/deu/berlin/restaurant/ming-dynastie-tauentzienstr",
-                            "logo": "mingsite/img/logo-wolt.jpg",
-                            "logo_alt": "Wolt",
-                        },
-                        {
                             "name": "Uber Eats",
                             "url": "https://www.ubereats.com/de/store/ming-dynastie-europa-center/Fhuc066PViOnIIq3Cc_sUA",
                             "logo": "mingsite/img/logo-ubereats.png",
                             "logo_alt": "Uber Eats",
-                        },
-                        {
-                            "name": "Lieferando",
-                            "url": "https://www.lieferando.de/speisekarte/ming-dynastie-berlin-1",
-                            "logo": "mingsite/img/logo-lieferando.png",
-                            "logo_alt": "Lieferando",
                         },
                     ],
                 },
@@ -277,8 +252,8 @@ def index(request):
         "footer": {
             "company": "Ming Dynastie Jannowitzbrücke GmbH",
             "links": [
-                {"label": "Impressum", "href": "/ming/legal/impressum/"},
-                {"label": "Datenschutz", "href": "/ming/legal/datenschutz/"},
+                {"label": "Impressum", "href": "/legal/impressum/"},
+                {"label": "Datenschutz", "href": "/legal/datenschutz/"},
             ],
             "payment_icons": [
                 "https://cdn2.site-media.eu/images/800x600%2C2200x1013%2B0%2B83/5260798/payment-icons.png",
