@@ -11,7 +11,7 @@ urlpatterns = [
     path('gallery/', include('gallery.urls')),
     path('reservations/', include('reservations.urls')),
     path('testimonials/', include('testimonials.urls')),
-    path('legal/', include('legal.urls')),
+    path('ming/legal/', include('legal.urls')),
 ]
 
 if settings.DEBUG:
