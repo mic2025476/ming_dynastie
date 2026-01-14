@@ -51,10 +51,10 @@ def impressum(request):
     context = build_site_context()
     context["site_nav"] = context["hero"]["nav_links"]
     context["site_logo"] = context["hero"]["logo"]
-    return render(request, "ming/legal/impressum.html", context)
+    return render(request, "legal/impressum.html", context)
 
 def datenschutz(request):
     context = build_site_context()
     context["site_nav"] = context["hero"]["nav_links"]
     context["site_logo"] = context["hero"]["logo"]
-    return render(request, "ming/legal/datenschutz.html", context)
+    return render(request, "legal/datenschutz.html", context)
