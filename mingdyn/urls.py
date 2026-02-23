@@ -4,7 +4,6 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path("ming/", include("mingsite.urls")),
     path('admin/', admin.site.urls),
     path("", include(("mingsite.urls", "mingsite"), namespace="mingsite")),
     path('locations/', include('locations.urls')),
