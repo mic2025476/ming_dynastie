@@ -1,11 +1,13 @@
 from django.shortcuts import render
 
+from core_settings.models import SiteSettings
+from reservations.models import TimeSlotModel
+
 
 def index(request):
     context = {
         "hero": {
             "headline": "Ming Dynastie",
-            "subheadline": "Chinesisches Restaurant in Berlin & Hamburg",
             "description": (
                 "Feinste authentische Spezialitäten aus Fernostasien nur in der Ming Dynastie! "
                 "Erleben Sie Asien ein Stückchen näher und lassen Sie sich zwischen schwingenden "
@@ -58,6 +60,8 @@ def index(request):
                 {"label": "TAKEAWAY / DELIVERY", "href": "#delivery"},
                 {"label": "GALERIE", "href": "#galerie"},
                 {"label": "KONTAKT", "href": "#kontakt"},
+                {"label": "MEINE RESERVIERUNGEN", "href": "#my-reservations"},
+
             ],
             "contact_links": [
                 {
@@ -88,7 +92,7 @@ def index(request):
                     "chinesischen Botschaft! Unsere vielseitige Speisekarte garantiert ein "
                     "Geschmackserlebnis, das Ihre Sinne für immer prägen wird."
                 ),
-                "menu_label": "Zu den Speisekarten",
+                "menu_label": "Speisekarten",
                 "menu_href": "#speisekarte",
             },
             {
@@ -102,7 +106,7 @@ def index(request):
                     "im Wahrzeichen West-Berlins. Unsere ausgefallene Karte bietet jedem "
                     "Feinschmecker genau die richtige Auswahl an Speisen."
                 ),
-                "menu_label": "Zu den Speisekarten",
+                "menu_label": "Speisekarten",
                 "menu_href": "#speisekarte",
             },
         ],
@@ -262,4 +266,13 @@ def index(request):
     }
     context["site_nav"] = context["hero"]["nav_links"]
     context["site_logo"] = context["hero"]["logo"]
+    settings = SiteSettings.objects.first()
+    days_required = settings.booking_days_in_advance if settings else 3
+
+    slots = TimeSlotModel.objects.filter(is_active=True).order_by("sort_order", "start_time")
+    context["slots"] = slots
+    context["booking_days_in_advance"] = days_required
+    context["opening_time"] = settings.opening_time.strftime("%H:%M") if settings else "12:00"
+    context["closing_time"] = settings.closing_time.strftime("%H:%M") if settings else "22:00"
+    print(context["opening_time"], context["closing_time"])
     return render(request, "mingsite/index.html", context)

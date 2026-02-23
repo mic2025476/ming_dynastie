@@ -1,0 +1,30 @@
+{% load static %}
+<footer class="ming-footer">
+  <div class="ming-footer__top">
+    <div class="container ming-footer__top-inner">
+
+
+      <div class="ming-footer__logo">
+        <img src="{% static site_logo %}" alt="Ming Dynastie Logo">
+      </div>
+
+      <div class="ming-footer__rule"></div>
+
+      <div class="ming-footer__bottom">
+        <div class="ming-footer__left">
+          <div class="ming-footer__copyright">
+            &copy; {% now "Y" %} {{ footer.company }}
+          </div>
+
+          <div class="ming-footer__links">
+            {% for link in footer.links %}
+              <a href="{{ link.href }}">{{ link.label }}</a>
+            {% endfor %}
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</footer>

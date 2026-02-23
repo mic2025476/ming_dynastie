@@ -25,48 +25,7 @@
 
     <div class="hero__overlay hero__overlay--gradient"></div>
 
-<div class="hero__nav-wrapper" id="siteHeader">
-  <div class="hero__nav container">
-
-    <a class="hero__brand" href="#start" aria-label="Start">
-      {% static hero.logo as nav_logo %}
-      <img src="{{ nav_logo }}" alt="Ming Dynastie Logo">
-    </a>
-
-<nav class="hero__menu" aria-label="Hauptnavigation">
-  {% for item in hero.nav_links %}
-    <a class="hero__menu-link" href="{{ item.href }}"><span>{{ item.label }}</span></a>
-  {% endfor %}
-</nav>
-
-<!-- Mobile hamburger -->
-<button class="nav-toggle" id="navToggle"
-        type="button"
-        aria-label="Open menu"
-        aria-controls="mobileDrawer"
-        aria-expanded="false">
-  <span class="nav-toggle__icon" aria-hidden="true"></span>
-</button>
-
-<!-- Mobile drawer -->
-<div class="mobile-drawer" id="mobileDrawer" aria-hidden="true">
-  <div class="mobile-drawer__backdrop" data-drawer-close></div>
-
-  <div class="mobile-drawer__panel" role="dialog" aria-modal="true" aria-label="Menu">
-    <button class="mobile-drawer__close" type="button" aria-label="Close menu" data-drawer-close>✕</button>
-
-    <nav class="mobile-drawer__nav" aria-label="Mobile navigation">
-      {% for item in hero.nav_links %}
-        <a class="mobile-drawer__link" href="{{ item.href }}">{{ item.label }}</a>
-      {% endfor %}
-    </nav>
-  </div>
-</div>
-
-
-  </div>
-</div>
-
+{% include "mingsite/partials/site_header.html" with header_scrolled=False %}
 
 
     <div class="hero__content container">
@@ -335,7 +294,17 @@
             Reservierungen ab sieben Personen können per E-Mail angefragt werden.
           </p>
 
+        <div class="kontakt-card__actions">
           <a class="kontakt-card__btn" href="mailto:info@ming-dynastie.de">E-MAIL SCHREIBEN</a>
+
+          <button
+            class="kontakt-card__btn kontakt-card__btn--outline"
+            type="button"
+            data-open-jannowitz-resv>
+            RESERVIEREN
+          </button>
+        </div>
+
         </div>
       </article>
 
@@ -375,39 +344,167 @@
   </div>
 </section>
 
+<section class="section section--contact" id="my-reservations">
+  <div class="container">
+    <header class="section__header section__header--center">
+      <h2 class="section__title section__title--kontakt">Meine Reservierungen</h2>
+    </header>
+
+    <article class="kontakt-card" style="max-width: 980px; margin: 0 auto;">
+      <div class="kontakt-card__body">
+        <div id="myResvInline">
+          <!-- JS will inject content here -->
+          <div style="padding: 14px 0; color: rgba(0,0,0,.55);">
+            Lade…
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- =========================
+     JANNOWITZ RESERVATION MODAL
+========================= -->
+<div class="resv-modal" id="jannowitzResvModal" aria-hidden="true">
+  <div class="resv-modal__backdrop" data-resv-close></div>
+
+  <div class="resv-modal__panel" role="dialog" aria-modal="true" aria-label="Reservierung Jannowitzbrücke">
+    <button class="resv-modal__close" type="button" aria-label="Schließen" data-resv-close>✕</button>
+
+    <div id="jannowitzModalBody">
+    <h3 class="resv-modal__title">Reservierung – Jannowitzbrücke</h3>
+    <p class="resv-modal__subtitle">Brückenstraße 6 · 10179 Berlin</p>
+
+    <form id="jannowitz-form" method="post" action="{% url 'reservations:create' %}">
+      {% csrf_token %}
+
+      <div class="form-grid">
+        <label class="form-field">
+          <span>Name</span>
+          <input name="name" required autocomplete="name">
+        </label>
+
+        <label class="form-field">
+          <span>E-Mail</span>
+          <input name="email" type="email" required autocomplete="email">
+        </label>
+
+        <label class="form-field">
+          <span>Telefon</span>
+          <input name="phone" required autocomplete="tel">
+        </label>
+
+        <label class="form-field">
+          <span>Datum</span>
+          <input id="jannowitz-date" name="date" type="text" placeholder="dd.mm.yyyy" required />
+        </label>
+
+
+        <!-- Hover Tooltip -->
+<div id="shortTermHint" style="
+  position: fixed;
+  display: none;
+  z-index: 999999;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  max-width: 92vw;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(20,20,20,0.95);
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.35;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+"></div>
+
+
+        <label class="form-field">
+          <span>Anzahl Personen</span>
+          <input name="party_size" id="jannowitz-party" type="number" min="1" max="100" required>
+        </label>
+        
+        <label class="form-field">
+          <span>Uhrzeit</span>
+
+          <select name="time" id="id_time" required>
+            <option value="">Bitte Uhrzeit wählen</option>
+          </select>
+
+        </label>
+
+
+        <label class="form-field form-grid__wide">
+          <span>Nachricht an das Restaurant</span>
+          <textarea name="message" rows="3" placeholder="Optional …"></textarea>
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button class="kontakt-card__btn" id="jannowitz-submit" type="submit">
+          <span class="btn-text">TISCH RESERVIEREN</span>
+          <span class="btn-loader" style="display:none;">Sende…</span>
+        </button>
+      </div>
+
+      <div id="jannowitz-status"></div>
+    </form>
+  </div>
+  </div>
+</div>
+
+<!-- ===== Call Restaurant Popup ===== -->
+<div class="resv-popup" id="resvCallPopup" aria-hidden="true">
+  <div class="resv-popup__backdrop" data-call-close></div>
+
+  <div class="resv-popup__panel" role="dialog" aria-modal="true" aria-label="Bitte anrufen">
+  <h3 class="resv-popup__title" id="resvPopupTitle">
+    <!-- dynamic -->
+  </h3>
+
+  <p class="resv-popup__text" id="resvPopupText">
+    <!-- dynamic -->
+  </p>
+
+
+    <div class="resv-popup__actions">
+      <!-- Call Button -->
+      <a 
+        href="tel:+493030875680"
+        class="kontakt-card__btn"
+      >
+        📞 030 - 308 756 80
+      </a>
+
+      <!-- Close Button -->
+      <button 
+        class="kontakt-card__btn kontakt-card__btn--outline" 
+        type="button" 
+        data-call-close
+      >
+        OK
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===== My Reservations Modal ===== -->
+<div class="resv-modal" id="myResvModal" aria-hidden="true">
+  <div class="resv-modal__backdrop" data-myresv-close></div>
+
+  <div class="resv-modal__panel" role="dialog" aria-modal="true" aria-label="Meine Reservierungen">
+    <button class="resv-modal__close" type="button" aria-label="Close" data-myresv-close>✕</button>
+    <div id="myResvModalBody"></div>
+  </div>
+</div>
+
+
 {% endblock %}
 
 {% block footer %}
-<footer class="ming-footer">
-  <div class="ming-footer__top">
-    <div class="container ming-footer__top-inner">
-
-
-      <div class="ming-footer__logo">
-        {% static site_logo as footer_logo %}
-        <img src="{{ footer_logo }}" alt="Ming Dynastie Logo">
-      </div>
-
-      <div class="ming-footer__rule"></div>
-
-      <div class="ming-footer__bottom">
-        <div class="ming-footer__left">
-          <div class="ming-footer__copyright">
-            &copy; {% now "Y" %} {{ footer.company }}
-          </div>
-
-          <div class="ming-footer__links">
-            {% for link in footer.links %}
-              <a href="{{ link.href }}">{{ link.label }}</a>
-            {% endfor %}
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-  </div>
-</footer>
+{% include "mingsite/partials/site_footer.html" %}
 {% endblock %}
 
 
@@ -1295,6 +1392,18 @@ section{
   letter-spacing: .06em;
 }
 
+.kontakt-card__actions{
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.kontakt-card__btn--outline{
+  background: transparent !important;
+  color: #8d1a1f !important;
+  border: 2px solid rgba(141,26,31,.55) !important;
+}
+
 /* responsive */
 @media (max-width: 980px){
   .kontakt-grid{ grid-template-columns: 1fr; gap: 22px; }
@@ -1712,11 +1821,971 @@ html{
   margin: 0;            /* ❌ remove outer gaps */
 }
 
+/* ===== Reservation Modal (Jannowitz) ===== */
+.resv-modal{
+  position: fixed;
+  inset: 0;
+  z-index: 22000; /* above header/social */
+  display: none;
+}
+.resv-modal.is-open{ display:block; }
+
+.resv-modal__backdrop{
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+}
+
+.resv-modal__panel{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(760px, 92vw);
+  background: rgba(255,255,255,.95);
+  box-shadow: 0 30px 80px rgba(0,0,0,.40);
+  border-radius: 18px;
+  padding: 18px;
+}
+
+.resv-modal__close{
+  margin-left: auto;
+  display: block;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 12px;
+  background: rgba(0,0,0,.06);
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.resv-modal__title{
+  margin: 10px 0 4px;
+  font-size: 24px;
+  font-weight: 800;
+  color: #111;
+}
+.resv-modal__subtitle{
+  margin: 0 0 14px;
+  color: rgba(0,0,0,.65);
+  font-size: 14px;
+}
+
+.resv-popup{
+  position: fixed;
+  inset: 0;
+  z-index: 23000;
+  display: none;
+}
+.resv-popup.is-open{ display:block; }
+
+.resv-popup__backdrop{
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+}
+
+.resv-popup__panel{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(520px, 92vw);
+  background: rgba(255,255,255,.96);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 30px 80px rgba(0,0,0,.40);
+}
+
+.resv-popup__title{
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 900;
+  color:#111;
+}
+.resv-popup__text{
+  margin: 0 0 14px;
+  color: rgba(0,0,0,.72);
+}
+.resv-popup__actions{
+  display:flex;
+  justify-content:flex-end;
+}
+
+.form-field select{
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,.15);
+  padding: 10px 12px;
+  font-size: 14px;
+  outline: none;
+  background: rgba(255,255,255,.95);
+}
+
+select option:disabled{
+  color: rgba(0,0,0,.45);
+}
+
+    .resv-table{
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;        /* ✅ key */
+    }
+
+    .resv-table th,
+    .resv-table td{
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(0,0,0,.06);
+    vertical-align: middle;
+    text-align: left;
+    white-space: nowrap;        /* keeps columns aligned */
+    overflow: hidden;
+    text-overflow: ellipsis;    /* long values don't break layout */
+    }
+
+    .resv-table thead th{
+    font-weight: 800;
+    color: rgba(0,0,0,.65);
+    background: rgba(255,255,255,.70);
+    }
+
+    .resv-table tbody tr:last-child td{
+    border-bottom: 0;
+    }
+
+.resv-table td:nth-child(5){
+  font-variant-numeric: tabular-nums;
+}
+
+.resv-popup__actions {
+  display: flex;
+  gap: 12px;        /* space between buttons */
+  align-items: center;
+}
+
+/* allow events on our special disabled days */
+.flatpickr-day.short-term-call {
+  pointer-events: auto !important;
+}
+
+/* keep the "disabled" look and show it's not selectable */
+.flatpickr-day.short-term-call.flatpickr-disabled {
+  cursor: not-allowed;
+}
 
 
   </style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-  <script>
+<script>
+function computeMinReservableDate(closingHHMM) {
+  const now = new Date();
+
+  const today = new Date(now);
+  today.setHours(0, 0, 0, 0);
+
+  const [ch, cm] = (closingHHMM || "22:00").split(":").map(Number);
+  const closingToday = new Date(now);
+  closingToday.setHours(ch || 0, cm || 0, 0, 0);
+
+  // after closing -> earliest is tomorrow
+  if (now > closingToday) {
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    return tomorrow;
+  }
+
+  return today;
+}
+
+function formatDate(d) {
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const dd = String(d.getDate()).padStart(2,'0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+function getShortTermDisabledDays(daysInAdvance) {
+  const result = [];
+
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  for (let i = 0; i < daysInAdvance; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() + i);
+    result.push(formatDate(d));
+  }
+
+  return result;
+}
+window.OPENING_TIME = "{{ opening_time|default:'12:00' }}";   // "HH:MM"
+window.CLOSING_TIME = "{{ closing_time|default:'22:00' }}";   // "HH:MM"
+document.addEventListener("DOMContentLoaded", () => {
+  const select = document.getElementById("id_time");
+
+  const startHour = parseInt(window.OPENING_TIME.split(":")[0]); // opening time
+  const endHour   = parseInt(window.CLOSING_TIME.split(":")[0]); // closing time
+  for (let hour = startHour; hour <= endHour; hour++) {
+
+    for (let min = 0; min < 60; min += 15) {
+
+      // skip 22:15, 22:30 etc if restaurant closes at 22:00
+      if (hour === endHour && min > 0) break;
+
+      const hh = String(hour).padStart(2, "0");
+      const mm = String(min).padStart(2, "0");
+
+      const time = `${hh}:${mm}`;
+
+      const option = document.createElement("option");
+      option.value = time;
+      option.textContent = time;
+
+      select.appendChild(option);
+
+    }
+  }
+  const input = document.getElementById("jannowitz-date");
+  const hint = document.getElementById("shortTermHint");
+  if (!input || !hint || !window.flatpickr) return;
+
+
+  const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  function ymd(d) {
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
+const shortTermDisabledDates = getShortTermDisabledDays(window.daysInAdvance);
+
+  let hideTimer = null;
+  function showHint() {
+    clearTimeout(hideTimer);
+    // on mobile, auto-hide after a moment
+    hideTimer = setTimeout(() => (hint.style.display = "none"), 2800);
+  }
+  function hideHintNow() {
+    clearTimeout(hideTimer);
+    hint.style.display = "none";
+  }
+
+const minDateObj = computeMinReservableDate(window.CLOSING_TIME || "22:00");
+
+const shortTermKeys = new Set(shortTermDisabledDates);
+
+flatpickr(input, {
+  dateFormat: "Y-m-d",
+  altInput: true,
+  altFormat: "d.m.Y",
+
+  // ✅ blocks all past dates (and blocks today if now > closing time)
+  minDate: minDateObj,
+
+  // ✅ keep your short-term disabled logic
+  disable: [
+    // safety: also disable anything before minDate (even if minDate changes)
+    function(date) {
+      const d = new Date(date);
+      d.setHours(0,0,0,0);
+      return d < minDateObj;
+    },
+
+    ...shortTermDisabledDates,
+  ],
+
+  onDayCreate: function (_dObj, _dStr, _fp, dayElem) {
+    const key = ymd(dayElem.dateObj);
+
+    // ✅ IMPORTANT: only attach tooltip to short-term disabled dates
+    if (!shortTermKeys.has(key)) return;
+
+    dayElem.classList.add("short-term-call");
+    dayElem.setAttribute("title", "Kurzfristig? Bitte telefonisch reservieren. 030 - 308 756 80");
+
+    if (canHover) {
+      dayElem.addEventListener("mouseenter", showHint);
+      dayElem.addEventListener("mouseleave", hideHintNow);
+    } else {
+      const tapHandler = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        showHint();
+      };
+      dayElem.addEventListener("touchstart", tapHandler, { passive: false });
+      dayElem.addEventListener("click", tapHandler);
+    }
+  },
+
+  onClose: hideHintNow,
+  onChange: hideHintNow,
+  onOpen: hideHintNow
+});
+
+
+  // hide when user taps elsewhere on mobile
+  document.addEventListener("touchstart", (e) => {
+    if (!hint.contains(e.target)) hideHintNow();
+  }, { passive: true });
+});
+
+(function () {
+  const mount = document.getElementById("myResvInline");
+  if (!mount) return;
+
+function applyRidFilter() {
+  const rid = new URLSearchParams(window.location.search).get("rid");
+  if (!rid) return;
+
+  const rows = mount.querySelectorAll("[data-reservation-id]");
+  if (!rows.length) return;
+
+  let found = false;
+
+  rows.forEach((row) => {
+    if (row.getAttribute("data-reservation-id") === String(rid)) {
+      row.style.display = "";
+      found = true;
+    } else {
+      row.style.display = "none";
+    }
+  });
+
+  if (!found) return;
+
+  const row = mount.querySelector(`[data-reservation-id="${rid}"]`);
+  if (!row) return;
+
+  // ✅ only scroll + highlight (NO edit auto-open)
+  row.scrollIntoView({ behavior: "smooth", block: "center" });
+  row.classList.add("resv-highlight");
+  setTimeout(() => row.classList.remove("resv-highlight"), 5000);
+}
+
+  function setInlineHTML(html){
+    mount.innerHTML = html;
+    bindInlineHandlers();
+     applyRidFilter();
+    // ✅ IMPORTANT: if edit form is now visible, re-init widgets
+    const editForm = mount.querySelector("#resvEditForm");
+    if (editForm) {
+      const opening = editForm.getAttribute("data-opening-time");
+      const closing = editForm.getAttribute("data-closing-time");
+      initEditReservationModal(mount, opening, closing);
+    }
+  }
+
+  async function loadStartOrMy(){
+    console.log('loadStartOrMy called');
+    const res = await fetch("/reservations/start-modal/", {
+      headers: {"X-Requested-With": "XMLHttpRequest"}
+    });
+    const data = await res.json();
+    setInlineHTML(data.html);
+  }
+
+async function loadMy(){
+  await showMyList();
+}
+
+
+  function setButtonLoading(btn, loading){
+    if (!btn) return;
+    btn.disabled = loading;
+
+    if (loading){
+      btn.dataset.originalText = btn.textContent;
+      btn.textContent = "loading...";
+      btn.classList.add("is-loading");
+    } else {
+      btn.textContent = btn.dataset.originalText || btn.textContent;
+      btn.classList.remove("is-loading");
+    }
+  }
+
+async function showMyList(){
+  const res = await fetch("/reservations/my-modal/", {
+    headers: {"X-Requested-With":"XMLHttpRequest"}
+  });
+  const data = await res.json();
+  console.log('datadata',data);
+  setInlineHTML(data.html);   // ✅ important
+}
+
+
+function initEditReservationModal(modalRoot, opening, closing) {
+  // ---- pick correct elements (EDIT!) ----
+  const dateInput = modalRoot.querySelector("#edit-date");     // ✅ FIX (was jannowitz-date)
+  const timeSelect = modalRoot.querySelector("#edit-time");
+  const currentTime = (modalRoot.querySelector("#edit-time-current")?.value || "").trim();
+
+  // fallback opening/closing (because AJAX often returns only html)
+  opening = (opening || window.OPENING_TIME || "12:00").trim();
+  closing = (closing || window.CLOSING_TIME || "22:00").trim();
+
+  // ---------- helpers ----------
+  const toMinutes = (hhmm) => {
+    const [h, m] = (hhmm || "0:0").split(":").map(Number);
+    return (h * 60) + (m || 0);
+  };
+  const toHHMM = (mins) => {
+    const h = String(Math.floor(mins / 60)).padStart(2, "0");
+    const m = String(mins % 60).padStart(2, "0");
+    return `${h}:${m}`;
+  };
+  const ymd = (d) => {
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+  };
+
+  // ✅ same rule you use in create form
+  const minDateObj = computeMinReservableDate(closing);
+
+  // short-term disabled days: reuse your existing generator
+  // NOTE: daysInAdvance should exist globally in your page already
+  const daysInAdvance = window.daysInAdvance || 3;
+  const shortTermDisabledDates = getShortTermDisabledDays(daysInAdvance);
+  const shortTermKeys = new Set(shortTermDisabledDates);
+
+  // Create a hint element (like create form) if not present
+  let hint = modalRoot.querySelector("#shortTermHintEdit");
+  if (!hint) {
+    hint = document.createElement("div");
+    hint.id = "shortTermHintEdit";
+    hint.style.cssText = `
+      position: fixed;
+      display: none;
+      z-index: 999999;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      max-width: 92vw;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(20,20,20,0.95);
+      color: #fff;
+      font-size: 14px;
+      line-height: 1.35;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    `;
+    hint.textContent = "Kurzfristig reservieren? Bitte telefonisch: 030 - 308 756 80";
+    modalRoot.appendChild(hint);
+  }
+
+  const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  let hideTimer = null;
+  function showHint() {
+    hint.style.display = "block";
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(() => (hint.style.display = "none"), 2800);
+  }
+  function hideHintNow() {
+    clearTimeout(hideTimer);
+    hint.style.display = "none";
+  }
+
+  // ---------- init flatpickr for EDIT ----------
+  if (dateInput && window.flatpickr) {
+    flatpickr(dateInput, {
+      dateFormat: "Y-m-d",
+      altInput: true,
+      altFormat: "d.m.Y",
+
+      // keep existing selected value
+      defaultDate: dateInput.value || null,
+
+      // ✅ blocks past dates (and blocks today if now > closing)
+      minDate: minDateObj,
+
+      disable: [
+        // safety: block anything before minDate
+        function(date) {
+          const d = new Date(date);
+          d.setHours(0,0,0,0);
+          return d < minDateObj;
+        },
+        ...shortTermDisabledDates,
+      ],
+
+      onDayCreate: function (_dObj, _dStr, _fp, dayElem) {
+        const key = ymd(dayElem.dateObj);
+        if (!shortTermKeys.has(key)) return;
+
+        // allow pointer events to show hint (even if disabled)
+        dayElem.classList.add("short-term-call");
+        dayElem.setAttribute("title", "Kurzfristig? Bitte telefonisch reservieren. 030 - 308 756 80");
+
+        if (canHover) {
+          dayElem.addEventListener("mouseenter", showHint);
+          dayElem.addEventListener("mouseleave", hideHintNow);
+        } else {
+          const tapHandler = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            showHint();
+          };
+          dayElem.addEventListener("touchstart", tapHandler, { passive: false });
+          dayElem.addEventListener("click", tapHandler);
+        }
+      },
+
+      onClose: hideHintNow,
+      onChange: hideHintNow,
+      onOpen: hideHintNow,
+    });
+  }
+
+  // ---------- build 15-min times for EDIT ----------
+  if (timeSelect) {
+    const start = toMinutes(opening);
+    const end = toMinutes(closing);
+
+    timeSelect.innerHTML = `<option value="">Bitte Uhrzeit wählen</option>`;
+
+    for (let t = start; t <= end; t += 15) {
+      const v = toHHMM(t);
+      const opt = document.createElement("option");
+      opt.value = v;
+      opt.textContent = v;
+      if (currentTime && v === currentTime) opt.selected = true;
+      timeSelect.appendChild(opt);
+    }
+
+    // edge-case: keep current time if outside range
+    if (currentTime && !Array.from(timeSelect.options).some(o => o.value === currentTime)) {
+      const opt = document.createElement("option");
+      opt.value = currentTime;
+      opt.textContent = currentTime + " (aktuell)";
+      opt.selected = true;
+      timeSelect.appendChild(opt);
+    }
+  }
+
+  console.log("✅ Edit init OK:", { opening, closing, currentTime });
+}
+
+async function showEditForm(id){
+  const res = await fetch(`/reservations/edit/${id}/`, {
+    headers: {"X-Requested-With":"XMLHttpRequest"}
+  });
+  const data = await res.json();
+
+  // render edit HTML
+  mount.innerHTML = data.html;
+
+  // ✅ init using global opening/closing (works even if backend doesn't send them)
+  initEditReservationModal(mount, window.OPENING_TIME, window.CLOSING_TIME);
+if (!data.ok) {
+  // optional: scroll to the error
+  const err = mount.querySelector(".form-error");
+  if (err) err.scrollIntoView({ behavior:"smooth", block:"center" });
+}
+}
+
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(";").shift();
+  return "";
+}
+
+async function postUpdate(url, formEl){
+  const res = await fetch(url, {
+    method: "POST",
+    body: new FormData(formEl),
+    headers: {"X-Requested-With":"XMLHttpRequest"}
+  });
+  const data = await res.json();
+  return { ok: res.ok && data.ok, data, status: res.status };
+}
+
+function bindInlineHandlers() {
+  // 1) Bind the AUTH form submit (only if the form exists in the current HTML)
+  const authForm = document.getElementById("resvAuthForm");
+  if (authForm && !authForm.dataset.bound) {
+    authForm.dataset.bound = "1";
+
+authForm.addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+
+  const emailInput = authForm.querySelector('input[name="email"]');
+  const btn = authForm.querySelector('button[type="submit"]');
+  const msg = document.getElementById("resvAuthMsg");
+
+  const payload = { email: (emailInput?.value || "").trim() };
+
+  // basic UI validation
+  if (!payload.email) {
+    if (msg) msg.innerHTML = `<div class="resv-inline-notice resv-inline-notice--err">Bitte E-Mail eingeben.</div>`;
+    return;
+  }
+
+  // ✅ show loader immediately
+  setButtonLoading(btn, true);
+  if (emailInput) emailInput.disabled = true;
+  if (msg) msg.innerHTML = "";
+
+  try {
+    const res = await fetch("/reservations/send-link/", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+        "X-CSRFToken": getCookie("csrftoken"),
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (data.html) {
+      setInlineHTML(data.html);
+    } else if (data.redirect) {
+      window.location.href = data.redirect;
+    } else if (!res.ok) {
+      if (msg) msg.innerHTML = `<div class="resv-inline-notice resv-inline-notice--err">Konnte Link nicht senden. Bitte prüfen Sie die E-Mail.</div>`;
+      console.error("Auth failed:", res.status, data);
+    }
+  } catch (err) {
+    console.error("Auth request error:", err);
+    if (msg) msg.innerHTML = `<div class="resv-inline-notice resv-inline-notice--err">Netzwerkfehler. Bitte erneut versuchen.</div>`;
+  } finally {
+    // ✅ hide loader when request finishes (success or error)
+    setButtonLoading(btn, false);
+    if (emailInput) emailInput.disabled = false;
+  }
+});
+
+  }
+
+  // 2) Bind CLICK + SUBMIT handlers ONCE on the mount (event delegation)
+  if (!mount.dataset.inlineDelegationBound) {
+    mount.dataset.inlineDelegationBound = "1";
+
+    // CLICK delegation
+    mount.addEventListener("click", (e) => {
+      const editBtn = e.target.closest("[data-edit-resv]");
+      if (editBtn) {
+        const id = editBtn.getAttribute("data-edit-resv");
+        if (id) showEditForm(id);
+        return;
+      }
+
+      const backBtn = e.target.closest("[data-back-to-list]");
+      if (backBtn) {
+        showMyList();
+        return;
+      }
+    });
+
+mount.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-edit-disabled]");
+  if (!btn) return;
+
+  e.preventDefault();
+
+  const tip = btn.querySelector(".resv-tooltip");
+  if (!tip) return;
+
+  tip.style.opacity = "1";
+  tip.style.visibility = "visible";
+
+  clearTimeout(btn._tipTimer);
+  btn._tipTimer = setTimeout(() => {
+    tip.style.opacity = "";
+    tip.style.visibility = "";
+  }, 2200);
+});
+
+
+    // SUBMIT delegation (edit form)
+    mount.addEventListener("submit", async (e) => {
+      const editForm = e.target.closest("#resvEditForm");
+      if (!editForm) return;
+
+      e.preventDefault();
+
+      const updateUrl = editForm.getAttribute("data-update-url");
+      if (!updateUrl) {
+        console.error("Missing data-update-url on #resvEditForm");
+        return;
+      }
+
+      const btn = editForm.querySelector('button[type="submit"]');
+      const msg = mount.querySelector("#resvEditMsg");
+
+      if (msg) msg.innerHTML = "";
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = "Speichern…";
+      }
+
+      try {
+        const res = await fetch(updateUrl, {
+          method: "POST",
+          credentials: "same-origin",
+          headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          body: new FormData(editForm),
+        });
+
+        // Backend returns JSON (even on 400)
+        const data = await res.json().catch(() => ({}));
+
+        // ✅ If server sends HTML (form again, or "not allowed" screen), show it ALWAYS
+        if (data && data.html) {
+          setInlineHTML(data.html);
+          return;
+        }
+
+        // Otherwise fallback message
+        if (!res.ok) {
+          if (msg) {
+            msg.innerHTML = `<div class="resv-inline-notice resv-inline-notice--err">
+              Fehler beim Speichern (Status ${res.status}).
+            </div>`;
+          }
+          console.error("Update failed:", res.status, data);
+          return;
+        }
+
+        // If ok but no html, just reload list
+        await showMyList();
+      } catch (err) {
+        console.error("Update request error:", err);
+        if (msg) {
+          msg.innerHTML = `<div class="resv-inline-notice resv-inline-notice--err">
+            Netzwerkfehler. Bitte erneut versuchen.
+          </div>`;
+        }
+      } finally {
+        const stillForm = mount.querySelector("#resvEditForm");
+        if (stillForm) {
+          const b = stillForm.querySelector('button[type="submit"]');
+          if (b) {
+            b.disabled = false;
+            b.textContent = "Änderungen speichern";
+          }
+        }
+      }
+    });
+  }
+}
+
+  // Styles for loader + notices (insert once)
+  const style = document.createElement("style");
+  style.textContent = `
+    .kontakt-card__btn.is-loading{
+      position: relative;
+      padding-right: 44px;
+      opacity: .92;
+      cursor: wait;
+    }
+    .kontakt-card__btn.is-loading::after{
+      content: "";
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      width: 16px;
+      height: 16px;
+      margin-top: -8px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,.55);
+      border-top-color: rgba(255,255,255,1);
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .resv-inline-notice{
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+    .resv-inline-notice--err{
+      background: rgba(211,47,47,.10);
+      border: 1px solid rgba(211,47,47,.25);
+      color: #b71c1c;
+    }
+  `;
+  document.head.appendChild(style);
+
+const ridParam = new URLSearchParams(window.location.search).get("rid");
+
+if (location.hash === "#my-reservations" || ridParam){
+  loadMy();
+} else {
+  loadStartOrMy();
+}
+
+  // When clicking nav to #my-reservations, load content if not loaded yet
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest('a[href="#my-reservations"]');
+    if (!a) return;
+
+    // Delay a bit so scroll happens first
+    setTimeout(() => {
+      // If cookie exists, show list; else show email form
+      loadStartOrMy();
+    }, 100);
+  });
+})();
+
+function durationMinutesForParty(p){
+  const n = parseInt(p, 10);
+  if (!n || n < 1) return null;
+  if (n <= 2) return 90;
+  if (n <= 4) return 105;
+  if (n <= 6) return 120;
+  return 150;
+}
+
+function timeToMinutes(hhmm){
+  const [h,m] = hhmm.split(":").map(Number);
+  return h*60 + m;
+}
+
+function minutesToTime(min){
+  const h = String(Math.floor(min/60)).padStart(2,"0");
+  const m = String(min%60).padStart(2,"0");
+  return `${h}:${m}`;
+}
+
+function overlaps(aStart, aEnd, bStart, bEnd){
+  return aStart < bEnd && aEnd > bStart; // [start,end)
+}
+
+async function loadAvailableTimes(){
+  const dateInput = document.getElementById("jannowitz-date");
+  const partyInput = document.getElementById("jannowitz-party");
+  const timeSelect = document.getElementById("jannowitz-time");
+  if (!dateInput || !partyInput || !timeSelect) return;
+
+  const dateVal = dateInput.value;
+  const duration = durationMinutesForParty(partyInput.value);
+
+  if (!dateVal || !duration){
+    timeSelect.innerHTML = `<option value="">Bitte Datum + Personen wählen</option>`;
+    return;
+  }
+
+  // fetch existing occupied intervals
+  const res = await fetch(`/reservations/availability/?date=${encodeURIComponent(dateVal)}`, {
+    headers: { "X-Requested-With": "XMLHttpRequest" }
+  });
+  const data = await res.json();
+  const intervals = (data.ok ? data.intervals : []).map(x => ({
+    start: timeToMinutes(x.start),
+    end: timeToMinutes(x.end)
+  }));
+
+  // Business hours
+  const OPEN = timeToMinutes("12:00");
+  const CLOSE = timeToMinutes("22:00");
+  const STEP = 30;
+
+  let options = `<option value="">Uhrzeit wählen</option>`;
+  let anyAvailable = false;
+
+  for (let t = OPEN; t <= CLOSE; t += STEP){
+    const start = t;
+    const end = t + duration;
+
+    // blocked if overlaps any existing interval
+    let blocked = false;
+
+    const hhmm = minutesToTime(t);
+
+    if (blocked){
+      options += `<option value="" disabled>${hhmm} (belegt)</option>`;
+    } else {
+      anyAvailable = true;
+      options += `<option value="${hhmm}">${hhmm}</option>`;
+    }
+  }
+
+  if (!anyAvailable){
+    timeSelect.innerHTML = `<option value="">Keine Zeiten verfügbar – bitte anrufen</option>`;
+    return;
+  }
+
+  timeSelect.innerHTML = options;
+}
+
+// Recompute times when date or party size changes
+document.getElementById("jannowitz-date")?.addEventListener("change", loadAvailableTimes);
+document.querySelector('input[name="party_size"]')?.addEventListener("input", () => {
+  // wait for user to finish typing a bit
+  clearTimeout(window.__partyTimer);
+  window.__partyTimer = setTimeout(loadAvailableTimes, 250);
+});
+
+// Also recompute when modal opens (call this at end of openModal())
+
+(function () {
+  const daysInAdvance = {{ booking_days_in_advance|default:"3" }};
+  window.daysInAdvance = daysInAdvance; // expose to global for debugging
+  const modal = document.getElementById("jannowitzResvModal");
+  if (!modal) return;
+
+  function openModal(){
+    console.log('sdvsdvsvsdvsd');
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+    document.documentElement.style.overflow = "hidden";
+
+    // set date min/max for "only 3 days in advance" (frontend only)
+    const dateInput = document.getElementById("jannowitz-date");
+    console.log('booking_days_in_advance', daysInAdvance);
+    if (dateInput){
+      const today = new Date();
+      const max = new Date();
+      max.setDate(today.getDate() + daysInAdvance);
+
+      dateInput.min = toISO(max);
+    }
+    loadAvailableTimes();
+  }
+
+  function closeModal(){
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+    document.documentElement.style.overflow = "";
+  }
+
+  function toISO(d){
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth()+1).padStart(2,"0");
+    const dd = String(d.getDate()).padStart(2,"0");
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
+  document.querySelectorAll("[data-open-jannowitz-resv]").forEach(btn => {
+    btn.addEventListener("click", openModal);
+  });
+
+  modal.addEventListener("click", (e) => {
+    if (e.target.matches("[data-resv-close]")) closeModal();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modal.classList.contains("is-open")) closeModal();
+  });
+})();
+
   document.addEventListener("click", e => {
     const iframe = document.querySelector(".menu-frame");
     if (!iframe) return;
@@ -1886,6 +2955,26 @@ html{
 
   links.forEach(a => a.addEventListener("click", () => setActive(a.getAttribute("href"))));
 })();
+const callPopup = document.getElementById("resvCallPopup");
+
+function openCallPopup(){
+  if (!callPopup) return;
+  callPopup.classList.add("is-open");
+  callPopup.setAttribute("aria-hidden", "false");
+}
+
+function closeCallPopup(){
+  if (!callPopup) return;
+  callPopup.classList.remove("is-open");
+  callPopup.setAttribute("aria-hidden", "true");
+}
+
+if (callPopup){
+  callPopup.addEventListener("click", (e) => {
+    if (e.target.matches("[data-call-close]")) closeCallPopup();
+  });
+}
+
 (function () {
   const form = document.getElementById("jannowitz-form");
   if (!form) return;
@@ -1914,6 +3003,7 @@ html{
     setLoading(true);
 
     try {
+      console.log('form.action',form.action);
       const res = await fetch(form.action, {
         method: "POST",
         body: new FormData(form),
@@ -1927,13 +3017,15 @@ html{
       if (data.ok) {
         showStatus(data.message, true);
         form.reset();
-      } else {
-        let html = "<b>Bitte prüfen Sie die Eingaben:</b><ul>";
-        for (const [field, errors] of Object.entries(data.errors || {})) {
-          html += `<li><b>${field}</b>: ${errors.join(", ")}</li>`;
+      }
+      else{
+        console.log('datadata',data.popup);
+        if (data.popup) {
+          document.getElementById("resvPopupTitle").textContent = data.popup.title;
+          document.getElementById("resvPopupText").innerHTML = data.popup.text;
+
+          document.getElementById("resvCallPopup").classList.add("is-open");
         }
-        html += "</ul>";
-        showStatus(html, false);
       }
     } catch (err) {
       showStatus("Serverfehler. Bitte versuchen Sie es erneut.", false);

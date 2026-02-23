@@ -1,0 +1,58 @@
+<div class="resv-auth">
+  <h3 class="resv-auth__title">Meine Reservierungen</h3>
+  <p class="resv-auth__sub">Geben Sie Ihre E-Mail ein. Wir senden Ihnen einen Login-Link.</p>
+
+  <form id="resvAuthForm">
+    {% csrf_token %}
+    <div class="form-grid">
+      <label class="form-field form-grid__wide">
+        <span>E-MAIL</span>
+        <input name="email" type="email" required autocomplete="email">
+      </label>
+    </div>
+
+    <div class="form-actions resv-auth__actions">
+    <button class="kontakt-card__btn" type="submit">
+        Link senden
+    </button>
+    </div>
+
+  </form>
+
+  <div id="resvAuthMsg" style="margin-top:10px;"></div>
+</div>
+
+<style>
+/* ===== My Reservations – inline auth polish ===== */
+
+.resv-auth{
+  text-align: center;
+}
+
+.resv-auth__sub{
+  margin-bottom: 18px;
+}
+
+.resv-auth .form-grid{
+  justify-content: center;
+}
+
+.resv-auth .form-field{
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.resv-auth__actions{
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+/* Make button feel like a primary CTA */
+.resv-auth__actions .kontakt-card__btn{
+  min-width: 180px;
+  padding-left: 28px;
+  padding-right: 28px;
+}
+
+</style>

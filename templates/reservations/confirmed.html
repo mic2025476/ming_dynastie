@@ -1,0 +1,9 @@
+<!doctype html>
+<html>
+  <body style="font-family: system-ui; padding: 24px;">
+    {% if success %}<h2>✅ Reservation confirmed!</h2>{% endif %}
+    {% if already %}<h2>✅ Already confirmed.</h2>{% endif %}
+    {% if expired %}<h2>⏳ Link expired. Please make a new reservation.</h2>{% endif %}
+    <p>You can close this page.</p>
+  </body>
+</html>

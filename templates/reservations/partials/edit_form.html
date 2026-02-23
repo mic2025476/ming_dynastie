@@ -1,0 +1,86 @@
+<form
+  id="resvEditForm"
+  data-update-url="{% url 'reservations:update' reservation.id %}"
+  data-opening-time="{{ opening_time|time:'H:i'|default:'12:00' }}"
+  data-closing-time="{{ closing_time|time:'H:i'|default:'22:00' }}"
+>
+  {% csrf_token %}
+
+  <div class="form-grid">
+    <label class="form-field">
+      <span>Name</span>
+      {{ form.name }}
+    </label>
+
+    <label class="form-field">
+      <span>E-Mail</span>
+      {{ form.email }}
+    </label>
+
+    <label class="form-field">
+      <span>Telefon</span>
+      {{ form.phone }}
+    </label>
+
+    <!-- ✅ Datum -->
+    <label class="form-field">
+      <span>Datum</span>
+      <input
+        id="edit-date"
+        name="date"
+        type="text"
+        placeholder="dd.mm.yyyy"
+        required
+        value="{{ reservation.date|date:'Y-m-d' }}"
+      >
+      {% if form.date.errors %}
+        <div class="form-error">{{ form.date.errors }}</div>
+      {% endif %}
+    </label>
+
+    <label class="form-field">
+      <span>Anzahl Personen</span>
+      {{ form.party_size }}
+    </label>
+
+    <!-- ✅ Slot MUST stay, otherwise form invalid -->
+    <label class="form-field">
+      <span>Slot</span>
+      {{ form.slot }}
+      {% if form.slot.errors %}
+        <div class="form-error">{{ form.slot.errors }}</div>
+      {% endif %}
+    </label>
+
+    <!-- ✅ Uhrzeit (15-min select) -->
+    <label class="form-field">
+      <span>Uhrzeit</span>
+
+      <select id="edit-time" name="time" required>
+        <option value="">Bitte Uhrzeit wählen</option>
+      </select>
+
+      <input type="hidden" id="edit-time-current" value="{{ reservation.time|time:'H:i' }}">
+
+      {% if form.time.errors %}
+        <div class="form-error" style="margin-top:6px; color:#b00020; font-size:13px;">
+          {{ form.time.errors }}
+        </div>
+      {% endif %}
+    </label>
+
+    <label class="form-field form-grid__wide">
+      <span>Nachricht an das Restaurant</span>
+      {{ form.message }}
+    </label>
+  </div>
+
+  <div id="resvEditMsg" style="margin-top:10px;"></div>
+
+  <div class="form-actions" style="display:flex; gap:10px; margin-top:18px;">
+    <button type="button" class="kontakt-card__btn kontakt-card__btn--outline" data-back-to-list>
+      ← Zurück
+    </button>
+    <button class="kontakt-card__btn" type="submit">Änderungen speichern</button>
+  </div>
+</form>

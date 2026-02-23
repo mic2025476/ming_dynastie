@@ -1,0 +1,38 @@
+{% load static %}
+<div class="hero__nav-wrapper {% if header_scrolled %}is-scrolled{% endif %}" id="siteHeader">
+  <div class="hero__nav container">
+
+    <a class="hero__brand" href="{% url 'mingsite:index' %}#start" aria-label="Start">
+      <img src="{% static hero.logo %}" alt="Ming Dynastie Logo">
+    </a>
+
+    <nav class="hero__menu" aria-label="Hauptnavigation">
+      {% for item in hero.nav_links %}
+        <a class="hero__menu-link" href="{{ item.href }}"><span>{{ item.label }}</span></a>
+      {% endfor %}
+    </nav>
+
+    <button class="nav-toggle" id="navToggle"
+            type="button"
+            aria-label="Open menu"
+            aria-controls="mobileDrawer"
+            aria-expanded="false">
+      <span class="nav-toggle__icon" aria-hidden="true"></span>
+    </button>
+
+    <div class="mobile-drawer" id="mobileDrawer" aria-hidden="true">
+      <div class="mobile-drawer__backdrop" data-drawer-close></div>
+
+      <div class="mobile-drawer__panel" role="dialog" aria-modal="true" aria-label="Menu">
+        <button class="mobile-drawer__close" type="button" aria-label="Close menu" data-drawer-close>✕</button>
+
+        <nav class="mobile-drawer__nav" aria-label="Mobile navigation">
+          {% for item in hero.nav_links %}
+            <a class="mobile-drawer__link" href="{{ item.href }}">{{ item.label }}</a>
+          {% endfor %}
+        </nav>
+      </div>
+    </div>
+
+  </div>
+</div>

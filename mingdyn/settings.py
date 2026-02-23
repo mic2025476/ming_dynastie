@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'reservations',
     'testimonials',
     'legal',
+    'core_settings',
 ]
 
 MIDDLEWARE = [
@@ -155,3 +156,17 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATIC_ROOT = os.path.join(BASE_DIR, "static_collected")
 MEDIA_ROOT  = os.path.join(BASE_DIR, "media")
+
+# Cookie name for verified browser session
+RESV_SESSION_COOKIE_NAME = "ming_resv_session"
+
+# How long trusted browser stays logged in
+RESV_SESSION_DAYS_VALID = 30
+
+# Google Apps Script webhook (you create this URL)
+GOOGLE_APPS_SCRIPT_EMAIL_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyEqtykwvs4Vej2tq6mPQAdc1le6XT6r1JT9UQaaaV8fbkoJPfLrQQ6uwRWNOKya3R0YA/exec"
+
+# Optional: shared secret to prevent abuse
+GOOGLE_APPS_SCRIPT_EMAIL_WEBHOOK_SECRET = "change-me"
+
+SECURE_SSL_REDIRECT = False

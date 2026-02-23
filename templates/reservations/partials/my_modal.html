@@ -1,0 +1,237 @@
+<style>
+  /* Base */
+  .resv-auth__title { margin: 0 0 8px; }
+  .resv-auth__sub { margin: 0 0 14px; color: rgba(0,0,0,.7); }
+
+  .resv-table-wrap { width: 100%; }
+
+  .resv-table{
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .resv-table th,
+  .resv-table td{
+    padding: 12px 10px;
+    border-bottom: 1px solid rgba(0,0,0,.08);
+    vertical-align: middle;
+  }
+
+  .resv-table th{
+    font-weight: 600;
+    text-align: left;
+    color: rgba(0,0,0,.65);
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .resv-table td{
+    font-size: 14px;
+    color: rgba(0,0,0,.85);
+  }
+
+  .resv-action-cell{
+    width: 72px;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .resv-icon-btn{
+    background: transparent;
+    border: none;
+    padding: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background .15s ease, opacity .15s ease;
+    line-height: 1;
+  }
+
+  .resv-icon-btn:not(.resv-icon-btn--disabled):hover{
+    background: rgba(0,0,0,.06);
+  }
+
+  .resv-icon-btn--disabled{
+    opacity: .35;
+    cursor: not-allowed;
+    position: relative;
+  }
+
+  .resv-tooltip{
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    left: auto;
+    transform: none;
+
+    width: 320px;
+    max-width: calc(100vw - 40px);
+    white-space: normal;
+
+    background: rgba(20,20,20,.95);
+    color: #fff;
+    font-size: 12px;
+    line-height: 1.35;
+    padding: 8px 10px;
+    border-radius: 10px;
+    text-align: left;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    z-index: 9999;
+    box-shadow: 0 12px 28px rgba(0,0,0,.22);
+  }
+
+  .resv-tooltip::after{
+    content:"";
+    position:absolute;
+    bottom: 100%;
+    right: 14px;
+    left: auto;
+    transform: none;
+
+    border: 7px solid transparent;
+    border-bottom-color: rgba(20,20,20,.95);
+  }
+
+  .resv-icon-btn--disabled:hover .resv-tooltip,
+  .resv-icon-btn--disabled:focus-visible .resv-tooltip{
+    opacity: 1;
+    visibility: visible;
+  }
+
+  @media (max-width: 720px){
+    .resv-tooltip{ display:none !important; }
+  }
+
+  /* ========= Mobile: table -> cards ========= */
+  @media (max-width: 720px){
+    .resv-table thead{ display: none; }
+
+    .resv-table,
+    .resv-table tbody,
+    .resv-table tr,
+    .resv-table td{
+      display: block;
+      width: 100%;
+    }
+
+    .resv-table tr{
+      background: rgba(255,255,255,.90);
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin: 12px 0;
+      box-shadow: 0 10px 26px rgba(0,0,0,.05);
+    }
+
+    .resv-table td{
+      border: 0;
+      padding: 8px 0;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .resv-table td::before{
+      content: attr(data-label);
+      font-weight: 600;
+      color: rgba(0,0,0,.55);
+      flex: 0 0 auto;
+      max-width: 45%;
+    }
+
+    .resv-table td > *{
+      text-align: right;
+      flex: 1 1 auto;
+    }
+
+    .resv-action-cell{
+      border-top: 1px solid rgba(0,0,0,.08);
+      padding-top: 12px !important;
+      margin-top: 6px;
+      text-align: right;
+    }
+    .resv-action-cell::before{ content: ""; }
+  }
+
+  .resv-table-wrap,
+  .resv-table,
+  .resv-table td{
+    overflow: visible !important;
+  }
+
+  .resv-highlight {
+    outline: 3px solid rgba(155, 188, 255, 0.95);
+    border-radius: 12px;
+  }
+  @media (max-width: 720px){
+    .resv-highlight { outline-width: 4px; }
+  }
+</style>
+
+<div class="resv-auth">
+  <h3 class="resv-auth__title">Meine Reservierungen</h3>
+  <p class="resv-auth__sub">Angemeldet als <b>{{ email }}</b></p>
+
+  {% if reservations %}
+    <div class="resv-table-wrap">
+      <table class="resv-table">
+        <thead>
+          <tr>
+            <th>Datum</th>
+            <th>Uhrzeit</th>
+            <th>Personen</th>
+            <th>Name</th>
+            <th>Telefon</th>
+            <th class="resv-action-cell">Aktion</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for r in reservations %}
+          <tr id="resv-{{ r.id }}" data-reservation-id="{{ r.id }}">
+            <td data-label="Datum">{{ r.date }}</td>
+
+            <td data-label="Uhrzeit">
+              {{ r.time|time:"H:i" }}
+            </td>
+
+            <td data-label="Personen">{{ r.party_size }}</td>
+            <td data-label="Name">{{ r.name }}</td>
+
+            <td data-label="Telefon">
+              {% if r.phone %}
+                <a href="tel:+493030875680">{{ r.phone }}</a>
+              {% else %}
+                —
+              {% endif %}
+            </td>
+
+            <td class="resv-action-cell" data-label="Aktion">
+              {% if r.can_edit %}
+                <button type="button" class="resv-icon-btn" data-edit-resv="{{ r.id }}" aria-label="Bearbeiten">✏️</button>
+              {% else %}
+                <button type="button" class="resv-icon-btn resv-icon-btn--disabled" aria-disabled="true" data-edit-disabled="1">
+                  ✏️
+                  <span class="resv-tooltip">
+                    Änderungen nur bis 3 Tage vorher möglich. Bitte rufen Sie das Restaurant an.
+                  </span>
+                </button>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p>Keine Reservierungen gefunden.</p>
+  {% endif %}
+
+  <div style="margin-top:12px;">
+    <a class="kontakt-card__btn kontakt-card__btn--outline" href="{% url 'reservations:logout' %}">Abmelden</a>
+  </div>
+</div>

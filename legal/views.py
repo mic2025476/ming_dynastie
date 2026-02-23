@@ -4,7 +4,6 @@ def build_site_context():
     return {
         "hero": {
             "headline": "Ming Dynastie",
-            "subheadline": "Chinesisches Restaurant in Berlin & Hamburg",
             "description": (
                 "Feinste authentische Spezialitäten aus Fernostasien nur in der Ming Dynastie! "
                 "Erleben Sie Asien ein Stückchen näher und lassen Sie sich zwischen schwingenden "
