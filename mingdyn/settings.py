@@ -146,7 +146,6 @@ DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-FORCE_SCRIPT_NAME = "/ming"
 
 # Static and media URLs (must include /ming prefix)
 STATIC_URL = "/ming/static/"
