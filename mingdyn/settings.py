@@ -14,8 +14,6 @@ from dotenv import load_dotenv
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-@bprd)j9_+brp01g(h5z$)h2nl3$q*clkhu0j=!ti8y8)(cqo0'
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', SECRET_KEY)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -23,8 +21,22 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Allow your domain and proxy headers
-ALLOWED_HOSTS = ["ming-group.de", "www.ming-group.de"]
-CSRF_TRUSTED_ORIGINS = ["https://ming-group.de", "https://www.ming-group.de"]
+ALLOWED_HOSTS = [
+    "ming-dynastie.de",
+    "www.ming-dynastie.de",
+    "51.21.253.51",
+    "ec2-51-21-253-51.eu-north-1.compute.amazonaws.com",
+    "localhost",
+    "127.0.0.1",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://ming-dynastie.de",
+    "https://www.ming-dynastie.de",
+    "https://51.21.253.51",
+    "https://ec2-51-21-253-51.eu-north-1.compute.amazonaws.com",
+]
+
 
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
