@@ -92,7 +92,7 @@ class ReservationCreateForm(forms.ModelForm):
             remaining = max(allowed_capacity - total_seats, 0)
             self.add_error(
                 "time",
-                f"Dieser Zeitraum ist leider ausgebucht. Verfügbar: {remaining} Plätze."
+                f"Dieser Zeitraum ist leider ausgebucht. Bitte rufen Sie das Restaurant an 03030875680"
             )
         return cleaned
 
