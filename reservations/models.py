@@ -63,7 +63,10 @@ class TimeSlotModel(models.Model):
                     f"Am {worst_date} sind bereits {max_booked} Personen gebucht."
                 )
             })
-        
+
+def default_time():
+    return timezone.localtime(timezone.now()).time()
+  
 class ReservationModel(models.Model):
     name = models.CharField(max_length=120)
     email = models.EmailField()
@@ -71,7 +74,7 @@ class ReservationModel(models.Model):
 
     date = models.DateField()
     slot = models.ForeignKey(TimeSlotModel, on_delete=models.PROTECT, related_name="reservations")
-    time = models.TimeField(blank=False,default=timezone.now().time())  # New field for exact time within the slot
+    time = models.TimeField(default=default_time)
     party_size = models.PositiveIntegerField(validators=[MinValueValidator(1)])
     message = models.TextField(blank=True)
 

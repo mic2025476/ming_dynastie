@@ -52,6 +52,7 @@ class ReservationCreateForm(forms.ModelForm):
             return cleaned
 
         cleaned["slot"] = slot  # 👈 attach slot
+        self.instance.slot = slot   # ✅ ensures it is persisted on save
 
         # If whole day is closed
         if BlockedDayModel.objects.filter(date=d, is_closed=True).exists():
@@ -79,11 +80,20 @@ class ReservationCreateForm(forms.ModelForm):
             .filter(date=d, slot=slot)
             .aggregate(total=Sum("party_size"))["total"] or 0
         )
+        qs = ReservationModel.objects.filter(date=d, slot=slot)
+
+        # ✅ if editing existing reservation, exclude it from totals
+        if self.instance and self.instance.pk:
+            qs = qs.exclude(pk=self.instance.pk)
+
+        total_seats = qs.aggregate(total=Sum("party_size"))["total"] or 0
 
         if total_seats + party_size > allowed_capacity:
             remaining = max(allowed_capacity - total_seats, 0)
-            self.add_error("time", f"Dieser Zeitraum ist leider ausgebucht. Bitte rufen Sie das Restaurant an 03030875680")
-
+            self.add_error(
+                "time",
+                f"Dieser Zeitraum ist leider ausgebucht. Verfügbar: {remaining} Plätze."
+            )
         return cleaned
 
 

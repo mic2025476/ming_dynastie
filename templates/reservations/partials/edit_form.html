@@ -43,15 +43,6 @@
       {{ form.party_size }}
     </label>
 
-    <!-- ✅ Slot MUST stay, otherwise form invalid -->
-    <label class="form-field">
-      <span>Slot</span>
-      {{ form.slot }}
-      {% if form.slot.errors %}
-        <div class="form-error">{{ form.slot.errors }}</div>
-      {% endif %}
-    </label>
-
     <!-- ✅ Uhrzeit (15-min select) -->
     <label class="form-field">
       <span>Uhrzeit</span>
