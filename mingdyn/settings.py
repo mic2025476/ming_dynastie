@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', SECRET_KEY)
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'dev-super-secret-change-me')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 from pathlib import Path
