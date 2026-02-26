@@ -240,33 +240,12 @@ img {
 }
 
 .hero__menu {
-  gap: 2rem;
-  letter-spacing: 0.18em;
+  gap: 1.8rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   font-size: 0.75rem;
 }
 
-.hero__menu-link {
-  position: relative;
-  color: rgba(255, 255, 255, 0.88);
-  padding-bottom: 0.4rem;
-}
-
-.hero__menu-link::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--color-primary);
-  transition: width 0.2s ease;
-}
-
-.hero__menu-link:hover::after,
-.hero__menu-link:focus-visible::after {
-  width: 100%;
-}
 
 .hero__content {
   position: relative;
@@ -840,7 +819,9 @@ img {
   gap: 3.2rem;             /* wider spacing like screenshot */
   letter-spacing: 0.22em;
   font-size: 1.05rem;
+  margin-right: 20rem; /* shift whole menu right */
 }
+
 
 /* Link look */
 .hero__menu-link {
@@ -859,17 +840,28 @@ img {
 }
 
 /* Active bars (top + bottom) */
+.hero__menu-link{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 0.2rem;
+  color: rgba(255, 255, 255, 0.92);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Two bars (top + bottom) exist but hidden by default */
 .hero__menu-link::before,
-.hero__menu-link::after {
+.hero__menu-link::after{
   content: "";
   position: absolute;
   left: 50%;
-  width: 86px;               /* bar length */
-  height: 3px;               /* bar thickness */
+  width: 86px;
+  height: 3px;
   background: var(--color-primary);
   transform: translateX(-50%);
   opacity: 0;
-  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 /* Top bar */
