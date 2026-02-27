@@ -128,3 +128,49 @@ def send_magic_link_via_gas(*, to_email: str, magic_url: str) -> None:
 
     if not data.get("ok"):
         raise RuntimeError(f"GAS failed: {r.status_code} {data}")
+
+def send_feedback_notification_via_gas(
+    *,
+    restaurant_name: str,
+    feedback_text: str,
+    customer_email: str | None = None,
+) -> None:
+    url = getattr(settings, "GOOGLE_APPS_SCRIPT_EMAIL_WEBHOOK_URL", "")
+    if not url:
+        raise RuntimeError("GOOGLE_APPS_SCRIPT_EMAIL_WEBHOOK_URL is not set")
+
+    secret = getattr(settings, "GOOGLE_APPS_SCRIPT_EMAIL_WEBHOOK_SECRET", "")
+
+    to_email = "mingwest@wsiholding.com"
+
+    subject = f"Neues Feedback – {restaurant_name}"
+
+    body = (
+        f"Restaurant: {restaurant_name}\n\n"
+        f"Feedback:\n{feedback_text}\n\n"
+        f"Kunden E-Mail: {customer_email or 'nicht angegeben'}"
+    )
+
+    html_body = f"""
+    <div style="font-family:Arial;font-size:14px;">
+        <h3>Neues Feedback erhalten</h3>
+        <p><b>Restaurant:</b> {restaurant_name}</p>
+        <p><b>Feedback:</b><br>{feedback_text}</p>
+        <p><b>Kunden E-Mail:</b> {customer_email or 'nicht angegeben'}</p>
+    </div>
+    """
+
+    payload = {
+        "secret": secret,
+        "to": to_email,
+        "subject": subject,
+        "body": body,
+        "htmlBody": html_body,
+        "name": restaurant_name,
+    }
+
+    r = requests.post(url, json=payload, timeout=12)
+
+    data = r.json()
+    if not data.get("ok"):
+        raise RuntimeError(f"GAS failed: {data}")

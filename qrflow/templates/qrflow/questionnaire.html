@@ -3,22 +3,58 @@
 
 {% block content %}
   <h2 class="qr-question">Es tut uns leid 😔</h2>
-  <p class="qr-hint">Bitte sagen Sie uns kurz, was schiefgelaufen ist. Ihre E-Mail ist optional.</p>
+  <p class="qr-hint">
+    Bitte sagen Sie uns kurz, was schiefgelaufen ist. Ihre E-Mail ist optional.
+  </p>
 
-  <form method="post">
+  <form method="post" id="feedbackForm">
     {% csrf_token %}
 
     <label class="qr-hint">Was ist schiefgelaufen? (pflicht)</label>
-    <textarea class="qr-textarea" name="what_went_wrong" placeholder="Beschreiben Sie kurz das Problem..."></textarea>
+    <textarea
+      class="qr-textarea"
+      name="what_went_wrong"
+      placeholder="Beschreiben Sie kurz das Problem..."
+      required
+    ></textarea>
 
     <div style="height:10px"></div>
 
     <label class="qr-hint">E-Mail (optional)</label>
-    <input class="qr-textarea" style="min-height:auto" type="email" name="email" placeholder="name@email.com" />
+    <input
+      class="qr-textarea"
+      style="min-height:auto"
+      type="email"
+      name="email"
+      placeholder="name@email.com"
+      autocomplete="email"
+    />
 
     <div class="qr-actions">
-      <button class="qr-btn neutral" type="submit">ABSENDEN</button>
-      <a class="qr-btn neutral" href="{% url 'qr_landing' location.slug %}">Zurück</a>
+      <button class="qr-btn neutral" id="submitBtn" type="submit">
+        <span id="btnText">SENDEN</span>
+        <span id="btnSpinner" style="display:none; margin-left:10px;">⏳</span>
+      </button>
+
+      <a class="qr-btn neutral" href="{% url 'qr_landing' location.slug %}">ABBRECHEN</a>
     </div>
   </form>
+
+  <script>
+    (function () {
+      const form = document.getElementById("feedbackForm");
+      const btn = document.getElementById("submitBtn");
+      const text = document.getElementById("btnText");
+      const spinner = document.getElementById("btnSpinner");
+
+      form.addEventListener("submit", function () {
+        // basic guard: don't submit empty (browser required already handles it)
+        btn.disabled = true;
+        btn.style.opacity = "0.85";
+        btn.style.cursor = "not-allowed";
+        text.textContent = "WIRD GESENDET…";
+        spinner.style.display = "inline";
+      });
+    })();
+  </script>
 {% endblock %}

@@ -36,10 +36,17 @@
         {% block content %}{% endblock %}
       </div>
 
-      <footer class="qr-footer">
-        <span>© Ming Dynastie</span>
-        <span>Danke für Ihr Feedback</span>
-      </footer>
+<div class="qr-footer" style="
+    display:flex;
+    justify-content:space-between;
+    font-size:12px;
+    color:#aaa;
+    margin-top:10px;
+">
+    <div>
+        © {% now "Y" %} Ming Dynastie. Alle Rechte vorbehalten.
+    </div>
+</div>
     </section>
   </main>
 </body>
