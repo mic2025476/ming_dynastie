@@ -1,0 +1,35 @@
+{% load static %}
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{% block title %}Ming Dynastie{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'qrflow/qr.css' %}">
+</head>
+<body>
+  <main class="qr-shell">
+    <section class="qr-card">
+      <header class="qr-header">
+        <div class="qr-logo">
+          <!-- optional: replace with your logo image -->
+          <img src="{% static 'qrflow/logo.png' %}" alt="Ming" style="width:34px;height:34px;object-fit:contain;" onerror="this.style.display='none'">
+        </div>
+        <div class="qr-title">
+          <h1>{{ location.name|default:"Ming Dynastie" }}</h1>
+          <p>Feinste authentische Spezialitäten aus Fernost</p>
+        </div>
+      </header>
+
+      <div class="qr-body">
+        {% block content %}{% endblock %}
+      </div>
+
+      <footer class="qr-footer">
+        <span>© Ming Dynastie</span>
+        <span>Danke für Ihr Feedback</span>
+      </footer>
+    </section>
+  </main>
+</body>
+</html>

@@ -240,33 +240,12 @@ img {
 }
 
 .hero__menu {
-  gap: 2rem;
-  letter-spacing: 0.18em;
+  gap: 1.8rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   font-size: 0.75rem;
 }
 
-.hero__menu-link {
-  position: relative;
-  color: rgba(255, 255, 255, 0.88);
-  padding-bottom: 0.4rem;
-}
-
-.hero__menu-link::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--color-primary);
-  transition: width 0.2s ease;
-}
-
-.hero__menu-link:hover::after,
-.hero__menu-link:focus-visible::after {
-  width: 100%;
-}
 
 .hero__content {
   position: relative;
@@ -817,26 +796,100 @@ img {
   }
 }
 
-.flash-messages {
-  position: fixed;
-  top: 90px;
+/* ===== Header/menu like screenshot ===== */
+
+/* Make nav layout: logo left, menu centered */
+.hero__nav {
+  justify-content: flex-start; /* instead of space-between */
+}
+
+.hero__brand {
+  display: inline-flex;
+  align-items: center;
+  min-width: 160px; /* keeps space so menu truly centers */
+}
+
+.hero__brand img {
+  width: 110px; /* adjust if needed */
+}
+
+.hero__menu {
+  flex: 1;
+  justify-content: center; /* center the menu */
+  gap: 3.2rem;             /* wider spacing like screenshot */
+  letter-spacing: 0.22em;
+  font-size: 1.05rem;
+  margin-right: 20rem; /* shift whole menu right */
+}
+
+
+/* Link look */
+.hero__menu-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 0.2rem; /* gives room for the top/bottom bars */
+  color: rgba(255, 255, 255, 0.92);
+  text-transform: uppercase;
+}
+
+/* disable old underline behavior */
+.hero__menu-link::after {
+  content: none !important;
+}
+
+/* Active bars (top + bottom) */
+.hero__menu-link{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 0.2rem;
+  color: rgba(255, 255, 255, 0.92);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Two bars (top + bottom) exist but hidden by default */
+.hero__menu-link::before,
+.hero__menu-link::after{
+  content: "";
+  position: absolute;
   left: 50%;
+  width: 86px;
+  height: 3px;
+  background: var(--color-primary);
   transform: translateX(-50%);
-  z-index: 9999;
+  opacity: 0;
 }
 
-.flash {
-  background: #2e7d32; /* green (success) */
-  padding: 0.9rem 1.5rem;
-  border-radius: 1rem;
+/* Top bar */
+.hero__menu-link::before {
+  top: 0.15rem;
+}
+
+/* Bottom bar */
+.hero__menu-link::after {
+  bottom: 0.15rem;
+}
+
+/* Hover: show bottom bar only (nice UX) */
+.hero__menu-link:hover::after,
+.hero__menu-link:focus-visible::after {
+  opacity: 1;
+}
+
+/* Active/current page: show both bars */
+.hero__menu-link.is-active::before,
+.hero__menu-link.is-active::after,
+.hero__menu-link[aria-current="page"]::before,
+.hero__menu-link[aria-current="page"]::after {
+  opacity: 1;
+}
+
+/* Optional: slightly brighter active text */
+.hero__menu-link.is-active,
+.hero__menu-link[aria-current="page"] {
   color: #fff;
-  font-size: 1rem;
-  box-shadow: 0 12px 20px -10px rgba(0,0,0,0.35);
-  animation: fadein 0.3s ease-out;
-}
-
-/* fade-in effect */
-@keyframes fadein {
-  from { opacity: 0; transform: translateY(-10px) }
-  to   { opacity: 1; transform: translateY(0) }
 }

@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'testimonials',
     'legal',
     'core_settings',
+    "qrflow",
 ]
 
 MIDDLEWARE = [

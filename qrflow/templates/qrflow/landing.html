@@ -1,0 +1,11 @@
+{% extends "qrflow/base.html" %}
+{% block title %}{{ location.name }}{% endblock %}
+
+{% block content %}
+  <h2 class="qr-question">Wie war Ihre Erfahrung mit unserem Unternehmen?</h2>
+
+  <div class="qr-actions">
+    <a class="qr-btn good" href="{% url 'qr_good' location.slug %}">Sehr gut</a>
+    <a class="qr-btn bad" href="{% url 'qr_bad' location.slug %}">Nicht so gut</a>
+  </div>
+{% endblock %}

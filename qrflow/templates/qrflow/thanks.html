@@ -1,0 +1,11 @@
+{% extends "qrflow/base.html" %}
+{% block title %}Danke – {{ location.name }}{% endblock %}
+
+{% block content %}
+  <h2 class="qr-question">Danke für Ihr Feedback!</h2>
+  <p class="qr-hint">Wir melden uns, falls Sie eine E-Mail angegeben haben.</p>
+
+  <div class="qr-actions">
+    <a class="qr-btn neutral" href="{% url 'qr_landing' location.slug %}">Zurück</a>
+  </div>
+{% endblock %}

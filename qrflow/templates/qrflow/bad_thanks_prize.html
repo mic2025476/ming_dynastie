@@ -1,0 +1,17 @@
+{% extends "qrflow/base.html" %}
+{% block title %}Danke – {{ location.name }}{% endblock %}
+
+{% block content %}
+  <h2 class="qr-question">Danke für Ihr Feedback!</h2>
+  <p class="qr-hint">Als Entschuldigung erhalten Sie einen Gutschein.</p>
+
+  <div style="padding:16px;border:1px solid rgba(225,192,106,.25);border-radius:16px;background:rgba(0,0,0,.25);text-align:center">
+    <div class="qr-hint" style="margin:0 0 8px">Ihr Gutschein-Code:</div>
+    <div style="font-size:26px;font-weight:900;letter-spacing:2px">{{ feedback.prize_code }}</div>
+    <div class="qr-hint" style="margin-top:10px">Bitte zeigen Sie diesen Code beim nächsten Besuch vor.</div>
+  </div>
+
+  <div class="qr-actions" style="margin-top:14px">
+    <a class="qr-btn neutral" href="{% url 'qr_landing' location.slug %}">Zurück</a>
+  </div>
+{% endblock %}

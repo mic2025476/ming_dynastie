@@ -1,0 +1,14 @@
+{% extends "qrflow/base.html" %}
+{% block title %}Restaurant auswählen{% endblock %}
+
+{% block content %}
+  <h2 class="qr-question">Bitte wählen Sie Ihr Restaurant</h2>
+
+  <div class="qr-actions">
+    {% for loc in locations %}
+      <a class="qr-btn neutral" href="{% url 'feedback_landing' loc.slug %}">
+        {{ loc.name }}
+      </a>
+    {% endfor %}
+  </div>
+{% endblock %}

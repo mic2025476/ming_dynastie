@@ -1,0 +1,19 @@
+{% extends "qrflow/base.html" %}
+{% block title %}Feedback – {{ location.name }}{% endblock %}
+
+{% block content %}
+  <h2 class="qr-question">Feedback</h2>
+  <p class="qr-hint">
+    Schreiben Sie uns hier Ihr anonymes Feedback. Gerne auch mit Angabe Ihrer Kontaktdaten, falls wir Sie kontaktieren dürfen.
+  </p>
+
+  <form method="post">
+    {% csrf_token %}
+    <textarea class="qr-textarea" name="message" placeholder="Ihr Feedback..."></textarea>
+
+    <div class="qr-actions">
+      <button class="qr-btn neutral" type="submit">ABSENDEN</button>
+      <a class="qr-btn neutral" href="{% url 'qr_landing' location.slug %}">Zurück</a>
+    </div>
+  </form>
+{% endblock %}
