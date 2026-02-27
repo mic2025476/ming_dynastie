@@ -13,7 +13,18 @@
       <header class="qr-header">
         <div class="qr-logo">
           <!-- optional: replace with your logo image -->
-          <img src="{% static 'qrflow/logo.png' %}" alt="Ming" style="width:34px;height:34px;object-fit:contain;" onerror="this.style.display='none'">
+<div style="
+    background:#ffffff;
+    padding:6px 9px;
+    border-radius:10px;
+    display:inline-flex;
+    align-items:center;
+    box-shadow:0 4px 12px rgba(0,0,0,0.25);
+">
+    <img src="{% static 'mingsite/img/logo.png' %}"
+         alt="Ming Dynastie"
+         style="height:36px;width:auto;">
+</div>
         </div>
         <div class="qr-title">
           <h1>{{ location.name|default:"Ming Dynastie" }}</h1>
