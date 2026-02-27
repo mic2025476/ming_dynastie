@@ -131,6 +131,7 @@ def send_magic_link_via_gas(*, to_email: str, magic_url: str) -> None:
 
 def send_feedback_notification_via_gas(
     *,
+    to_email: str,
     restaurant_name: str,
     feedback_text: str,
     customer_email: str | None = None,
@@ -140,8 +141,6 @@ def send_feedback_notification_via_gas(
         raise RuntimeError("GOOGLE_APPS_SCRIPT_EMAIL_WEBHOOK_URL is not set")
 
     secret = getattr(settings, "GOOGLE_APPS_SCRIPT_EMAIL_WEBHOOK_SECRET", "")
-
-    to_email = "mingwest@wsiholding.com"
 
     subject = f"Neues Feedback – {restaurant_name}"
 

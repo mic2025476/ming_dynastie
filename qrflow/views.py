@@ -30,14 +30,20 @@ def qr_bad(request, slug):
             email=email,
         )
 
-        # SEND EMAIL ONLY FOR EUROPA CENTER
+        # choose email based on restaurant
         if location.slug == "ming-europa-center":
-            send_feedback_notification_via_gas(
-                restaurant_name=location.name,
-                feedback_text=what,
-                customer_email=email,
-            )
+            recipient = "mingwest@wsiholding.com"
+        elif location.slug == "ming-jannowitzbruecke":
+            recipient = "mingeast@ming-dynastie.de"
+        else:
+            recipient = "info@ming-dynastie.de"  # fallback
+
+        send_feedback_notification_via_gas(
+            to_email=recipient,
+            restaurant_name=location.name,
+            feedback_text=what,
+            customer_email=email,
+        )
 
         return render(request, "qrflow/thanks.html", {"location": location})
-
     return render(request, "qrflow/questionnaire.html", {"location": location})
