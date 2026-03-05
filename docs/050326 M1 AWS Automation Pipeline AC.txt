@@ -1,0 +1,68 @@
+﻿CI/CD PIPELINE DOCUMENTATION
+
+
+Deployment Pipeline: GitHub → AWS EC2
+Project: https://github.com/mic2025476/ming_dynastie.git
+Environment: Production
+Maintainer: anirudh
+Last Updated: March 2026
+
+
+1. Introduction
+This document describes the deployment pipeline used for the project. The application is deployed on an AWS EC2 instance, and updates are delivered automatically through a GitHub Actions workflow. Whenever code is pushed to the main branch, the server pulls the latest changes, applies migrations, updates static files, and restarts the application services.
+
+2. Deployment Overview
+The deployment process is automated and follows this sequence:
+• A developer pushes code to the main branch.
+• GitHub Actions connects to the EC2 instance using an SSH deploy key.
+• The EC2 server runs a deployment script located inside the project directory.
+• The script pulls the latest code, activates the virtual environment, installs dependencies, runs Django migrations, collects static files, and restarts Gunicorn.
+• Nginx only requires a restart if its configuration has changed.
+This setup ensures that deployments are consistent, repeatable, and require no manual intervention.
+
+3. Server Deployment Script
+The EC2 instance contains a script named deploy.sh inside the project directory.
+This script performs the following actions:
+• Pulls the latest code from the repository
+• Activates the virtual environment
+• Installs updated Python dependencies
+• Runs Django migrations
+• Collects static files
+• Restarts the Gunicorn service
+The script must be executable on the server.
+
+4. SSH Deploy Key Setup
+A dedicated SSH key pair is used for GitHub → EC2 authentication.
+Local machine
+A key pair is generated using the following command:
+ssh-keygen -t ed25519 -C "github-deploy" -f ~/.ssh/ming_deploy_key
+The public key is added to the EC2 instance.
+The private key is stored in GitHub Secrets.
+EC2 configuration
+The public key is added to the file:
+~/.ssh/authorized_keys
+Required permissions:
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
+GitHub Secrets
+The repository contains the following secrets:
+• EC2_HOST
+• EC2_USER
+• EC2_SSH_KEY (private key contents)
+These values allow the GitHub Actions workflow to authenticate and execute commands on the server.
+
+5. GitHub Actions Workflow
+The workflow file is located at:
+.github/workflows/deploy.yml
+The workflow performs the following:
+• Checks out the latest code
+• Loads the SSH private key from GitHub Secrets
+• Establishes an SSH connection to the EC2 instance
+• Executes the deploy.sh script on the server
+This workflow runs automatically on every push to the main branch.
+
+6. Operational Notes
+• Only push to the main branch when code is ready for deployment.
+• If Nginx configuration changes, restart it manually on the server.
+• If the deployment script is modified, update the version stored on the EC2 instance.
+• Gunicorn logs can be viewed using systemctl or journalctl for debugging.
