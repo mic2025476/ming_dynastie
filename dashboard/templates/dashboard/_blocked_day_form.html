@@ -1,0 +1,46 @@
+{% if selected_blocked_day %}
+  <form method="post" action="{% url 'dashboard:blocked_day_update' selected_blocked_day.id %}">
+{% else %}
+  <form method="post" action="{% url 'dashboard:blocked_day_create' %}">
+{% endif %}
+  {% csrf_token %}
+
+  <div class="form-grid">
+    <div class="form-group full">
+      <label for="{{ form.date.id_for_label }}">Date</label>
+      {{ form.date }}
+      {% if form.date.errors %}<div class="field-error">{{ form.date.errors|join:", " }}</div>{% endif %}
+      <div class="help">Select the calendar day you want to manage.</div>
+    </div>
+
+    <div class="form-group full">
+      <label for="{{ form.reason.id_for_label }}">Reason</label>
+      {{ form.reason }}
+      {% if form.reason.errors %}<div class="field-error">{{ form.reason.errors|join:", " }}</div>{% endif %}
+      <div class="help">Optional. Example: Public holiday, private event, maintenance.</div>
+    </div>
+
+    <div class="form-group full">
+      <label class="checkbox-row" for="{{ form.is_closed.id_for_label }}">
+        {{ form.is_closed }}
+        <span>Mark whole day as closed</span>
+      </label>
+      {% if form.is_closed.errors %}<div class="field-error">{{ form.is_closed.errors|join:", " }}</div>{% endif %}
+      <div class="help">If enabled, customers should not be able to book this day.</div>
+    </div>
+  </div>
+
+  {% if form.non_field_errors %}
+    <div class="field-error" style="margin-top: 10px;">
+      {{ form.non_field_errors|join:", " }}
+    </div>
+  {% endif %}
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary btn-full">
+      {% if selected_blocked_day %}Save Changes{% else %}Create Blocked Day{% endif %}
+    </button>
+
+    <a href="{% url 'dashboard:home' %}?section=blocked-days" class="btn btn-secondary btn-full">Zurück</a>
+  </div>
+</form>

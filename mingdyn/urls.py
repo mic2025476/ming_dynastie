@@ -13,6 +13,7 @@ urlpatterns = [
     path('testimonials/', include('testimonials.urls')),
     path('ming/legal/', include('legal.urls')),
     path("", include("qrflow.urls")),
+    path("dashboard/", include("dashboard.urls")),
 ]
 
 if settings.DEBUG:

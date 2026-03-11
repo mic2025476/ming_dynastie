@@ -104,10 +104,16 @@
 
   <section id="delivery" class="section section--delivery">
     <div class="container">
-      <header class="section__header">
-        <p class="section__eyebrow">Takeaway &amp; Delivery</p>
-        <p class="section__subtitle">{{ delivery.note }}</p>
-      </header>
+    <header class="section__header pickup-header">
+      <h2 class="pickup-title">Pickup</h2>
+      <p class="pickup-subtitle">
+        Call the restaurant to place your order and pick it up.
+      </p>
+
+      <a href="tel:+493030875680" class="pickup-call-btn">
+        📞 Call Restaurant (030 30875680)
+      </a>
+    </header>
       <div class="delivery-grid">
         {% for service in delivery.services %}
           <article class="delivery-card">
@@ -290,10 +296,6 @@
 
           <p class="kontakt-card__text">Mo - So: 12:00 - 22:00 Uhr</p>
 
-          <p class="kontakt-card__small">
-            Reservierungen ab sieben Personen können per E-Mail angefragt werden.
-          </p>
-
         <div class="kontakt-card__actions">
           <a class="kontakt-card__btn" href="mailto:info@ming-dynastie.de">E-MAIL SCHREIBEN</a>
 
@@ -332,10 +334,6 @@
           </p>
 
           <p class="kontakt-card__text">Mo - So: 12:00 - 22:00 Uhr</p>
-
-          <p class="kontakt-card__small">
-            Reservierungen ab sieben Personen können per E-Mail angefragt werden.
-          </p>
 
           <a class="kontakt-card__btn" href="mailto:info@ming-dynastie.de">E-MAIL SCHREIBEN</a>
         </div>
@@ -1975,6 +1973,47 @@ select option:disabled{
   cursor: not-allowed;
 }
 
+.pickup-header {
+  text-align: center;
+}
+
+.pickup-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.pickup-subtitle {
+  font-size: 15px;
+  color: white;
+  margin-bottom: 14px;
+}
+
+.pickup-call-btn {
+  display: inline-block;
+  background: #e63946;
+  color: white;
+  padding: 12px 26px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: 0.2s ease;
+}
+
+.pickup-call-btn:hover {
+  background: white;
+  transform: translateY(-2px);
+}
+
+#delivery-hero {
+  min-height: 260px;
+  padding: 60px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
 
   </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">

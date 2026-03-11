@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'legal',
     'core_settings',
     "qrflow",
+    'dashboard',
 ]
 
 MIDDLEWARE = [
