@@ -102,41 +102,43 @@
     </div>
   </section>
 
-  <section id="delivery" class="section section--delivery">
-    <div class="container">
-    <header class="section__header pickup-header">
-      <h2 class="pickup-title">Pickup</h2>
-      <p class="pickup-subtitle">
-        Call the restaurant to place your order and pick it up.
-      </p>
+<section id="delivery" class="section section--delivery">
+  <div class="container">
+    <div class="delivery-grid">
+      {% for service in delivery.services %}
+<article class="delivery-card">
+  <h3 class="delivery-card__title">{{ service.location }}</h3>
 
-      <a href="tel:+493030875680" class="pickup-call-btn">
-        📞 Call Restaurant (030 30875680)
-      </a>
-    </header>
-      <div class="delivery-grid">
-        {% for service in delivery.services %}
-          <article class="delivery-card">
-            <h3 class="delivery-card__title">{{ service.location }}</h3>
-            <ul class="delivery-card__links">
-              {% for link in service.links %}
-                <li>
-                  <a href="{{ link.url }}" target="_blank" rel="noopener">
-                    {% if link.logo %}
-                      {% static link.logo as partner_logo %}
-                      <img src="{{ partner_logo }}" alt="{{ link.logo_alt|default:link.name }}">
-                    {% endif %}
-                    <span>{{ link.name }}</span>
-                  </a>
-                </li>
-              {% endfor %}
-            </ul>
-          </article>
-        {% endfor %}
-      </div>
+  <div class="delivery-card__pickup">
+    <p class="delivery-card__pickup-text">
+      Call the restaurant to place your order and pick it up.
+    </p>
+
+    <a href="tel:{{ service.phone_link }}" class="delivery-card__call-btn">
+      <span>📞</span>
+      <span>Call Restaurant</span>
+      <span class="delivery-card__call-number">({{ service.phone_display }})</span>
+    </a>
+  </div>
+
+  <ul class="delivery-card__links">
+    {% for link in service.links %}
+      <li>
+        <a href="{{ link.url }}" target="_blank" rel="noopener">
+          {% if link.logo %}
+            {% static link.logo as partner_logo %}
+            <img src="{{ partner_logo }}" alt="{{ link.logo_alt|default:link.name }}">
+          {% endif %}
+          <span>{{ link.name }}</span>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+</article> 
+      {% endfor %}
     </div>
-  </section>
-
+  </div>
+</section>
 
   <section id="galerie" class="section section--gallery">
     <div class="container">
@@ -799,18 +801,6 @@ section{
   }
   .location-card__title{ font-size: 26px; }
   .location-card__body{ padding: 22px 22px 22px; }
-}
-/* ===== DELIVERY: match ming-dynastie.de brightness (single source of truth) ===== */
-.section--delivery{
-  position: relative !important;
-  padding: 90px 0 90px !important;
-  color: #fff !important;
-
-  background-position: center !important;
-  background-size: cover !important;
-  background-repeat: no-repeat !important;
-
-  overflow: hidden !important;
 }
 
 /* remove darkening — use a LIGHT wash instead */
@@ -1973,22 +1963,6 @@ select option:disabled{
   cursor: not-allowed;
 }
 
-.pickup-header {
-  text-align: center;
-}
-
-.pickup-title {
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-
-.pickup-subtitle {
-  font-size: 15px;
-  color: white;
-  margin-bottom: 14px;
-}
-
 .pickup-call-btn {
   display: inline-block;
   background: #e63946;
@@ -2015,6 +1989,183 @@ select option:disabled{
   text-align: center;
 }
 
+.pickup-card-block{
+  margin: 14px 0 18px;
+  text-align: center;
+}
+
+.pickup-card-title{
+  margin: 0 0 6px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.pickup-card-text{
+  margin: 0 0 14px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: rgba(255,255,255,.92);
+}
+
+.pickup-call-btn{
+  display: inline-block;
+  background: #ef3d4d;
+  color: #fff;
+  padding: 12px 22px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 700;
+  transition: transform .18s ease, background .18s ease;
+}
+
+.pickup-call-btn:hover{
+  background: #d93241;
+  transform: translateY(-2px);
+}
+
+.section--delivery{
+  position: relative !important;
+  padding: 56px 0 56px !important;
+  color: #fff !important;
+  background-position: center !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  overflow: hidden !important;
+}
+
+.section--delivery .container{
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.delivery-grid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+  align-items: stretch;
+}
+
+.delivery-card{
+  background: rgba(20,20,20,.58);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 26px;
+  padding: 34px 34px 28px;
+  box-shadow: 0 18px 45px rgba(0,0,0,.18);
+  text-align: center;
+}
+
+.delivery-card__title{
+  margin: 0 0 24px;
+  font-size: 32px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #fff;
+}
+
+.delivery-card__pickup{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 26px;
+}
+
+.delivery-card__pickup-label{
+  margin: 0;
+  font-size: 26px;
+  line-height: 1.1;
+  font-weight: 800;
+  color: #fff;
+}
+
+.delivery-card__pickup-text{
+  margin: 0;
+  max-width: 420px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: rgba(255,255,255,.92);
+}
+
+.delivery-card__call-btn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 54px;
+  padding: 0 24px;
+  margin-top: 4px;
+  border-radius: 14px;
+  background: #ef4351;
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 800;
+  box-shadow: 0 10px 24px rgba(239,67,81,.28);
+  transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
+}
+
+.delivery-card__call-btn:hover{
+  background: #df3443;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(239,67,81,.34);
+}
+
+.delivery-card__call-number{
+  opacity: .95;
+}
+
+.delivery-card__links{
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.delivery-card__links li{
+  margin: 0;
+}
+
+.delivery-card__links a{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.22);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.delivery-card__links img{
+  height: 24px;
+  width: auto;
+  display: block;
+}
+
+@media (max-width: 1000px){
+  .delivery-grid{
+    grid-template-columns: 1fr;
+  }
+
+  .delivery-card{
+    padding: 26px 22px 24px;
+  }
+
+  .delivery-card__title{
+    font-size: 28px;
+  }
+
+  .delivery-card__pickup-label{
+    font-size: 24px;
+  }
+}
   </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>

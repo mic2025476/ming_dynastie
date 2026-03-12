@@ -140,6 +140,8 @@ def index(request):
             "services": [
                 {
                     "location": "Ming Dynastie Jannowitzbrücke",
+                    "phone_display": "030 30875680",
+                    "phone_link": "+493030875680",
                     "links": [
                         {
                             "name": "Uber Eats",
@@ -151,6 +153,8 @@ def index(request):
                 },
                 {
                     "location": "Ming Dynastie Europa-Center",
+                    "phone_display": "030 25759886",
+                    "phone_link": "+493025759886",
                     "links": [
                         {
                             "name": "Uber Eats",
