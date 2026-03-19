@@ -1,0 +1,195 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: dashboard\n"
+"POT-Creation-Date: 2026-03-19 00:00+0000\n"
+"PO-Revision-Date: 2026-03-19 00:00+0000\n"
+"Last-Translator: ChatGPT\n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Store Dashboard"
+msgstr "Store Dashboard"
+
+msgid "Time Slots"
+msgstr "Time Slots"
+
+msgid "Blocked Days"
+msgstr "Blocked Days"
+
+msgid "Reservations"
+msgstr "Reservations"
+
+msgid "Manage the reservation windows your customers can book."
+msgstr "Manage the reservation windows your customers can book."
+
+msgid "Mark days as closed or limit specific slots on certain dates."
+msgstr "Mark days as closed or limit specific slots on certain dates."
+
+msgid "View, create, and manage all customer reservations."
+msgstr "View, create, and manage all customer reservations."
+
+msgid "Display Name"
+msgstr "Display Name"
+
+msgid "The name customers and staff will see — e.g. <strong>Lunch</strong>, <strong>Dinner</strong>, <strong>Evening</strong>."
+msgstr "The name customers and staff will see — e.g. <strong>Lunch</strong>, <strong>Dinner</strong>, <strong>Evening</strong>."
+
+msgid "System Name (Slug)"
+msgstr "System Name (Slug)"
+
+msgid "A short unique code used internally — no spaces, lowercase only. Example: <strong>lunch</strong>, <strong>dinner</strong>."
+msgstr "A short unique code used internally — no spaces, lowercase only. Example: <strong>lunch</strong>, <strong>dinner</strong>."
+
+msgid "Start Time"
+msgstr "Start Time"
+
+msgid "End Time"
+msgstr "End Time"
+
+msgid "Max. Guests"
+msgstr "Max. Guests"
+
+msgid "Maximum number of guests that can book this slot."
+msgstr "Maximum number of guests that can book this slot."
+
+msgid "Display Order"
+msgstr "Display Order"
+
+msgid "Lower numbers appear first (0, 1, 2…)."
+msgstr "Lower numbers appear first (0, 1, 2…)."
+
+msgid "Mark this slot as <strong>Active</strong>"
+msgstr "Mark this slot as <strong>Active</strong>"
+
+msgid "Inactive slots are kept in the system but cannot be booked. Deactivate instead of deleting if it has existing reservations."
+msgstr "Inactive slots are kept in the system but cannot be booked. Deactivate instead of deleting if it has existing reservations."
+
+msgid "Save Changes"
+msgstr "Save Changes"
+
+msgid "Create Time Slot"
+msgstr "Create Time Slot"
+
+msgid "Back to List"
+msgstr "Back to List"
+
+msgid "Tip:"
+msgstr "Tip:"
+
+msgid "If this slot is already used in reservations, <strong>deactivate</strong> it rather than deleting it to keep your booking history intact."
+msgstr "If this slot is already used in reservations, <strong>deactivate</strong> it rather than deleting it to keep your booking history intact."
+
+msgid "Date"
+msgstr "Date"
+
+msgid "Select the calendar date you want to restrict or close."
+msgstr "Select the calendar date you want to restrict or close."
+
+msgid "Reason"
+msgstr "Reason"
+
+msgid "(optional)"
+msgstr "(optional)"
+
+msgid "For your reference only — e.g. <strong>Public holiday</strong>, <strong>Private event</strong>, <strong>Maintenance</strong>."
+msgstr "For your reference only — e.g. <strong>Public holiday</strong>, <strong>Private event</strong>, <strong>Maintenance</strong>."
+
+msgid "Close the <strong>entire day</strong> — no bookings allowed"
+msgstr "Close the <strong>entire day</strong> — no bookings allowed"
+
+msgid "Check this if the store is completely closed that day. Leave unchecked if only certain slots should be limited."
+msgstr "Check this if the store is completely closed that day. Leave unchecked if only certain slots should be limited."
+
+msgid "Per-Slot Rules"
+msgstr "Per-Slot Rules"
+
+msgid "Limit or close individual time slots on this day without closing the whole day."
+msgstr "Limit or close individual time slots on this day without closing the whole day."
+
+msgid "Add Slot Rule"
+msgstr "Add Slot Rule"
+
+msgid "Which Slot?"
+msgstr "Which Slot?"
+
+msgid "Blocked Seats"
+msgstr "Blocked Seats"
+
+msgid "Enter 0 if you're only closing the slot completely."
+msgstr "Enter 0 if you're only closing the slot completely."
+
+msgid "Close this slot completely on this day"
+msgstr "Close this slot completely on this day"
+
+msgid "Remove this slot rule"
+msgstr "Remove this slot rule"
+
+msgid "Remove this row"
+msgstr "Remove this row"
+
+msgid "Enter 0 if you're only closing the slot."
+msgstr "Enter 0 if you're only closing the slot."
+
+msgid "Create Blocked Day"
+msgstr "Create Blocked Day"
+
+msgid "Blocked Day"
+msgstr "Blocked Day"
+
+msgid "Choose which blocked day this rule applies to."
+msgstr "Choose which blocked day this rule applies to."
+
+msgid "Time Slot"
+msgstr "Time Slot"
+
+msgid "Choose which reservation slot should be affected."
+msgstr "Choose which reservation slot should be affected."
+
+msgid "How many seats should be removed from availability?"
+msgstr "How many seats should be removed from availability?"
+
+msgid "Close this slot completely"
+msgstr "Close this slot completely"
+
+msgid "If checked, customers cannot book this slot at all."
+msgstr "If checked, customers cannot book this slot at all."
+
+msgid "Example: staff shortage, private event, reduced capacity."
+msgstr "Example: staff shortage, private event, reduced capacity."
+
+msgid "Create Slot Block"
+msgstr "Create Slot Block"
+
+msgid "Guest Name"
+msgstr "Guest Name"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Phone"
+msgstr "Phone"
+
+msgid "Number of Guests"
+msgstr "Number of Guests"
+
+msgid "Slot"
+msgstr "Slot"
+
+msgid "Selecting a slot will auto-fill the time below."
+msgstr "Selecting a slot will auto-fill the time below."
+
+msgid "Time"
+msgstr "Time"
+
+msgid "Auto-filled from the slot, or adjust manually."
+msgstr "Auto-filled from the slot, or adjust manually."
+
+msgid "Notes / Special Requests"
+msgstr "Notes / Special Requests"
+
+msgid "Create Reservation"
+msgstr "Create Reservation"

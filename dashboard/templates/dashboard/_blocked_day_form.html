@@ -1,3 +1,4 @@
+{% load i18n %}
 {% if selected_blocked_day %}
   <form method="post" action="{% url 'dashboard:blocked_day_update' selected_blocked_day.id %}">
 {% else %}
@@ -5,42 +6,226 @@
 {% endif %}
   {% csrf_token %}
 
+  <!-- SECTION 1: Date & Reason -->
   <div class="form-grid">
+
     <div class="form-group full">
-      <label for="{{ form.date.id_for_label }}">Date</label>
+      <label for="{{ form.date.id_for_label }}">📅 {% trans "Date" %}</label>
       {{ form.date }}
-      {% if form.date.errors %}<div class="field-error">{{ form.date.errors|join:", " }}</div>{% endif %}
-      <div class="help">Select the calendar day you want to manage.</div>
+      {% if form.date.errors %}<div class="field-error">⚠ {{ form.date.errors|join:", " }}</div>{% endif %}
+      <div class="help">{% trans "Select the calendar date you want to restrict or close." %}</div>
     </div>
 
     <div class="form-group full">
-      <label for="{{ form.reason.id_for_label }}">Reason</label>
+      <label for="{{ form.reason.id_for_label }}">📝 {% trans "Reason" %} <span style="font-weight:400; color: #9CA3AF;">({% trans "optional" %})</span></label>
       {{ form.reason }}
-      {% if form.reason.errors %}<div class="field-error">{{ form.reason.errors|join:", " }}</div>{% endif %}
-      <div class="help">Optional. Example: Public holiday, private event, maintenance.</div>
+      {% if form.reason.errors %}<div class="field-error">⚠ {{ form.reason.errors|join:", " }}</div>{% endif %}
+      <div class="help">{% blocktrans %}For your reference only — e.g. <strong>Public holiday</strong>, <strong>Private event</strong>, <strong>Maintenance</strong>.{% endblocktrans %}</div>
     </div>
 
     <div class="form-group full">
       <label class="checkbox-row" for="{{ form.is_closed.id_for_label }}">
         {{ form.is_closed }}
-        <span>Mark whole day as closed</span>
+        <span>🔒 {% blocktrans %}Close the <strong>entire day</strong> — no bookings allowed{% endblocktrans %}</span>
       </label>
-      {% if form.is_closed.errors %}<div class="field-error">{{ form.is_closed.errors|join:", " }}</div>{% endif %}
-      <div class="help">If enabled, customers should not be able to book this day.</div>
+      {% if form.is_closed.errors %}<div class="field-error">⚠ {{ form.is_closed.errors|join:", " }}</div>{% endif %}
+      <div class="help">{% trans "Check this if the store is completely closed that day. Leave unchecked if only certain slots should be limited." %}</div>
     </div>
+
   </div>
 
   {% if form.non_field_errors %}
-    <div class="field-error" style="margin-top: 10px;">
-      {{ form.non_field_errors|join:", " }}
+    <div class="field-error" style="margin-top: 12px;">
+      ⚠ {{ form.non_field_errors|join:", " }}
     </div>
   {% endif %}
 
-  <div class="form-actions">
-    <button type="submit" class="btn btn-primary btn-full">
-      {% if selected_blocked_day %}Save Changes{% else %}Create Blocked Day{% endif %}
-    </button>
+  <!-- DIVIDER -->
+  <div class="divider"></div>
 
-    <a href="{% url 'dashboard:home' %}?section=blocked-days" class="btn btn-secondary btn-full">Zurück</a>
+  <!-- SECTION 2: Per-Slot Rules -->
+  <div class="section-label">
+    <div class="section-label-text">
+      <h3>⚙️ {% trans "Per-Slot Rules" %} <span style="font-weight:400; color:#9CA3AF; font-size:0.88rem;">({% trans "optional" %})</span></h3>
+      <p>{% trans "Limit or close individual time slots on this day without closing the whole day." %}</p>
+    </div>
+    <button type="button" class="btn btn-primary" id="add-slot-rule-btn">
+      ＋ {% trans "Add Slot Rule" %}
+    </button>
   </div>
+
+  {{ slot_block_formset.management_form }}
+
+  <div class="inline-list" id="slot-rules-list">
+    {% for subform in slot_block_formset %}
+      <div class="inline-card slot-rule-form" style="background:white; border-radius: 10px; border: 1.5px solid var(--border); padding: 16px 18px;">
+        {{ subform.id }}
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label for="{{ subform.slot.id_for_label }}">⏰ {% trans "Which Slot?" %}</label>
+            {{ subform.slot }}
+            {% if subform.slot.errors %}<div class="field-error">⚠ {{ subform.slot.errors|join:", " }}</div>{% endif %}
+          </div>
+
+          <div class="form-group">
+            <label for="{{ subform.blocked_seats.id_for_label }}">🪑 {% trans "Blocked Seats" %}</label>
+            {{ subform.blocked_seats }}
+            {% if subform.blocked_seats.errors %}<div class="field-error">⚠ {{ subform.blocked_seats.errors|join:", " }}</div>{% endif %}
+            <div class="help">{% trans "Enter 0 if you're only closing the slot completely." %}</div>
+          </div>
+
+          <div class="form-group full">
+            <label class="checkbox-row" for="{{ subform.is_closed.id_for_label }}">
+              {{ subform.is_closed }}
+              <span>🔒 {% trans "Close this slot completely on this day" %}</span>
+            </label>
+            {% if subform.is_closed.errors %}<div class="field-error">⚠ {{ subform.is_closed.errors|join:", " }}</div>{% endif %}
+          </div>
+
+          <div class="form-group full">
+            <label for="{{ subform.reason.id_for_label }}">📝 {% trans "Reason" %} <span style="font-weight:400; color:#9CA3AF;">({% trans "optional" %})</span></label>
+            {{ subform.reason }}
+            {% if subform.reason.errors %}<div class="field-error">⚠ {{ subform.reason.errors|join:", " }}</div>{% endif %}
+          </div>
+
+          {% if subform.instance.pk %}
+            <div class="form-group full">
+              <label class="checkbox-row" for="{{ subform.DELETE.id_for_label }}" style="background: var(--danger-light); border-color: #FECACA;">
+                {{ subform.DELETE }}
+                <span style="color: var(--danger);">🗑 {% trans "Remove this slot rule" %}</span>
+              </label>
+            </div>
+          {% else %}
+            <div class="form-group full">
+              <button type="button" class="btn btn-danger remove-slot-rule-btn">🗑 {% trans "Remove this row" %}</button>
+            </div>
+          {% endif %}
+
+        </div>
+
+        {% if subform.non_field_errors %}
+          <div class="field-error" style="margin-top: 10px;">
+            ⚠ {{ subform.non_field_errors|join:", " }}
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Hidden prototypes for JS cloning -->
+  <template id="empty-slot-rule-template">
+    <div class="inline-card slot-rule-form" style="background:white; border-radius: 10px; border: 1.5px solid var(--border); padding: 16px 18px;">
+      __ID_FIELD__
+      <div class="form-grid">
+        <div class="form-group">
+          <label>⏰ {% trans "Which Slot?" %}</label>
+          __SLOT_FIELD__
+        </div>
+        <div class="form-group">
+          <label>🪑 {% trans "Blocked Seats" %}</label>
+          __BLOCKED_SEATS_FIELD__
+          <div class="help">{% trans "Enter 0 if you're only closing the slot." %}</div>
+        </div>
+        <div class="form-group full">
+          <label class="checkbox-row">
+            __IS_CLOSED_FIELD__
+            <span>🔒 {% trans "Close this slot completely on this day" %}</span>
+          </label>
+        </div>
+        <div class="form-group full">
+          <label>📝 {% trans "Reason" %} <span style="font-weight:400; color:#9CA3AF;">({% trans "optional" %})</span></label>
+          __REASON_FIELD__
+        </div>
+        <div class="form-group full">
+          <button type="button" class="btn btn-danger remove-slot-rule-btn">🗑 {% trans "Remove this row" %}</button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <div id="empty-form-prototypes" style="display:none;">
+    <div id="prototype-id">{{ slot_block_formset.empty_form.id }}</div>
+    <div id="prototype-slot">{{ slot_block_formset.empty_form.slot }}</div>
+    <div id="prototype-blocked-seats">{{ slot_block_formset.empty_form.blocked_seats }}</div>
+    <div id="prototype-is-closed">{{ slot_block_formset.empty_form.is_closed }}</div>
+    <div id="prototype-reason">{{ slot_block_formset.empty_form.reason }}</div>
+  </div>
+
+  <!-- FORM ACTIONS -->
+  <div class="form-actions" style="margin-top: 24px;">
+    <button type="submit" class="btn btn-primary btn-full btn-lg">
+      {% if selected_blocked_day %}💾 {% trans "Save Changes" %}{% else %}✅ {% trans "Create Blocked Day" %}{% endif %}
+    </button>
+    <a href="{% url 'dashboard:home' %}?section=blocked-days" class="btn btn-secondary btn-full">
+      ← {% trans "Back to List" %}
+    </a>
+  </div>
+
 </form>
+
+<script>
+  (function () {
+    const addBtn = document.getElementById("add-slot-rule-btn");
+    const list = document.getElementById("slot-rules-list");
+    const totalForms = document.getElementById("id_slot_blocks-TOTAL_FORMS");
+
+    if (!addBtn || !list || !totalForms) return;
+
+    function getPrototypeHtml() {
+      const template = document.getElementById("empty-slot-rule-template").innerHTML;
+      const idField = document.getElementById("prototype-id").innerHTML;
+      const slotField = document.getElementById("prototype-slot").innerHTML;
+      const blockedSeatsField = document.getElementById("prototype-blocked-seats").innerHTML;
+      const isClosedField = document.getElementById("prototype-is-closed").innerHTML;
+      const reasonField = document.getElementById("prototype-reason").innerHTML;
+
+      return template
+        .replace("__ID_FIELD__", idField)
+        .replace("__SLOT_FIELD__", slotField)
+        .replace("__BLOCKED_SEATS_FIELD__", blockedSeatsField)
+        .replace("__IS_CLOSED_FIELD__", isClosedField)
+        .replace("__REASON_FIELD__", reasonField);
+    }
+
+    function buildRow(index) {
+      const html = getPrototypeHtml().replace(/__prefix__/g, index);
+      const wrapper = document.createElement("div");
+      wrapper.innerHTML = html.trim();
+      return wrapper.firstElementChild;
+    }
+
+    addBtn.addEventListener("click", function () {
+      const index = parseInt(totalForms.value, 10);
+      const row = buildRow(index);
+      list.appendChild(row);
+      totalForms.value = index + 1;
+    });
+
+    list.addEventListener("click", function (event) {
+      if (event.target.classList.contains("remove-slot-rule-btn")) {
+        const card = event.target.closest(".slot-rule-form");
+        if (card) {
+          card.remove();
+          const forms = list.querySelectorAll(".slot-rule-form");
+          totalForms.value = forms.length;
+          forms.forEach((formEl, newIndex) => {
+            formEl.querySelectorAll("input, select, textarea, label").forEach((el) => {
+              ["name", "id", "for"].forEach((attr) => {
+                const val = el.getAttribute(attr);
+                if (val) {
+                  el.setAttribute(attr, val.replace(/slot_blocks-\d+-/g, `slot_blocks-${newIndex}-`));
+                }
+              });
+            });
+          });
+        }
+      }
+    });
+
+    if (parseInt(totalForms.value, 10) === 0) {
+      addBtn.click();
+    }
+  })();
+</script>

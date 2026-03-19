@@ -1,0 +1,65 @@
+{% load i18n %}
+{% if selected_day_slot_block %}
+  <form method="post" action="{% url 'dashboard:day_slot_block_update' selected_day_slot_block.id %}">
+{% else %}
+  <form method="post" action="{% url 'dashboard:day_slot_block_create' %}">
+{% endif %}
+  {% csrf_token %}
+
+  <div class="form-grid">
+
+    <div class="form-group full">
+      <label for="{{ form.blocked_day.id_for_label }}">📅 {% trans "Blocked Day" %}</label>
+      {{ form.blocked_day }}
+      {% if form.blocked_day.errors %}<div class="field-error">⚠ {{ form.blocked_day.errors|join:", " }}</div>{% endif %}
+      <div class="help">{% trans "Choose which blocked day this rule applies to." %}</div>
+    </div>
+
+    <div class="form-group full">
+      <label for="{{ form.slot.id_for_label }}">⏰ {% trans "Time Slot" %}</label>
+      {{ form.slot }}
+      {% if form.slot.errors %}<div class="field-error">⚠ {{ form.slot.errors|join:", " }}</div>{% endif %}
+      <div class="help">{% trans "Choose which reservation slot should be affected." %}</div>
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.blocked_seats.id_for_label }}">🪑 {% trans "Blocked Seats" %}</label>
+      {{ form.blocked_seats }}
+      {% if form.blocked_seats.errors %}<div class="field-error">⚠ {{ form.blocked_seats.errors|join:", " }}</div>{% endif %}
+      <div class="help">{% trans "How many seats should be removed from availability?" %}</div>
+    </div>
+
+    <div class="form-group">
+      <label class="checkbox-row" for="{{ form.is_closed.id_for_label }}">
+        {{ form.is_closed }}
+        <span>🔒 {% trans "Close this slot completely" %}</span>
+      </label>
+      {% if form.is_closed.errors %}<div class="field-error">⚠ {{ form.is_closed.errors|join:", " }}</div>{% endif %}
+      <div class="help">{% trans "If checked, customers cannot book this slot at all." %}</div>
+    </div>
+
+    <div class="form-group full">
+      <label for="{{ form.reason.id_for_label }}">📝 {% trans "Reason" %} <span style="font-weight:400; color:#9CA3AF;">({% trans "optional" %})</span></label>
+      {{ form.reason }}
+      {% if form.reason.errors %}<div class="field-error">⚠ {{ form.reason.errors|join:", " }}</div>{% endif %}
+      <div class="help">{% trans "Example: staff shortage, private event, reduced capacity." %}</div>
+    </div>
+
+  </div>
+
+  {% if form.non_field_errors %}
+    <div class="field-error" style="margin-top: 12px;">
+      ⚠ {{ form.non_field_errors|join:", " }}
+    </div>
+  {% endif %}
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary btn-full btn-lg">
+      {% if selected_day_slot_block %}💾 {% trans "Save Changes" %}{% else %}✅ {% trans "Create Slot Block" %}{% endif %}
+    </button>
+    <a href="{% url 'dashboard:home' %}?section=day-slot-blocks" class="btn btn-secondary btn-full">
+      ← {% trans "Back to List" %}
+    </a>
+  </div>
+
+</form>

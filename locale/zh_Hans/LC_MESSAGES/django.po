@@ -1,0 +1,195 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: dashboard\n"
+"POT-Creation-Date: 2026-03-19 00:00+0000\n"
+"PO-Revision-Date: 2026-03-19 00:00+0000\n"
+"Last-Translator: ChatGPT\n"
+"Language-Team: Chinese Simplified\n"
+"Language: zh_Hans\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "Store Dashboard"
+msgstr "店铺后台"
+
+msgid "Time Slots"
+msgstr "时间段"
+
+msgid "Blocked Days"
+msgstr "封锁日期"
+
+msgid "Reservations"
+msgstr "预订"
+
+msgid "Manage the reservation windows your customers can book."
+msgstr "管理顾客可以预订的时间段。"
+
+msgid "Mark days as closed or limit specific slots on certain dates."
+msgstr "将某些日期标记为关闭，或限制特定日期的某些时间段。"
+
+msgid "View, create, and manage all customer reservations."
+msgstr "查看、创建并管理所有顾客预订。"
+
+msgid "Display Name"
+msgstr "显示名称"
+
+msgid "The name customers and staff will see — e.g. <strong>Lunch</strong>, <strong>Dinner</strong>, <strong>Evening</strong>."
+msgstr "顾客和员工将看到的名称——例如：<strong>午餐</strong>、<strong>晚餐</strong>、<strong>晚上</strong>。"
+
+msgid "System Name (Slug)"
+msgstr "系统名称（Slug）"
+
+msgid "A short unique code used internally — no spaces, lowercase only. Example: <strong>lunch</strong>, <strong>dinner</strong>."
+msgstr "内部使用的简短唯一代码——不能有空格，只能使用小写字母。示例：<strong>lunch</strong>、<strong>dinner</strong>。"
+
+msgid "Start Time"
+msgstr "开始时间"
+
+msgid "End Time"
+msgstr "结束时间"
+
+msgid "Max. Guests"
+msgstr "最多客人数"
+
+msgid "Maximum number of guests that can book this slot."
+msgstr "可以预订此时间段的最大客人数。"
+
+msgid "Display Order"
+msgstr "显示顺序"
+
+msgid "Lower numbers appear first (0, 1, 2…)."
+msgstr "数字越小越靠前显示（0、1、2……）。"
+
+msgid "Mark this slot as <strong>Active</strong>"
+msgstr "将此时间段标记为<strong>启用</strong>"
+
+msgid "Inactive slots are kept in the system but cannot be booked. Deactivate instead of deleting if it has existing reservations."
+msgstr "停用的时间段会保留在系统中，但无法被预订。如果它已有预订记录，请停用而不是删除。"
+
+msgid "Save Changes"
+msgstr "保存更改"
+
+msgid "Create Time Slot"
+msgstr "创建时间段"
+
+msgid "Back to List"
+msgstr "返回列表"
+
+msgid "Tip:"
+msgstr "提示："
+
+msgid "If this slot is already used in reservations, <strong>deactivate</strong> it rather than deleting it to keep your booking history intact."
+msgstr "如果此时间段已经用于预订，请选择<strong>停用</strong>而不是删除，以保留您的预订历史记录。"
+
+msgid "Date"
+msgstr "日期"
+
+msgid "Select the calendar date you want to restrict or close."
+msgstr "选择您想限制或关闭的日期。"
+
+msgid "Reason"
+msgstr "原因"
+
+msgid "(optional)"
+msgstr "（可选）"
+
+msgid "For your reference only — e.g. <strong>Public holiday</strong>, <strong>Private event</strong>, <strong>Maintenance</strong>."
+msgstr "仅供参考——例如：<strong>公共假期</strong>、<strong>私人活动</strong>、<strong>维护</strong>。"
+
+msgid "Close the <strong>entire day</strong> — no bookings allowed"
+msgstr "关闭<strong>整天</strong>——不允许任何预订"
+
+msgid "Check this if the store is completely closed that day. Leave unchecked if only certain slots should be limited."
+msgstr "如果店铺当天完全关闭，请勾选此项。如果只是限制某些时间段，请不要勾选。"
+
+msgid "Per-Slot Rules"
+msgstr "按时间段规则"
+
+msgid "Limit or close individual time slots on this day without closing the whole day."
+msgstr "在不关闭整天的情况下，限制或关闭当天的单个时间段。"
+
+msgid "Add Slot Rule"
+msgstr "添加时间段规则"
+
+msgid "Which Slot?"
+msgstr "哪个时间段？"
+
+msgid "Blocked Seats"
+msgstr "封锁座位数"
+
+msgid "Enter 0 if you're only closing the slot completely."
+msgstr "如果您只是想完全关闭该时间段，请输入 0。"
+
+msgid "Close this slot completely on this day"
+msgstr "在这一天完全关闭此时间段"
+
+msgid "Remove this slot rule"
+msgstr "删除此时间段规则"
+
+msgid "Remove this row"
+msgstr "删除此行"
+
+msgid "Enter 0 if you're only closing the slot."
+msgstr "如果您只是想关闭该时间段，请输入 0。"
+
+msgid "Create Blocked Day"
+msgstr "创建封锁日期"
+
+msgid "Blocked Day"
+msgstr "封锁日期"
+
+msgid "Choose which blocked day this rule applies to."
+msgstr "选择此规则适用的封锁日期。"
+
+msgid "Time Slot"
+msgstr "时间段"
+
+msgid "Choose which reservation slot should be affected."
+msgstr "选择要受影响的预订时间段。"
+
+msgid "How many seats should be removed from availability?"
+msgstr "需要从可预订数量中移除多少个座位？"
+
+msgid "Close this slot completely"
+msgstr "完全关闭此时间段"
+
+msgid "If checked, customers cannot book this slot at all."
+msgstr "如果勾选，顾客将完全无法预订此时间段。"
+
+msgid "Example: staff shortage, private event, reduced capacity."
+msgstr "示例：员工短缺、私人活动、容量减少。"
+
+msgid "Create Slot Block"
+msgstr "创建时间段封锁"
+
+msgid "Guest Name"
+msgstr "客人姓名"
+
+msgid "Email"
+msgstr "电子邮箱"
+
+msgid "Phone"
+msgstr "电话"
+
+msgid "Number of Guests"
+msgstr "客人数"
+
+msgid "Slot"
+msgstr "时间段"
+
+msgid "Selecting a slot will auto-fill the time below."
+msgstr "选择时间段后，下面的时间会自动填写。"
+
+msgid "Time"
+msgstr "时间"
+
+msgid "Auto-filled from the slot, or adjust manually."
+msgstr "会根据时间段自动填写，或者手动调整。"
+
+msgid "Notes / Special Requests"
+msgstr "备注 / 特殊要求"
+
+msgid "Create Reservation"
+msgstr "创建预订"

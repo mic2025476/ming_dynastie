@@ -1,3 +1,4 @@
+{% load i18n %}
 {% if selected_slot %}
   <form method="post" action="{% url 'dashboard:timeslot_update' selected_slot.id %}">
 {% else %}
@@ -6,69 +7,81 @@
   {% csrf_token %}
 
   <div class="form-grid">
+
+    <!-- Display Name -->
     <div class="form-group full">
-      <label for="{{ form.label.id_for_label }}">Display Name</label>
+      <label for="{{ form.label.id_for_label }}">🏷️ {% trans "Display Name" %}</label>
       {{ form.label }}
-      {% if form.label.errors %}<div class="field-error">{{ form.label.errors|join:", " }}</div>{% endif %}
-      <div class="help">Example: Lunch, Post Lunch, Dinner</div>
+      {% if form.label.errors %}<div class="field-error">⚠ {{ form.label.errors|join:", " }}</div>{% endif %}
+      <div class="help">{% blocktrans %}The name customers and staff will see — e.g. <strong>Lunch</strong>, <strong>Dinner</strong>, <strong>Evening</strong>.{% endblocktrans %}</div>
     </div>
 
+    <!-- System Slug -->
     <div class="form-group full">
-      <label for="{{ form.slug.id_for_label }}">System Name</label>
+      <label for="{{ form.slug.id_for_label }}">🔑 {% trans "System Name (Slug)" %}</label>
       {{ form.slug }}
-      {% if form.slug.errors %}<div class="field-error">{{ form.slug.errors|join:", " }}</div>{% endif %}
-      <div class="help">Use a short unique value like lunch or dinner.</div>
+      {% if form.slug.errors %}<div class="field-error">⚠ {{ form.slug.errors|join:", " }}</div>{% endif %}
+      <div class="help">{% blocktrans %}A short unique code used internally — no spaces, lowercase only. Example: <strong>lunch</strong>, <strong>dinner</strong>.{% endblocktrans %}</div>
     </div>
 
+    <!-- Start / End Time -->
     <div class="form-group">
-      <label for="{{ form.start_time.id_for_label }}">Start Time</label>
+      <label for="{{ form.start_time.id_for_label }}">🕐 {% trans "Start Time" %}</label>
       {{ form.start_time }}
-      {% if form.start_time.errors %}<div class="field-error">{{ form.start_time.errors|join:", " }}</div>{% endif %}
+      {% if form.start_time.errors %}<div class="field-error">⚠ {{ form.start_time.errors|join:", " }}</div>{% endif %}
     </div>
 
     <div class="form-group">
-      <label for="{{ form.end_time.id_for_label }}">End Time</label>
+      <label for="{{ form.end_time.id_for_label }}">🕔 {% trans "End Time" %}</label>
       {{ form.end_time }}
-      {% if form.end_time.errors %}<div class="field-error">{{ form.end_time.errors|join:", " }}</div>{% endif %}
+      {% if form.end_time.errors %}<div class="field-error">⚠ {{ form.end_time.errors|join:", " }}</div>{% endif %}
     </div>
 
+    <!-- Capacity / Order -->
     <div class="form-group">
-      <label for="{{ form.capacity.id_for_label }}">Maximum Guests</label>
+      <label for="{{ form.capacity.id_for_label }}">👥 {% trans "Max. Guests" %}</label>
       {{ form.capacity }}
-      {% if form.capacity.errors %}<div class="field-error">{{ form.capacity.errors|join:", " }}</div>{% endif %}
+      {% if form.capacity.errors %}<div class="field-error">⚠ {{ form.capacity.errors|join:", " }}</div>{% endif %}
+      <div class="help">{% trans "Maximum number of guests that can book this slot." %}</div>
     </div>
 
     <div class="form-group">
-      <label for="{{ form.sort_order.id_for_label }}">Display Order</label>
+      <label for="{{ form.sort_order.id_for_label }}">🔢 {% trans "Display Order" %}</label>
       {{ form.sort_order }}
-      {% if form.sort_order.errors %}<div class="field-error">{{ form.sort_order.errors|join:", " }}</div>{% endif %}
+      {% if form.sort_order.errors %}<div class="field-error">⚠ {{ form.sort_order.errors|join:", " }}</div>{% endif %}
+      <div class="help">{% trans "Lower numbers appear first (0, 1, 2…)." %}</div>
     </div>
 
+    <!-- Active toggle -->
     <div class="form-group full">
       <label class="checkbox-row" for="{{ form.is_active.id_for_label }}">
         {{ form.is_active }}
-        <span>Active</span>
+        <span>✅ {% blocktrans %}Mark this slot as <strong>Active</strong>{% endblocktrans %}</span>
       </label>
-      {% if form.is_active.errors %}<div class="field-error">{{ form.is_active.errors|join:", " }}</div>{% endif %}
-      <div class="help">Inactive slots stay in the system but are not used for new reservations.</div>
+      {% if form.is_active.errors %}<div class="field-error">⚠ {{ form.is_active.errors|join:", " }}</div>{% endif %}
+      <div class="help">{% trans "Inactive slots are kept in the system but cannot be booked. Deactivate instead of deleting if it has existing reservations." %}</div>
     </div>
+
   </div>
 
   {% if form.non_field_errors %}
-    <div class="field-error" style="margin-top: 10px;">
-      {{ form.non_field_errors|join:", " }}
+    <div class="field-error" style="margin-top: 12px;">
+      ⚠ {{ form.non_field_errors|join:", " }}
     </div>
   {% endif %}
 
   <div class="form-actions">
-    <button type="submit" class="btn btn-primary btn-full">
-      {% if selected_slot %}Save Changes{% else %}Create Time Slot{% endif %}
+    <button type="submit" class="btn btn-primary btn-full btn-lg">
+      {% if selected_slot %}💾 {% trans "Save Changes" %}{% else %}✅ {% trans "Create Time Slot" %}{% endif %}
     </button>
-
-    <a href="{% url 'dashboard:home' %}" class="btn btn-secondary btn-full">Zurück</a>
+    <a href="{% url 'dashboard:home' %}?section=timeslots" class="btn btn-secondary btn-full">
+      ← {% trans "Back to List" %}
+    </a>
   </div>
 
-  <div class="danger-note">
-    Tip: if a slot is already used in reservations, staff should deactivate it instead of deleting it.
+  <div class="tip-box" style="margin-top: 16px;">
+    <span class="tip-box-icon">💡</span>
+    <span class="tip-box-text">{% blocktrans %}<strong>Tip:</strong> If this slot is already used in reservations, <strong>deactivate</strong> it rather than deleting it to keep your booking history intact.{% endblocktrans %}</span>
   </div>
+
 </form>

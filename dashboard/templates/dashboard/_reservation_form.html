@@ -1,0 +1,102 @@
+{% load i18n %}
+{% if selected_reservation %}
+  <form method="post" action="{% url 'dashboard:reservation_update' selected_reservation.id %}">
+{% else %}
+  <form method="post" action="{% url 'dashboard:reservation_create' %}">
+{% endif %}
+  {% csrf_token %}
+
+  <div class="form-grid">
+
+    <!-- Guest Name -->
+    <div class="form-group full">
+      <label for="{{ form.name.id_for_label }}">👤 {% trans "Guest Name" %}</label>
+      {{ form.name }}
+      {% if form.name.errors %}<div class="field-error">⚠ {{ form.name.errors|join:", " }}</div>{% endif %}
+    </div>
+
+    <!-- Email -->
+    <div class="form-group">
+      <label for="{{ form.email.id_for_label }}">✉️ {% trans "Email" %}</label>
+      {{ form.email }}
+      {% if form.email.errors %}<div class="field-error">⚠ {{ form.email.errors|join:", " }}</div>{% endif %}
+    </div>
+
+    <!-- Phone -->
+    <div class="form-group">
+      <label for="{{ form.phone.id_for_label }}">📞 {% trans "Phone" %}</label>
+      {{ form.phone }}
+      {% if form.phone.errors %}<div class="field-error">⚠ {{ form.phone.errors|join:", " }}</div>{% endif %}
+    </div>
+
+    <!-- Date -->
+    <div class="form-group">
+      <label for="{{ form.date.id_for_label }}">📅 {% trans "Date" %}</label>
+      {{ form.date }}
+      {% if form.date.errors %}<div class="field-error">⚠ {{ form.date.errors|join:", " }}</div>{% endif %}
+    </div>
+
+    <!-- Party Size -->
+    <div class="form-group">
+      <label for="{{ form.party_size.id_for_label }}">👥 {% trans "Number of Guests" %}</label>
+      {{ form.party_size }}
+      {% if form.party_size.errors %}<div class="field-error">⚠ {{ form.party_size.errors|join:", " }}</div>{% endif %}
+    </div>
+
+    <!-- Slot -->
+    <div class="form-group">
+      <label for="{{ form.slot.id_for_label }}">⏰ {% trans "Slot" %}</label>
+      {{ form.slot }}
+      {% if form.slot.errors %}<div class="field-error">⚠ {{ form.slot.errors|join:", " }}</div>{% endif %}
+      <div class="help">{% trans "Selecting a slot will auto-fill the time below." %}</div>
+    </div>
+
+    <!-- Time -->
+    <div class="form-group">
+      <label for="{{ form.time.id_for_label }}">🕐 {% trans "Time" %}</label>
+      {{ form.time }}
+      {% if form.time.errors %}<div class="field-error">⚠ {{ form.time.errors|join:", " }}</div>{% endif %}
+      <div class="help">{% trans "Auto-filled from the slot, or adjust manually." %}</div>
+    </div>
+
+    <!-- Message -->
+    <div class="form-group full">
+      <label for="{{ form.message.id_for_label }}">💬 {% trans "Notes / Special Requests" %} <span style="font-weight:400; color:#9CA3AF;">({% trans "optional" %})</span></label>
+      {{ form.message }}
+      {% if form.message.errors %}<div class="field-error">⚠ {{ form.message.errors|join:", " }}</div>{% endif %}
+    </div>
+
+  </div>
+
+  {% if form.non_field_errors %}
+    <div class="field-error" style="margin-top: 12px;">⚠ {{ form.non_field_errors|join:", " }}</div>
+  {% endif %}
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary btn-full btn-lg">
+      {% if selected_reservation %}💾 {% trans "Save Changes" %}{% else %}✅ {% trans "Create Reservation" %}{% endif %}
+    </button>
+    <a href="{% url 'dashboard:home' %}?section=reservations" class="btn btn-secondary btn-full">
+      ← {% trans "Back to List" %}
+    </a>
+  </div>
+
+</form>
+
+<!-- Auto-fill time from selected slot -->
+<script>
+  (function () {
+    const slotsMap = {{ slots_json|safe }};
+    const slotSelect = document.getElementById("id_slot");
+    const timeInput  = document.getElementById("id_time");
+
+    if (!slotSelect || !timeInput) return;
+
+    slotSelect.addEventListener("change", function () {
+      const slotId = this.value;
+      if (slotsMap[slotId]) {
+        timeInput.value = slotsMap[slotId];
+      }
+    });
+  })();
+</script>

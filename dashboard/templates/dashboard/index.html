@@ -1,552 +1,863 @@
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="en">
+{% get_current_language as CURRENT_LANGUAGE %}
+<html lang="{{ CURRENT_LANGUAGE }}">
 <head>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Store Dashboard</title>
+  <title>{% trans "Store Dashboard" %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --bg: #f5f7fb;
-      --card: #ffffff;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --border: #e5e7eb;
-      --primary: #1d4ed8;
-      --primary-hover: #1e40af;
-      --danger: #dc2626;
-      --danger-hover: #b91c1c;
-      --warning: #d97706;
-      --shadow: 0 10px 30px rgba(0,0,0,0.06);
-      --radius: 18px;
+    :root {
+      --bg: #F7F8FC;
+      --card: #FFFFFF;
+      --text: #111827;
+      --muted: #6B7280;
+      --border: #E5E7EB;
+      --primary: #2563EB;
+      --primary-light: #EFF6FF;
+      --primary-hover: #1D4ED8;
+      --danger: #DC2626;
+      --danger-light: #FEF2F2;
+      --danger-hover: #B91C1C;
+      --warning: #D97706;
+      --warning-light: #FFFBEB;
+      --success: #059669;
+      --success-light: #ECFDF5;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05);
+      --shadow: 0 4px 16px rgba(0,0,0,0.07);
+      --radius: 16px;
+      --radius-sm: 10px;
     }
 
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body{
-      margin:0;
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
+      min-height: 100vh;
     }
 
-    .container{
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 24px;
+    /* ── TOP BAR ── */
+    .topbar {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
     }
 
-    .page-header{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:16px;
-      margin-bottom:24px;
-      flex-wrap:wrap;
-    }
-
-    .page-title{
-      margin:0;
-      font-size: 2rem;
+    .topbar-logo {
+      font-family: 'Outfit', sans-serif;
       font-weight: 800;
+      font-size: 1.15rem;
+      color: var(--primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .page-subtitle{
-      margin:6px 0 0;
-      color: var(--muted);
-      font-size: 0.98rem;
+    .topbar-logo .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--primary);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
     }
 
-    .top-nav{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-bottom:20px;
-    }
+    /* ── LANG SWITCHER ── */
+    .lang-switcher-form { margin-left: auto; display: flex; align-items: center; }
 
-    .top-nav a{
-      text-decoration:none;
-      padding:10px 14px;
-      border-radius:12px;
-      background:#e5e7eb;
-      color:#374151;
-      font-weight:700;
-    }
-
-    .top-nav a.active{
-      background:#1d4ed8;
-      color:white;
-    }
-
-    .page-actions{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-    }
-
-    .messages{
-      margin-bottom: 20px;
-      display:grid;
-      gap:10px;
-    }
-
-    .message{
-      padding: 14px 16px;
-      border-radius: 12px;
+    .lang-select {
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 32px 7px 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
       font-weight: 600;
-      font-size: 0.95rem;
+      background: white;
+      color: var(--text);
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      transition: border-color 0.18s;
     }
 
-    .message.success{
-      background: #ecfdf3;
-      color: #166534;
-      border: 1px solid #bbf7d0;
+    .lang-select:focus { outline: none; border-color: var(--primary); }
+
+    /* ── MAIN LAYOUT ── */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 28px 24px 60px;
     }
 
-    .message.error{
-      background: #fef2f2;
-      color: #991b1b;
-      border: 1px solid #fecaca;
+    /* ── PAGE HEADER ── */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
     }
 
-    .grid{
-      display:grid;
-      grid-template-columns: 1.35fr 0.95fr;
-      gap:24px;
+    .page-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.9rem;
+      font-weight: 800;
+      line-height: 1.15;
     }
 
-    .card{
+    .page-subtitle {
+      color: var(--muted);
+      font-size: 0.97rem;
+      margin-top: 5px;
+    }
+
+    .page-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* ── NAV TABS ── */
+    .top-nav {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+      background: var(--card);
+      padding: 6px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      width: fit-content;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .top-nav a {
+      text-decoration: none;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.94rem;
+      transition: all 0.18s ease;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+    }
+
+    .top-nav a:hover { background: var(--primary-light); color: var(--primary); }
+
+    .top-nav a.active {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 2px 8px rgba(37,99,235,0.25);
+    }
+
+    /* ── MESSAGES ── */
+    .messages { margin-bottom: 20px; display: grid; gap: 10px; }
+
+    .message {
+      padding: 14px 18px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 0.94rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .message.success { background: var(--success-light); color: #065F46; border: 1px solid #A7F3D0; }
+    .message.error   { background: var(--danger-light);  color: #991B1B; border: 1px solid #FECACA; }
+
+    /* ── GRID ── */
+    .grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .grid.reservations-grid {
+      grid-template-columns: 1.6fr 1fr;
+    }
+
+    /* ── CARD ── */
+    .card {
       background: var(--card);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      border: 1px solid rgba(229,231,235,0.9);
+      border: 1px solid var(--border);
       overflow: hidden;
     }
 
-    .card-header{
-      padding: 20px 22px 12px;
-      border-bottom: 1px solid var(--border);
+    .card-header { padding: 22px 24px 16px; border-bottom: 1px solid var(--border); }
+    .card-title  { font-family: 'Outfit', sans-serif; font-size: 1.12rem; font-weight: 700; }
+    .card-desc   { color: var(--muted); font-size: 0.91rem; margin-top: 5px; line-height: 1.5; }
+    .card-body   { padding: 20px 24px 24px; }
+
+    /* ── FILTER BAR (Reservations) ── */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+      align-items: center;
     }
 
-    .card-title{
-      margin:0;
-      font-size:1.2rem;
-      font-weight:700;
+    .filter-tabs {
+      display: flex;
+      background: #F3F4F6;
+      border-radius: var(--radius-sm);
+      padding: 4px;
+      gap: 2px;
     }
 
-    .card-desc{
-      margin:6px 0 0;
+    .filter-tab {
+      text-decoration: none;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
       color: var(--muted);
-      font-size:0.94rem;
+      transition: all 0.15s;
+      white-space: nowrap;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
     }
 
-    .card-body{
-      padding: 20px 22px 22px;
+    .filter-tab:hover { background: white; color: var(--text); }
+
+    .filter-tab.active {
+      background: white;
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
     }
 
-    .slot-list{
-      display:grid;
-      gap:14px;
+    .filter-select {
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 32px 8px 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      background: white;
+      color: var(--text);
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      cursor: pointer;
     }
 
-    .slot-item{
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:16px;
-      flex-wrap:wrap;
-    }
-
-    .slot-main{
-      min-width: 220px;
+    .search-input {
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      background: white;
+      min-width: 180px;
       flex: 1;
     }
 
-    .slot-title{
-      margin:0 0 8px;
-      font-size: 1.08rem;
-      font-weight: 700;
-    }
+    .search-input:focus { outline: none; border-color: var(--primary); }
 
-    .slot-meta{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      color: var(--muted);
-      font-size: 0.94rem;
-    }
-
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      font-weight: 700;
-    }
-
-    .badge.active{
-      background:#ecfdf3;
-      color:#166534;
-    }
-
-    .badge.inactive{
-      background:#fef2f2;
-      color:#991b1b;
-    }
-
-    .badge.closed{
-      background:#fee2e2;
-      color:#991b1b;
-    }
-
-    .badge.open{
-      background:#eff6ff;
-      color:#1d4ed8;
-    }
-
-    .actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-    }
-
-    .btn{
-      border:none;
-      border-radius: 12px;
-      padding: 10px 14px;
-      font-weight: 700;
-      cursor:pointer;
-      text-decoration:none;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      transition: 0.2s ease;
-      font-size: 0.92rem;
-    }
-
-    .btn:hover{ transform: translateY(-1px); }
-
-    .btn-primary{
+    .filter-submit {
+      border: none;
       background: var(--primary);
-      color:white;
-    }
-
-    .btn-primary:hover{
-      background: var(--primary-hover);
-    }
-
-    .btn-secondary{
-      background: #eef2ff;
-      color: #3730a3;
-    }
-
-    .btn-warning{
-      background: #fff7ed;
-      color: #b45309;
-    }
-
-    .btn-danger{
-      background: #fee2e2;
-      color: var(--danger);
-    }
-
-    .btn-danger:hover{
-      background: #fecaca;
-      color: var(--danger-hover);
-    }
-
-    .btn-full{
-      width:100%;
-    }
-
-    .form-grid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:14px;
-    }
-
-    .form-group{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-
-    .form-group.full{
-      grid-column: 1 / -1;
-    }
-
-    label{
-      font-size: 0.92rem;
-      font-weight: 700;
-    }
-
-    .form-input{
-      width:100%;
-      border:1px solid var(--border);
-      border-radius: 12px;
-      padding: 11px 12px;
-      font-size: 0.95rem;
-      background:white;
-    }
-
-    .form-input:focus{
-      outline:none;
-      border-color:#93c5fd;
-      box-shadow:0 0 0 4px rgba(59,130,246,0.12);
-    }
-
-    .checkbox-row{
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-
-    .form-checkbox{
-      width:18px;
-      height:18px;
-    }
-
-    .help{
-      color: var(--muted);
-      font-size: 0.85rem;
-      margin-top: 2px;
-    }
-
-    .field-error{
-      color: #b91c1c;
+      color: white;
+      border-radius: var(--radius-sm);
+      padding: 8px 16px;
+      font-family: 'DM Sans', sans-serif;
       font-size: 0.88rem;
       font-weight: 600;
+      cursor: pointer;
     }
 
-    .form-actions{
-      margin-top:16px;
-      display:grid;
-      gap:10px;
+    /* ── SLOT / RESERVATION LIST ── */
+    .slot-list { display: grid; gap: 12px; }
+
+    .slot-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      flex-wrap: wrap;
+      transition: box-shadow 0.18s;
+      background: #FDFEFF;
+      border-left: 4px solid var(--border);
     }
 
-    .empty-state{
-      display:grid;
-      gap:12px;
-      padding: 24px;
-      text-align:left;
-      border: 1px dashed var(--border);
-      border-radius: 16px;
+    .slot-item:hover { box-shadow: var(--shadow); }
+    .slot-item.is-active   { border-left-color: var(--success); }
+    .slot-item.is-inactive { border-left-color: var(--danger); background: #FDFCFC; }
+    .slot-item.is-closed   { border-left-color: var(--danger); background: #FDFCFC; }
+    .slot-item.is-partial  { border-left-color: var(--warning); }
+    .slot-item.is-upcoming { border-left-color: var(--primary); }
+    .slot-item.is-past     { border-left-color: #D1D5DB; background: #FAFAFA; }
+    .slot-item.is-today    { border-left-color: var(--success); background: #F0FDF9; }
+
+    .slot-main { min-width: 0; flex: 1; }
+
+    .slot-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 8px;
     }
 
-    .empty-title{
-      margin:0;
-      font-size:1rem;
-      font-weight:700;
+    .res-name-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
     }
 
-    .empty-text{
-      margin:0;
-      color: var(--muted);
+    .res-name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
     }
 
-    @media (max-width: 920px){
-      .grid{
-        grid-template-columns: 1fr;
-      }
+    .slot-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
     }
 
-    @media (max-width: 640px){
-      .container{
-        padding: 16px;
-      }
+    .meta-tag {
+      background: #F3F4F6;
+      color: #374151;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
 
-      .form-grid{
-        grid-template-columns: 1fr;
-      }
+    .meta-tag.highlight {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
 
-      .actions{
-        width: 100%;
-        justify-content: flex-start;
-      }
+    /* ── BADGES ── */
+    .badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 999px; font-size: 0.8rem; font-weight: 700; }
+    .badge.active   { background: var(--success-light); color: #065F46; border: 1px solid #A7F3D0; }
+    .badge.inactive { background: var(--danger-light);  color: #991B1B; border: 1px solid #FECACA; }
+    .badge.closed   { background: var(--danger-light);  color: #991B1B; border: 1px solid #FECACA; }
+    .badge.open     { background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; }
+    .badge.today    { background: #F0FDF9; color: #065F46; border: 1px solid #A7F3D0; }
+    .badge.upcoming { background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; }
+    .badge.past     { background: #F9FAFB; color: #6B7280; border: 1px solid #D1D5DB; }
 
-      .btn{
-        width: 100%;
-      }
+    /* ── ACTIONS ── */
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      align-items: flex-start;
+      flex-shrink: 0;
+    }
 
-      .page-actions{
-        width:100%;
-      }
+    /* ── BUTTONS ── */
+    .btn {
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 9px 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.18s ease;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
 
-      .page-actions .btn{
-        width:100%;
-      }
+    .btn:hover  { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+
+    .btn-primary        { background: var(--primary); color: white; box-shadow: 0 1px 3px rgba(37,99,235,0.3); }
+    .btn-primary:hover  { background: var(--primary-hover); box-shadow: 0 4px 12px rgba(37,99,235,0.35); }
+    .btn-secondary      { background: #F3F4F6; color: #374151; border: 1px solid var(--border); }
+    .btn-secondary:hover{ background: #E5E7EB; }
+    .btn-warning        { background: var(--warning-light); color: #92400E; border: 1px solid #FDE68A; }
+    .btn-warning:hover  { background: #FEF3C7; }
+    .btn-danger         { background: var(--danger-light); color: var(--danger); border: 1px solid #FECACA; }
+    .btn-danger:hover   { background: #FEE2E2; color: var(--danger-hover); }
+    .btn-full { width: 100%; }
+    .btn-lg   { padding: 12px 20px; font-size: 0.97rem; }
+
+    /* ── FORMS ── */
+    .form-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+
+    label { font-size: 0.88rem; font-weight: 600; color: #374151; display: flex; align-items: center; gap: 5px; }
+
+    .form-input {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 11px 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      background: white;
+      color: var(--text);
+      transition: border-color 0.18s, box-shadow 0.18s;
+    }
+
+    .form-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.10); }
+
+    select.form-input {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 40px;
+    }
+
+    textarea.form-input { resize: vertical; }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #F9FAFB;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      cursor: pointer;
+    }
+
+    .checkbox-row:hover { background: var(--primary-light); border-color: #BFDBFE; }
+    .checkbox-row span  { font-weight: 500; font-size: 0.93rem; color: var(--text); }
+    .form-checkbox { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; flex-shrink: 0; }
+
+    .help        { color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+    .field-error { color: var(--danger); font-size: 0.84rem; font-weight: 600; }
+    .form-actions { margin-top: 20px; display: grid; gap: 10px; }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      padding: 32px 24px;
+      text-align: center;
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      background: #FAFBFF;
+    }
+
+    .empty-icon  { font-size: 2.4rem; margin-bottom: 12px; display: block; }
+    .empty-title { font-family: 'Outfit', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; }
+    .empty-text  { color: var(--muted); font-size: 0.91rem; line-height: 1.5; margin-bottom: 18px; }
+
+    /* ── INLINE CARDS ── */
+    .inline-list { display: grid; gap: 12px; margin-top: 12px; }
+    .inline-card { border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 16px 18px; background: #F9FAFB; }
+
+    /* ── TIP BOX ── */
+    .tip-box { background: var(--warning-light); border: 1px solid #FDE68A; border-radius: var(--radius-sm); padding: 12px 16px; margin-top: 14px; display: flex; gap: 10px; align-items: flex-start; }
+    .tip-box-text { font-size: 0.87rem; color: #78350F; line-height: 1.5; }
+
+    /* ── DIVIDER ── */
+    .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+    .section-label { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 24px; margin-bottom: 12px; flex-wrap: wrap; }
+    .section-label-text h3 { font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 700; }
+    .section-label-text p  { font-size: 0.87rem; color: var(--muted); margin-top: 3px; }
+
+    .results-count { font-size: 0.88rem; color: var(--muted); font-weight: 500; margin-bottom: 14px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .grid, .grid.reservations-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .container  { padding: 16px 16px 60px; }
+      .topbar     { padding: 0 16px; }
+      .page-title { font-size: 1.5rem; }
+      .top-nav    { width: 100%; }
+      .top-nav a  { flex: 1; justify-content: center; padding: 10px 10px; font-size: 0.85rem; }
+      .form-grid  { grid-template-columns: 1fr; }
+      .actions    { width: 100%; justify-content: stretch; }
+      .actions .btn { flex: 1; min-width: 0; }
+      .page-actions { width: 100%; }
+      .page-actions .btn { width: 100%; }
+      .slot-item  { flex-direction: column; }
+      .slot-item .actions { justify-content: flex-start; }
+      .filter-bar { gap: 8px; }
+      .search-input { min-width: 0; width: 100%; }
+      .filter-tabs  { width: 100%; }
+      .filter-tab   { flex: 1; text-align: center; }
     }
   </style>
 </head>
 <body>
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <a href="#" class="topbar-logo">
+      <div class="logo-icon">🏪</div>
+      {% trans "Store Dashboard" %}
+    </a>
+
+    <!-- Language Switcher — Django built-in set_language view -->
+    {% get_current_language as CURRENT_LANGUAGE %}
+
+    <form class="lang-switcher-form" action="{% url 'set_language' %}" method="post">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+      <select name="language" class="lang-select" onchange="this.form.submit()">
+        <option value="de" {% if CURRENT_LANGUAGE|slice:":2" == "de" %}selected{% endif %}>🇩🇪 Deutsch</option>
+        <option value="en" {% if CURRENT_LANGUAGE|slice:":2" == "en" %}selected{% endif %}>🇬🇧 English</option>
+        <option value="zh-hans" {% if CURRENT_LANGUAGE|slice:":2" == "zh" %}selected{% endif %}>🇨🇳 中文</option>
+      </select>
+    </form>
+  </header>
+
   <div class="container">
 
+    <!-- PAGE HEADER -->
     <div class="page-header">
       <div>
-        <h1 class="page-title">Store Dashboard</h1>
-        <p class="page-subtitle">Manage reservation settings in a simple, staff-friendly way.</p>
+        <h1 class="page-title">
+          {% if section == "timeslots" %}⏰ {% trans "Time Slots" %}
+          {% elif section == "blocked-days" %}📅 {% trans "Blocked Days" %}
+          {% else %}📋 {% trans "Reservations" %}
+          {% endif %}
+        </h1>
+        <p class="page-subtitle">
+          {% if section == "timeslots" %}
+            {% trans "Manage the reservation windows your customers can book." %}
+          {% elif section == "blocked-days" %}
+            {% trans "Mark days as closed or limit specific slots on certain dates." %}
+          {% else %}
+            {% trans "View, create, and manage all customer reservations." %}
+          {% endif %}
+        </p>
       </div>
 
       <div class="page-actions">
-        {% if section == "timeslots" and mode == "list" %}
-          <a href="{% url 'dashboard:home' %}?section=timeslots&mode=create" class="btn btn-primary">Add Time Slot</a>
-        {% elif section == "blocked-days" and mode == "list" %}
-          <a href="{% url 'dashboard:home' %}?section=blocked-days&mode=create" class="btn btn-primary">Add Blocked Day</a>
+        {% if mode == "list" %}
+          {% if section == "timeslots" %}
+            <a href="{% url 'dashboard:home' %}?section=timeslots&mode=create" class="btn btn-primary btn-lg">＋ {% trans "Add Time Slot" %}</a>
+          {% elif section == "blocked-days" %}
+            <a href="{% url 'dashboard:home' %}?section=blocked-days&mode=create" class="btn btn-primary btn-lg">＋ {% trans "Add Blocked Day" %}</a>
+          {% else %}
+            <a href="{% url 'dashboard:home' %}?section=reservations&mode=create" class="btn btn-primary btn-lg">＋ {% trans "New Reservation" %}</a>
+          {% endif %}
         {% else %}
-          <a href="{% url 'dashboard:home' %}?section={{ section }}" class="btn btn-secondary">Zurück zur Übersicht</a>
+          <a href="{% url 'dashboard:home' %}?section={{ section }}" class="btn btn-secondary">← {% trans "Back to List" %}</a>
         {% endif %}
       </div>
     </div>
 
-    <div class="top-nav">
-      <a href="{% url 'dashboard:home' %}?section=timeslots" class="{% if section == 'timeslots' %}active{% endif %}">
-        Time Slots
-      </a>
-      <a href="{% url 'dashboard:home' %}?section=blocked-days" class="{% if section == 'blocked-days' %}active{% endif %}">
-        Blocked Days
-      </a>
-    </div>
+    <!-- NAV TABS -->
+    <nav class="top-nav">
+      <a href="{% url 'dashboard:home' %}?section=timeslots"    class="{% if section == 'timeslots' %}active{% endif %}">⏰ {% trans "Time Slots" %}</a>
+      <a href="{% url 'dashboard:home' %}?section=blocked-days" class="{% if section == 'blocked-days' %}active{% endif %}">📅 {% trans "Blocked Days" %}</a>
+      <a href="{% url 'dashboard:home' %}?section=reservations" class="{% if section == 'reservations' %}active{% endif %}">📋 {% trans "Reservations" %}</a>
+    </nav>
 
+    <!-- FLASH MESSAGES -->
     {% if messages %}
       <div class="messages">
         {% for message in messages %}
-          <div class="message {{ message.tags }}">{{ message }}</div>
+          <div class="message {{ message.tags }}">
+            {% if message.tags == "success" %}✅{% else %}⚠️{% endif %}
+            {{ message }}
+          </div>
         {% endfor %}
       </div>
     {% endif %}
 
-    <div class="grid">
+    <!-- MAIN GRID -->
+    <div class="grid {% if section == 'reservations' %}reservations-grid{% endif %}">
+
+      <!-- LEFT PANEL — List -->
       <section class="card">
         <div class="card-header">
           {% if section == "timeslots" %}
-            <h2 class="card-title">Time Slots</h2>
-            <p class="card-desc">These are the reservation windows your staff can manage.</p>
+            <h2 class="card-title">⏰ {% trans "All Time Slots" %}</h2>
+            <p class="card-desc">{% trans "Each slot is a bookable window — e.g. Lunch, Dinner." %}</p>
+          {% elif section == "blocked-days" %}
+            <h2 class="card-title">📅 {% trans "All Blocked Days" %}</h2>
+            <p class="card-desc">{% trans "Days marked here are closed or have reduced availability for customers." %}</p>
           {% else %}
-            <h2 class="card-title">Blocked Days</h2>
-            <p class="card-desc">Use this to mark specific days as closed or add notes for staff.</p>
+            <h2 class="card-title">📋 {% trans "All Reservations" %}</h2>
+            <p class="card-desc">{% trans "Filter by date or slot, or search by guest name, email, or phone." %}</p>
           {% endif %}
         </div>
 
         <div class="card-body">
+
+          {# ── TIME SLOTS LIST ── #}
           {% if section == "timeslots" %}
             <div class="slot-list">
               {% for slot in slots %}
-                <div class="slot-item">
+                <div class="slot-item {% if slot.is_active %}is-active{% else %}is-inactive{% endif %}">
                   <div class="slot-main">
                     <h3 class="slot-title">{{ slot.label }}</h3>
                     <div class="slot-meta">
-                      <span><strong>Time:</strong> {{ slot.start_time|time:"H:i" }} – {{ slot.end_time|time:"H:i" }}</span>
-                      <span><strong>Capacity:</strong> {{ slot.capacity }}</span>
-                      <span><strong>Order:</strong> {{ slot.sort_order }}</span>
-                      <span><strong>Slug:</strong> {{ slot.slug }}</span>
+                      <span class="meta-tag">🕐 {{ slot.start_time|time:"H:i" }} – {{ slot.end_time|time:"H:i" }}</span>
+                      <span class="meta-tag">👥 {{ slot.capacity }} {% trans "guests max" %}</span>
+                      <span class="meta-tag"># {% trans "Order" %}: {{ slot.sort_order }}</span>
                       {% if slot.is_active %}
-                        <span class="badge active">Active</span>
+                        <span class="badge active">✓ {% trans "Active" %}</span>
                       {% else %}
-                        <span class="badge inactive">Inactive</span>
+                        <span class="badge inactive">✗ {% trans "Inactive" %}</span>
                       {% endif %}
                     </div>
                   </div>
-
                   <div class="actions">
-                    <a class="btn btn-secondary" href="{% url 'dashboard:home' %}?section=timeslots&mode=edit&id={{ slot.id }}">
-                      Edit
-                    </a>
-
+                    <a class="btn btn-secondary" href="{% url 'dashboard:home' %}?section=timeslots&mode=edit&id={{ slot.id }}">✏️ {% trans "Edit" %}</a>
                     <form action="{% url 'dashboard:timeslot_toggle_active' slot.id %}" method="post">
                       {% csrf_token %}
                       {% if slot.is_active %}
-                        <button type="submit" class="btn btn-warning">Deactivate</button>
+                        <button type="submit" class="btn btn-warning">⏸ {% trans "Deactivate" %}</button>
                       {% else %}
-                        <button type="submit" class="btn btn-primary">Activate</button>
+                        <button type="submit" class="btn btn-primary">▶ {% trans "Activate" %}</button>
                       {% endif %}
                     </form>
-
                     <form action="{% url 'dashboard:timeslot_delete' slot.id %}" method="post"
-                          onsubmit="return confirm('Are you sure you want to delete this time slot?');">
+                          onsubmit="return confirm('{% trans "Are you sure you want to delete this time slot?" %}');">
                       {% csrf_token %}
-                      <button type="submit" class="btn btn-danger">Delete</button>
+                      <button type="submit" class="btn btn-danger">🗑 {% trans "Delete" %}</button>
                     </form>
                   </div>
                 </div>
               {% empty %}
                 <div class="empty-state">
-                  <h3 class="empty-title">No time slots yet</h3>
-                  <p class="empty-text">Create your first slot to start managing reservation windows.</p>
-                  <a href="{% url 'dashboard:home' %}?section=timeslots&mode=create" class="btn btn-primary">Add Time Slot</a>
+                  <span class="empty-icon">⏰</span>
+                  <div class="empty-title">{% trans "No time slots yet" %}</div>
+                  <p class="empty-text">{% trans "Create your first slot to start managing reservation windows — e.g. Lunch (12:00–14:00) or Dinner (18:00–22:00)." %}</p>
+                  <a href="{% url 'dashboard:home' %}?section=timeslots&mode=create" class="btn btn-primary btn-lg">＋ {% trans "Add Your First Slot" %}</a>
                 </div>
               {% endfor %}
             </div>
-          {% else %}
+
+          {# ── BLOCKED DAYS LIST ── #}
+          {% elif section == "blocked-days" %}
             <div class="slot-list">
               {% for day in blocked_days %}
-                <div class="slot-item">
+                <div class="slot-item {% if day.is_closed %}is-closed{% else %}is-partial{% endif %}">
                   <div class="slot-main">
-                    <h3 class="slot-title">{{ day.date|date:"d.m.Y" }}</h3>
-                    <div class="slot-meta">
-                      {% if day.reason %}
-                        <span><strong>Reason:</strong> {{ day.reason }}</span>
-                      {% else %}
-                        <span><strong>Reason:</strong> —</span>
-                      {% endif %}
-
+                    <h3 class="slot-title">📅 {{ day.date|date:"d.m.Y" }}</h3>
+                    <div class="slot-meta" style="margin-bottom: 8px;">
+                      {% if day.reason %}<span class="meta-tag">📝 {{ day.reason }}</span>{% endif %}
                       {% if day.is_closed %}
-                        <span class="badge closed">Closed whole day</span>
+                        <span class="badge closed">🔒 {% trans "Whole day closed" %}</span>
                       {% else %}
-                        <span class="badge open">Not fully closed</span>
+                        <span class="badge open">🔓 {% trans "Partial restrictions" %}</span>
                       {% endif %}
                     </div>
+                    {% if day.slot_blocks.all %}
+                      <div class="slot-meta">
+                        {% for block in day.slot_blocks.all %}
+                          <span class="meta-tag">
+                            {{ block.slot.label }}:
+                            {% if block.is_closed %}{% trans "closed" %}{% else %}{{ block.blocked_seats }} {% trans "seats blocked" %}{% endif %}
+                          </span>
+                        {% endfor %}
+                      </div>
+                    {% else %}
+                      <div class="help" style="margin-top: 4px;">{% trans "No per-slot rules added." %}</div>
+                    {% endif %}
                   </div>
-
                   <div class="actions">
-                    <a class="btn btn-secondary" href="{% url 'dashboard:home' %}?section=blocked-days&mode=edit&id={{ day.id }}">
-                      Edit
-                    </a>
-
+                    <a class="btn btn-secondary" href="{% url 'dashboard:home' %}?section=blocked-days&mode=edit&id={{ day.id }}">✏️ {% trans "Edit" %}</a>
                     <form action="{% url 'dashboard:blocked_day_delete' day.id %}" method="post"
-                          onsubmit="return confirm('Are you sure you want to delete this blocked day?');">
+                          onsubmit="return confirm('{% trans "Are you sure you want to delete this blocked day?" %}');">
                       {% csrf_token %}
-                      <button type="submit" class="btn btn-danger">Delete</button>
+                      <button type="submit" class="btn btn-danger">🗑 {% trans "Delete" %}</button>
                     </form>
                   </div>
                 </div>
               {% empty %}
                 <div class="empty-state">
-                  <h3 class="empty-title">No blocked days yet</h3>
-                  <p class="empty-text">Create your first blocked day to manage closures and special dates.</p>
-                  <a href="{% url 'dashboard:home' %}?section=blocked-days&mode=create" class="btn btn-primary">Add Blocked Day</a>
+                  <span class="empty-icon">📅</span>
+                  <div class="empty-title">{% trans "No blocked days yet" %}</div>
+                  <p class="empty-text">{% trans "Block a day when your store is fully closed or when you want to limit bookings for a specific date." %}</p>
+                  <a href="{% url 'dashboard:home' %}?section=blocked-days&mode=create" class="btn btn-primary btn-lg">＋ {% trans "Add Blocked Day" %}</a>
+                </div>
+              {% endfor %}
+            </div>
+
+          {# ── RESERVATIONS LIST ── #}
+          {% else %}
+            <form method="get" action="{% url 'dashboard:home' %}">
+              <input type="hidden" name="section" value="reservations">
+              <div class="filter-bar">
+                <div class="filter-tabs">
+                  <button type="submit" name="date_filter" value="today"
+                    class="filter-tab {% if date_filter == 'today' %}active{% endif %}">
+                    {% trans "Today" %}
+                  </button>
+                  <button type="submit" name="date_filter" value="upcoming"
+                    class="filter-tab {% if date_filter == 'upcoming' or not date_filter %}active{% endif %}">
+                    {% trans "Upcoming" %}
+                  </button>
+                  <button type="submit" name="date_filter" value="past"
+                    class="filter-tab {% if date_filter == 'past' %}active{% endif %}">
+                    {% trans "Past" %}
+                  </button>
+                  <button type="submit" name="date_filter" value="all"
+                    class="filter-tab {% if date_filter == 'all' %}active{% endif %}">
+                    {% trans "All" %}
+                  </button>
+                </div>
+
+                <select name="slot_filter" class="filter-select" onchange="this.form.submit()">
+                  <option value="">{% trans "All Slots" %}</option>
+                  {% for slot in slots %}
+                    <option value="{{ slot.id }}" {% if slot_filter == slot.id|stringformat:"s" %}selected{% endif %}>
+                      {{ slot.label }}
+                    </option>
+                  {% endfor %}
+                </select>
+
+                <input type="text" name="search" value="{{ search }}"
+                  class="search-input"
+                  placeholder="{% trans "Search name, email, phone…" %}">
+                <button type="submit" class="filter-submit">{% trans "Search" %}</button>
+              </div>
+            </form>
+
+            {% if reservations is not None %}
+              <div class="results-count">
+                {{ reservations|length }} {% trans "reservations found" %}
+              </div>
+            {% endif %}
+
+            <div class="slot-list">
+              {% for res in reservations %}
+                {% with today_val=today %}
+                  <div class="slot-item
+                    {% if res.date == today_val %}is-today
+                    {% elif res.date > today_val %}is-upcoming
+                    {% else %}is-past{% endif %}">
+                    <div class="slot-main">
+                      <div class="res-name-row">
+                        <span class="res-name">{{ res.name }}</span>
+                        <span class="meta-tag highlight">👥 {{ res.party_size }} {% trans "guests" %}</span>
+                        {% if res.date == today_val %}
+                          <span class="badge today">{% trans "Today" %}</span>
+                        {% elif res.date > today_val %}
+                          <span class="badge upcoming">{% trans "Upcoming" %}</span>
+                        {% else %}
+                          <span class="badge past">{% trans "Past" %}</span>
+                        {% endif %}
+                      </div>
+                      <div class="slot-meta">
+                        <span class="meta-tag">📅 {{ res.date|date:"d.m.Y" }}</span>
+                        <span class="meta-tag">🕐 {{ res.time|time:"H:i" }}</span>
+                        <span class="meta-tag">⏰ {{ res.slot.label }}</span>
+                        <span class="meta-tag">📞 {{ res.phone }}</span>
+                        <span class="meta-tag">✉️ {{ res.email }}</span>
+                      </div>
+                      {% if res.message %}
+                        <div class="help" style="margin-top: 7px;">💬 {{ res.message }}</div>
+                      {% endif %}
+                    </div>
+                    <div class="actions">
+                      <a class="btn btn-secondary" href="{% url 'dashboard:home' %}?section=reservations&mode=edit&id={{ res.id }}">✏️ {% trans "Edit" %}</a>
+                      <form action="{% url 'dashboard:reservation_delete' res.id %}" method="post"
+                            onsubmit="return confirm('{% trans "Are you sure you want to delete this reservation?" %}');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">🗑 {% trans "Delete" %}</button>
+                      </form>
+                    </div>
+                  </div>
+                {% endwith %}
+              {% empty %}
+                <div class="empty-state">
+                  <span class="empty-icon">📋</span>
+                  <div class="empty-title">{% trans "No reservations found" %}</div>
+                  <p class="empty-text">
+                    {% if search %}
+                      {% blocktrans with q=search %}No results for "{{ q }}". Try a different search or clear your filters.{% endblocktrans %}
+                    {% else %}
+                      {% trans "No reservations match your current filters. Try \"All\" to see everything." %}
+                    {% endif %}
+                  </p>
+                  <a href="{% url 'dashboard:home' %}?section=reservations&mode=create" class="btn btn-primary">＋ {% trans "New Reservation" %}</a>
                 </div>
               {% endfor %}
             </div>
           {% endif %}
+
         </div>
       </section>
 
+      <!-- RIGHT PANEL — Form -->
       <section class="card">
         <div class="card-header">
           {% if section == "timeslots" %}
             {% if mode == "create" %}
-              <h2 class="card-title">Add Time Slot</h2>
-              <p class="card-desc">Create a new reservation slot for staff and customers.</p>
+              <h2 class="card-title">➕ {% trans "Add Time Slot" %}</h2>
+              <p class="card-desc">{% trans "Fill in the details to create a new bookable window." %}</p>
             {% elif mode == "edit" %}
-              <h2 class="card-title">Edit Time Slot</h2>
-              <p class="card-desc">Update the selected slot below.</p>
+              <h2 class="card-title">✏️ {% trans "Edit Time Slot" %}</h2>
+              <p class="card-desc">{% trans "Update the details for this slot below." %}</p>
             {% else %}
-              <h2 class="card-title">Actions</h2>
-              <p class="card-desc">Choose an action to continue.</p>
+              <h2 class="card-title">💡 {% trans "Getting Started" %}</h2>
+              <p class="card-desc">{% trans "Select a slot to edit, or create a new one." %}</p>
+            {% endif %}
+          {% elif section == "blocked-days" %}
+            {% if mode == "create" %}
+              <h2 class="card-title">➕ {% trans "Add Blocked Day" %}</h2>
+              <p class="card-desc">{% trans "Choose a date and configure how it should be restricted." %}</p>
+            {% elif mode == "edit" %}
+              <h2 class="card-title">✏️ {% trans "Edit Blocked Day" %}</h2>
+              <p class="card-desc">{% trans "Update this day's restrictions below." %}</p>
+            {% else %}
+              <h2 class="card-title">💡 {% trans "Getting Started" %}</h2>
+              <p class="card-desc">{% trans "Select an entry to edit, or block a new day." %}</p>
             {% endif %}
           {% else %}
             {% if mode == "create" %}
-              <h2 class="card-title">Add Blocked Day</h2>
-              <p class="card-desc">Create a new blocked day entry.</p>
+              <h2 class="card-title">➕ {% trans "New Reservation" %}</h2>
+              <p class="card-desc">{% trans "Enter the guest details to create a reservation manually." %}</p>
             {% elif mode == "edit" %}
-              <h2 class="card-title">Edit Blocked Day</h2>
-              <p class="card-desc">Update the selected blocked day below.</p>
+              <h2 class="card-title">✏️ {% trans "Edit Reservation" %}</h2>
+              <p class="card-desc">{% trans "Update the guest's reservation details below." %}</p>
             {% else %}
-              <h2 class="card-title">Actions</h2>
-              <p class="card-desc">Choose an action to continue.</p>
+              <h2 class="card-title">💡 {% trans "Quick Actions" %}</h2>
+              <p class="card-desc">{% trans "Click Edit on any reservation, or create a new one manually." %}</p>
             {% endif %}
           {% endif %}
         </div>
@@ -557,24 +868,40 @@
               {% include "dashboard/_timeslot_form.html" %}
             {% else %}
               <div class="empty-state">
-                <h3 class="empty-title">No form open</h3>
-                <p class="empty-text">Click “Add Time Slot” to create a new slot, or click “Edit” on an existing slot.</p>
-                <a href="{% url 'dashboard:home' %}?section=timeslots&mode=create" class="btn btn-primary">Add Time Slot</a>
+                <span class="empty-icon">👈</span>
+                <div class="empty-title">{% trans "Nothing open yet" %}</div>
+                <p class="empty-text">{% trans "Click Edit on a slot to modify it, or add a new one above." %}</p>
+                <a href="{% url 'dashboard:home' %}?section=timeslots&mode=create" class="btn btn-primary">＋ {% trans "Add Time Slot" %}</a>
               </div>
             {% endif %}
-          {% else %}
+
+          {% elif section == "blocked-days" %}
             {% if mode == "create" or mode == "edit" %}
               {% include "dashboard/_blocked_day_form.html" %}
             {% else %}
               <div class="empty-state">
-                <h3 class="empty-title">No form open</h3>
-                <p class="empty-text">Click “Add Blocked Day” to create a new entry, or click “Edit” on an existing one.</p>
-                <a href="{% url 'dashboard:home' %}?section=blocked-days&mode=create" class="btn btn-primary">Add Blocked Day</a>
+                <span class="empty-icon">👈</span>
+                <div class="empty-title">{% trans "Nothing open yet" %}</div>
+                <p class="empty-text">{% trans "Click Edit on a day to modify it, or block a new date above." %}</p>
+                <a href="{% url 'dashboard:home' %}?section=blocked-days&mode=create" class="btn btn-primary">＋ {% trans "Add Blocked Day" %}</a>
+              </div>
+            {% endif %}
+
+          {% else %}
+            {% if mode == "create" or mode == "edit" %}
+              {% include "dashboard/_reservation_form.html" %}
+            {% else %}
+              <div class="empty-state">
+                <span class="empty-icon">👈</span>
+                <div class="empty-title">{% trans "Nothing open yet" %}</div>
+                <p class="empty-text">{% trans "Click Edit on a reservation to modify it, or create a new one manually." %}</p>
+                <a href="{% url 'dashboard:home' %}?section=reservations&mode=create" class="btn btn-primary">＋ {% trans "New Reservation" %}</a>
               </div>
             {% endif %}
           {% endif %}
         </div>
       </section>
+
     </div>
   </div>
 </body>

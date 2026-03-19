@@ -1,0 +1,201 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: dashboard\n"
+"POT-Creation-Date: 2026-03-19 00:00+0000\n"
+"PO-Revision-Date: 2026-03-19 00:00+0000\n"
+"Last-Translator: ChatGPT\n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Store Dashboard"
+msgstr "Store-Dashboard"
+
+msgid "Time Slots"
+msgstr "Zeitfenster"
+
+msgid "Deactivate"
+msgstr "Deaktivieren"
+
+msgid "Edit"
+msgstr "Bearbeiten"
+
+msgid "Blocked Days"
+msgstr "Gesperrte Tage"
+
+msgid "Reservations"
+msgstr "Reservierungen"
+
+msgid "Manage the reservation windows your customers can book."
+msgstr "Verwalten Sie die Reservierungszeiten, die Ihre Kunden buchen können."
+
+msgid "Mark days as closed or limit specific slots on certain dates."
+msgstr "Markieren Sie Tage als geschlossen oder begrenzen Sie bestimmte Zeitfenster an bestimmten Daten."
+
+msgid "View, create, and manage all customer reservations."
+msgstr "Alle Kundenreservierungen anzeigen, erstellen und verwalten."
+
+msgid "Display Name"
+msgstr "Anzeigename"
+
+msgid "The name customers and staff will see — e.g. <strong>Lunch</strong>, <strong>Dinner</strong>, <strong>Evening</strong>."
+msgstr "Der Name, den Kunden und Mitarbeiter sehen — z. B. <strong>Mittagessen</strong>, <strong>Abendessen</strong>, <strong>Abend</strong>."
+
+msgid "System Name (Slug)"
+msgstr "Systemname (Slug)"
+
+msgid "A short unique code used internally — no spaces, lowercase only. Example: <strong>lunch</strong>, <strong>dinner</strong>."
+msgstr "Ein kurzer eindeutiger Code für die interne Verwendung — keine Leerzeichen, nur Kleinbuchstaben. Beispiel: <strong>lunch</strong>, <strong>dinner</strong>."
+
+msgid "Start Time"
+msgstr "Startzeit"
+
+msgid "End Time"
+msgstr "Endzeit"
+
+msgid "Max. Guests"
+msgstr "Max. Gäste"
+
+msgid "Maximum number of guests that can book this slot."
+msgstr "Maximale Anzahl an Gästen, die dieses Zeitfenster buchen können."
+
+msgid "Display Order"
+msgstr "Anzeigereihenfolge"
+
+msgid "Lower numbers appear first (0, 1, 2…)."
+msgstr "Niedrigere Zahlen werden zuerst angezeigt (0, 1, 2…)."
+
+msgid "Mark this slot as <strong>Active</strong>"
+msgstr "Dieses Zeitfenster als <strong>aktiv</strong> markieren"
+
+msgid "Inactive slots are kept in the system but cannot be booked. Deactivate instead of deleting if it has existing reservations."
+msgstr "Inaktive Zeitfenster bleiben im System, können aber nicht gebucht werden. Deaktivieren Sie sie statt sie zu löschen, wenn bereits Reservierungen vorhanden sind."
+
+msgid "Save Changes"
+msgstr "Änderungen speichern"
+
+msgid "Create Time Slot"
+msgstr "Zeitfenster erstellen"
+
+msgid "Back to List"
+msgstr "Zurück zur Liste"
+
+msgid "Tip:"
+msgstr "Tipp:"
+
+msgid "If this slot is already used in reservations, <strong>deactivate</strong> it rather than deleting it to keep your booking history intact."
+msgstr "Wenn dieses Zeitfenster bereits in Reservierungen verwendet wird, <strong>deaktivieren</strong> Sie es statt es zu löschen, damit Ihre Buchungshistorie erhalten bleibt."
+
+msgid "Date"
+msgstr "Datum"
+
+msgid "Select the calendar date you want to restrict or close."
+msgstr "Wählen Sie das Kalenderdatum aus, das Sie einschränken oder schließen möchten."
+
+msgid "Reason"
+msgstr "Grund"
+
+msgid "(optional)"
+msgstr "(optional)"
+
+msgid "For your reference only — e.g. <strong>Public holiday</strong>, <strong>Private event</strong>, <strong>Maintenance</strong>."
+msgstr "Nur zu Ihrer Information — z. B. <strong>Feiertag</strong>, <strong>Private Veranstaltung</strong>, <strong>Wartung</strong>."
+
+msgid "Close the <strong>entire day</strong> — no bookings allowed"
+msgstr "Den <strong>gesamten Tag</strong> schließen — keine Buchungen erlaubt"
+
+msgid "Check this if the store is completely closed that day. Leave unchecked if only certain slots should be limited."
+msgstr "Aktivieren Sie dies, wenn das Geschäft an diesem Tag vollständig geschlossen ist. Lassen Sie es deaktiviert, wenn nur bestimmte Zeitfenster eingeschränkt werden sollen."
+
+msgid "Per-Slot Rules"
+msgstr "Regeln pro Zeitfenster"
+
+msgid "Limit or close individual time slots on this day without closing the whole day."
+msgstr "Einzelne Zeitfenster an diesem Tag begrenzen oder schließen, ohne den ganzen Tag zu schließen."
+
+msgid "Add Slot Rule"
+msgstr "Zeitfenster-Regel hinzufügen"
+
+msgid "Which Slot?"
+msgstr "Welches Zeitfenster?"
+
+msgid "Blocked Seats"
+msgstr "Gesperrte Plätze"
+
+msgid "Enter 0 if you're only closing the slot completely."
+msgstr "Geben Sie 0 ein, wenn Sie das Zeitfenster nur vollständig schließen möchten."
+
+msgid "Close this slot completely on this day"
+msgstr "Dieses Zeitfenster an diesem Tag vollständig schließen"
+
+msgid "Remove this slot rule"
+msgstr "Diese Zeitfenster-Regel entfernen"
+
+msgid "Remove this row"
+msgstr "Diese Zeile entfernen"
+
+msgid "Enter 0 if you're only closing the slot."
+msgstr "Geben Sie 0 ein, wenn Sie das Zeitfenster nur schließen möchten."
+
+msgid "Create Blocked Day"
+msgstr "Gesperrten Tag erstellen"
+
+msgid "Blocked Day"
+msgstr "Gesperrter Tag"
+
+msgid "Choose which blocked day this rule applies to."
+msgstr "Wählen Sie aus, für welchen gesperrten Tag diese Regel gilt."
+
+msgid "Time Slot"
+msgstr "Zeitfenster"
+
+msgid "Choose which reservation slot should be affected."
+msgstr "Wählen Sie aus, welches Reservierungszeitfenster betroffen sein soll."
+
+msgid "How many seats should be removed from availability?"
+msgstr "Wie viele Plätze sollen aus der Verfügbarkeit entfernt werden?"
+
+msgid "Close this slot completely"
+msgstr "Dieses Zeitfenster vollständig schließen"
+
+msgid "If checked, customers cannot book this slot at all."
+msgstr "Wenn aktiviert, können Kunden dieses Zeitfenster überhaupt nicht buchen."
+
+msgid "Example: staff shortage, private event, reduced capacity."
+msgstr "Beispiel: Personalmangel, private Veranstaltung, reduzierte Kapazität."
+
+msgid "Create Slot Block"
+msgstr "Zeitfenster-Sperre erstellen"
+
+msgid "Guest Name"
+msgstr "Name des Gastes"
+
+msgid "Email"
+msgstr "E-Mail"
+
+msgid "Phone"
+msgstr "Telefon"
+
+msgid "Number of Guests"
+msgstr "Anzahl der Gäste"
+
+msgid "Slot"
+msgstr "Zeitfenster"
+
+msgid "Selecting a slot will auto-fill the time below."
+msgstr "Durch die Auswahl eines Zeitfensters wird die Uhrzeit unten automatisch ausgefüllt."
+
+msgid "Time"
+msgstr "Uhrzeit"
+
+msgid "Auto-filled from the slot, or adjust manually."
+msgstr "Automatisch aus dem Zeitfenster übernommen oder manuell anpassen."
+
+msgid "Notes / Special Requests"
+msgstr "Notizen / Besondere Wünsche"
+
+msgid "Create Reservation"
+msgstr "Reservierung erstellen"
