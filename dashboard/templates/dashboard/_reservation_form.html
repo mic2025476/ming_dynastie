@@ -83,20 +83,62 @@
 
 </form>
 
-<!-- Auto-fill time from selected slot -->
+<!-- Auto-fill and constrain time from selected slot -->
+<!-- Auto-fill and constrain time from selected slot -->
 <script>
   (function () {
     const slotsMap = {{ slots_json|safe }};
     const slotSelect = document.getElementById("id_slot");
-    const timeInput  = document.getElementById("id_time");
+    const timeInput = document.getElementById("id_time");
 
     if (!slotSelect || !timeInput) return;
 
-    slotSelect.addEventListener("change", function () {
-      const slotId = this.value;
-      if (slotsMap[slotId]) {
-        timeInput.value = slotsMap[slotId];
+    function normalizeTime(value) {
+      if (!value) return "";
+      return String(value).slice(0, 5);
+    }
+
+    function minusOneMinute(hhmm) {
+      const [h, m] = hhmm.split(":").map(Number);
+      const date = new Date();
+      date.setHours(h, m, 0, 0);
+      date.setMinutes(date.getMinutes() - 1);
+      return String(date.getHours()).padStart(2, "0") + ":" + String(date.getMinutes()).padStart(2, "0");
+    }
+
+    function applySlotTime() {
+      const slotId = slotSelect.value;
+      const slot = slotsMap[slotId];
+
+      timeInput.step = 60;
+
+      if (timeInput.value) {
+        timeInput.value = normalizeTime(timeInput.value);
       }
+
+      if (!slot) {
+        timeInput.removeAttribute("min");
+        timeInput.removeAttribute("max");
+        return;
+      }
+
+      const start = normalizeTime(slot.start);
+      const end = normalizeTime(slot.end);
+      const effectiveMax = minusOneMinute(end);
+
+      timeInput.min = start;
+      timeInput.max = effectiveMax;
+
+      if (!timeInput.value || timeInput.value < start || timeInput.value > effectiveMax) {
+        timeInput.value = start;
+      }
+    }
+
+    slotSelect.addEventListener("change", applySlotTime);
+    timeInput.addEventListener("input", function () {
+      timeInput.value = normalizeTime(timeInput.value);
     });
+
+    applySlotTime();
   })();
 </script>

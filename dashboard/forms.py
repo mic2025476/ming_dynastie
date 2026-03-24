@@ -1,4 +1,8 @@
+from datetime import date
+
 from django import forms
+from django.core.exceptions import ValidationError
+from django.db.models import Sum
 from django.forms import inlineformset_factory
 
 from reservations.models import (
@@ -88,19 +92,26 @@ class ReservationForm(forms.ModelForm):
                 "class": "form-input",
                 "placeholder": "+49 ...",
             }),
-            "date": forms.DateInput(attrs={
-                "type": "date",
-                "class": "form-input",
-            }),
+            "date": forms.DateInput(
+                format="%Y-%m-%d",
+                attrs={
+                    "type": "date",
+                    "class": "form-input",
+                }
+            ),
             "slot": forms.Select(attrs={
                 "class": "form-input",
                 "id": "id_slot",
             }),
-            "time": forms.TimeInput(attrs={
-                "type": "time",
-                "class": "form-input",
-                "id": "id_time",
-            }),
+            "time": forms.TimeInput(
+                format="%H:%M",
+                attrs={
+                    "type": "time",
+                    "class": "form-input",
+                    "id": "id_time",
+                    "step": "60",
+                }
+            ),
             "party_size": forms.NumberInput(attrs={
                 "class": "form-input",
                 "min": "1",
@@ -112,3 +123,84 @@ class ReservationForm(forms.ModelForm):
                 "placeholder": "Any special requests, allergies, or notes...",
             }),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["time"].input_formats = ["%H:%M"]
+        self.fields["date"].input_formats = ["%Y-%m-%d"]
+
+        today = date.today()
+
+        if self.instance and self.instance.pk and self.instance.date and self.instance.date < today:
+            self.fields["date"].widget.attrs["min"] = self.instance.date.strftime("%Y-%m-%d")
+        else:
+            self.fields["date"].widget.attrs["min"] = today.strftime("%Y-%m-%d")
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        reservation_date = cleaned_data.get("date")
+        slot = cleaned_data.get("slot")
+        party_size = cleaned_data.get("party_size")
+
+        if not reservation_date or not slot:
+            return cleaned_data
+
+        blocked_day = (
+            BlockedDayModel.objects
+            .prefetch_related("slot_blocks__slot")
+            .filter(date=reservation_date)
+            .first()
+        )
+
+        if not blocked_day:
+            return cleaned_data
+
+        # Whole day closed
+        if blocked_day.is_closed:
+            raise ValidationError({
+                "date": "This day is blocked for reservations."
+            })
+
+        slot_block = next(
+            (block for block in blocked_day.slot_blocks.all() if block.slot_id == slot.id),
+            None
+        )
+
+        if not slot_block:
+            return cleaned_data
+
+        # Selected slot fully closed
+        if slot_block.is_closed:
+            raise ValidationError({
+                "slot": f'"{slot.label}" is blocked on this date.'
+            })
+
+        # Optional capacity restriction for partially blocked seats
+        if party_size:
+            slot_capacity = slot.capacity or 0
+            blocked_seats = slot_block.blocked_seats or 0
+            allowed_capacity = max(slot_capacity - blocked_seats, 0)
+
+            existing_qs = ReservationModel.objects.filter(
+                date=reservation_date,
+                slot=slot,
+            )
+
+            if self.instance and self.instance.pk:
+                existing_qs = existing_qs.exclude(pk=self.instance.pk)
+
+            already_reserved = existing_qs.aggregate(
+                total=Sum("party_size")
+            )["total"] or 0
+
+            if already_reserved + party_size > allowed_capacity:
+                remaining = max(allowed_capacity - already_reserved, 0)
+                raise ValidationError({
+                    "party_size": (
+                        f'Only {remaining} seat(s) are available for "{slot.label}" on this date.'
+                    )
+                })
+
+        return cleaned_data

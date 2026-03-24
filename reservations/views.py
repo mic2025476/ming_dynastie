@@ -23,6 +23,7 @@ from .email_sender import send_magic_link_via_gas, send_reservation_confirmation
 from .models import EmailSessionModel, ReservationModel
 from django.db.models import Sum
 from django.db import transaction
+from reservations.models import BlockedDayModel, DaySlotBlockModel, TimeSlotModel, ReservationModel
 
 @require_POST
 @csrf_protect
@@ -44,11 +45,25 @@ def create_reservation(request):
                 )
 
                 # 2️⃣ Get per-day slot block
-                block = DaySlotBlockModel.objects.filter(
-                    blocked_day__date=reservation.date,
-                    slot_id=reservation.slot_id
-                ).first()
+                # 2️⃣ Load blocked-day info for this reservation date
+                blocked_day = (
+                    BlockedDayModel.objects
+                    .prefetch_related("slot_blocks")
+                    .filter(date=reservation.date,is_closed=True)
+                    .first()
+                )
 
+                if blocked_day and blocked_day.is_closed:
+                    raise ValueError({
+                        "code": "DAY_CLOSED",
+                        "title": "Tag nicht verfügbar",
+                        "text": "An diesem Tag sind keine Reservierungen möglich."
+                    })
+
+                block = None
+                if blocked_day:
+                    block = blocked_day.slot_blocks.filter(slot_id=reservation.slot_id).first()
+                print(f'blockblock {block}')
                 if block and block.is_closed:
                     raise ValueError({
                         "code": "SLOT_CLOSED",

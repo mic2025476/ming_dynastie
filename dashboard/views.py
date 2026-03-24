@@ -6,7 +6,8 @@ from django.db.models import Q
 from django.db.models.deletion import ProtectedError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-
+from django.http import JsonResponse
+from django.template.loader import render_to_string
 from reservations.models import TimeSlotModel, BlockedDayModel, ReservationModel
 from .forms import TimeSlotForm, BlockedDayForm, BlockedDaySlotBlockFormSet, ReservationForm
 
@@ -34,6 +35,7 @@ def dashboard_home(request):
     slot_filter = ""
     search = ""
     slots_json = "[]"
+    today = date.today()
 
     # ── Time Slots section ──
     if section == "timeslots":
@@ -68,7 +70,7 @@ def dashboard_home(request):
         search = request.GET.get("search", "")
 
         reservations = ReservationModel.objects.select_related("slot").order_by("-date", "-time")
-
+        print(f'reservations {len(reservations)}')
         # Apply date filter
         if date_filter == "today":
             reservations = reservations.filter(date=today)
@@ -90,15 +92,19 @@ def dashboard_home(request):
                 | Q(phone__icontains=search)
             )
 
-        # Build slot→start_time JSON for auto-fill JS
+        # Build slot → {start, end} JSON for reservation time range JS
         slots_data = list(
             TimeSlotModel.objects.filter(is_active=True)
-            .values("id", "start_time")
+            .values("id", "start_time", "end_time")
             .order_by("sort_order", "start_time")
         )
-        slots_json = json.dumps(
-            {str(s["id"]): s["start_time"].strftime("%H:%M") for s in slots_data}
-        )
+        slots_json = json.dumps({
+            str(s["id"]): {
+                "start": s["start_time"].strftime("%H:%M"),
+                "end": s["end_time"].strftime("%H:%M"),
+            }
+            for s in slots_data
+        })
 
         if mode == "create":
             form = ReservationForm()
@@ -107,6 +113,17 @@ def dashboard_home(request):
             form = ReservationForm(instance=selected_reservation)
         else:
             mode = "list"
+        # ADD THIS at the end of the reservations block:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            html = render_to_string(
+                'dashboard/_reservation_rows.html',
+                {'reservations': reservations, 'today': today},
+                request=request,
+            )
+            return JsonResponse({
+                'html': html,
+                'count': reservations.count(),
+            })
 
     return render(request, "dashboard/index.html", {
         "section": section,
@@ -124,6 +141,7 @@ def dashboard_home(request):
         "slot_filter": slot_filter,
         "search": search,
         "slots_json": slots_json,
+        "today": today,
     })
 
 
@@ -332,12 +350,16 @@ def reservation_create(request):
 
     slots_data = list(
         TimeSlotModel.objects.filter(is_active=True)
-        .values("id", "start_time")
+        .values("id", "start_time", "end_time")
         .order_by("sort_order", "start_time")
     )
-    slots_json = json.dumps(
-        {str(s["id"]): s["start_time"].strftime("%H:%M") for s in slots_data}
-    )
+    slots_json = json.dumps({
+        str(s["id"]): {
+            "start": s["start_time"].strftime("%H:%M"),
+            "end": s["end_time"].strftime("%H:%M"),
+        }
+        for s in slots_data
+    })
 
     return render(request, "dashboard/index.html", {
         "section": "reservations",
@@ -378,12 +400,16 @@ def reservation_update(request, pk):
 
     slots_data = list(
         TimeSlotModel.objects.filter(is_active=True)
-        .values("id", "start_time")
+        .values("id", "start_time", "end_time")
         .order_by("sort_order", "start_time")
     )
-    slots_json = json.dumps(
-        {str(s["id"]): s["start_time"].strftime("%H:%M") for s in slots_data}
-    )
+    slots_json = json.dumps({
+        str(s["id"]): {
+            "start": s["start_time"].strftime("%H:%M"),
+            "end": s["end_time"].strftime("%H:%M"),
+        }
+        for s in slots_data
+    })
 
     return render(request, "dashboard/index.html", {
         "section": "reservations",
@@ -402,7 +428,6 @@ def reservation_update(request, pk):
         "slots_json": slots_json,
     })
 
-
 def reservation_delete(request, pk):
     if request.method != "POST":
         return redirect(_reservation_list_url())
@@ -410,5 +435,47 @@ def reservation_delete(request, pk):
     reservation = get_object_or_404(ReservationModel, pk=pk)
     name = reservation.name
     reservation.delete()
+
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        today = date.today()
+
+        date_filter = request.GET.get("date_filter", "upcoming")
+        slot_filter = request.GET.get("slot_filter", "")
+        search = request.GET.get("search", "").strip()
+
+        reservations = ReservationModel.objects.select_related("slot")
+
+        if date_filter == "today":
+            reservations = reservations.filter(date=today)
+        elif date_filter == "upcoming":
+            reservations = reservations.filter(date__gte=today)
+        elif date_filter == "past":
+            reservations = reservations.filter(date__lt=today)
+
+        if slot_filter:
+            reservations = reservations.filter(slot_id=slot_filter)
+
+        if search:
+            reservations = reservations.filter(
+                Q(name__icontains=search) |
+                Q(email__icontains=search) |
+                Q(phone__icontains=search)
+            )
+
+        reservations = reservations.order_by("date", "time")
+
+        html = render_to_string(
+            "dashboard/_reservation_rows.html",
+            {"reservations": reservations, "today": today},
+            request=request,
+        )
+
+        return JsonResponse({
+            "success": True,
+            "message": f'Reservation for "{name}" was deleted successfully.',
+            "html": html,
+            "count": reservations.count(),
+        })
+
     messages.success(request, f'Reservation for "{name}" was deleted successfully.')
     return redirect(_reservation_list_url())

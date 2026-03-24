@@ -63,7 +63,7 @@ class ReservationCreateForm(forms.ModelForm):
         block = (
             DaySlotBlockModel.objects
             .select_related("blocked_day")
-            .filter(blocked_day__date=d, slot=slot)
+            .filter(blocked_day__date=d, slot=slot,is_closed=True)
             .first()
         )
 
@@ -72,6 +72,7 @@ class ReservationCreateForm(forms.ModelForm):
             return cleaned
 
         blocked_seats = block.blocked_seats if block else 0
+        print(f'blocked_seats {blocked_seats}')
         allowed_capacity = max(slot.capacity - blocked_seats, 0)
 
         # Capacity check (UX level)
@@ -87,7 +88,7 @@ class ReservationCreateForm(forms.ModelForm):
             qs = qs.exclude(pk=self.instance.pk)
 
         total_seats = qs.aggregate(total=Sum("party_size"))["total"] or 0
-
+        print(f'total_seats + party_size {total_seats + party_size} > allowed_capacity {allowed_capacity}')
         if total_seats + party_size > allowed_capacity:
             remaining = max(allowed_capacity - total_seats, 0)
             self.add_error(
