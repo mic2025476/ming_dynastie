@@ -1,5 +1,5 @@
 import json
-from datetime import date
+from datetime import date, timedelta
 
 from django.contrib import messages
 from django.db.models import Q
@@ -8,8 +8,11 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.http import JsonResponse
 from django.template.loader import render_to_string
+
 from reservations.models import TimeSlotModel, BlockedDayModel, ReservationModel
-from .forms import TimeSlotForm, BlockedDayForm, BlockedDaySlotBlockFormSet, ReservationForm
+from qrflow.models import Feedback  # adjust import path if different in your project
+from core_settings.models import SiteSettings
+from .forms import TimeSlotForm, BlockedDayForm, BlockedDaySlotBlockFormSet, ReservationForm, SiteSettingsForm
 
 
 # ─────────────────────────────────────────────
@@ -18,26 +21,29 @@ from .forms import TimeSlotForm, BlockedDayForm, BlockedDaySlotBlockFormSet, Res
 
 def dashboard_home(request):
     section = request.GET.get("section", "timeslots")
-    mode = request.GET.get("mode", "list")
+    mode    = request.GET.get("mode", "list")
     edit_id = request.GET.get("id")
 
-    # Always load these for the left panel list
-    slots = TimeSlotModel.objects.all().order_by("sort_order", "start_time")
+    slots        = TimeSlotModel.objects.all().order_by("sort_order", "start_time")
     blocked_days = BlockedDayModel.objects.prefetch_related("slot_blocks__slot").order_by("-date")
 
-    form = None
-    slot_block_formset = None
-    selected_slot = None
+    form                = None
+    slot_block_formset  = None
+    selected_slot       = None
     selected_blocked_day = None
     selected_reservation = None
-    reservations = None
-    date_filter = "upcoming"
-    slot_filter = ""
-    search = ""
-    slots_json = "[]"
-    today = date.today()
+    selected_feedback   = None
+    reservations        = None
+    feedback_list       = None
+    date_filter         = "upcoming"
+    slot_filter         = ""
+    search              = ""
+    location_filter     = ""
+    slots_json          = "[]"
+    site_settings       = None
+    today               = date.today()
 
-    # ── Time Slots section ──
+    # ── Time Slots ──────────────────────────────────────────
     if section == "timeslots":
         if mode == "create":
             form = TimeSlotForm()
@@ -47,7 +53,7 @@ def dashboard_home(request):
         else:
             mode = "list"
 
-    # ── Blocked Days section ──
+    # ── Blocked Days ─────────────────────────────────────────
     elif section == "blocked-days":
         if mode == "create":
             form = BlockedDayForm()
@@ -62,29 +68,33 @@ def dashboard_home(request):
         else:
             mode = "list"
 
-    # ── Reservations section ──
+    # ── Site Settings ────────────────────────────────────────
+    elif section == "settings":
+        site_settings = SiteSettings.objects.first()
+        if site_settings is None:
+            site_settings = SiteSettings()
+
+        form = SiteSettingsForm(instance=site_settings)
+        mode = "edit"
+
+    # ── Reservations ─────────────────────────────────────────
     elif section == "reservations":
-        today = date.today()
         date_filter = request.GET.get("date_filter", "upcoming")
         slot_filter = request.GET.get("slot_filter", "")
-        search = request.GET.get("search", "")
+        search      = request.GET.get("search", "")
 
         reservations = ReservationModel.objects.select_related("slot").order_by("-date", "-time")
-        print(f'reservations {len(reservations)}')
-        # Apply date filter
+
         if date_filter == "today":
             reservations = reservations.filter(date=today)
         elif date_filter == "upcoming":
             reservations = reservations.filter(date__gte=today)
         elif date_filter == "past":
             reservations = reservations.filter(date__lt=today)
-        # "all" → no date filter
 
-        # Apply slot filter
         if slot_filter:
             reservations = reservations.filter(slot_id=slot_filter)
 
-        # Apply search filter
         if search:
             reservations = reservations.filter(
                 Q(name__icontains=search)
@@ -92,7 +102,6 @@ def dashboard_home(request):
                 | Q(phone__icontains=search)
             )
 
-        # Build slot → {start, end} JSON for reservation time range JS
         slots_data = list(
             TimeSlotModel.objects.filter(is_active=True)
             .values("id", "start_time", "end_time")
@@ -101,7 +110,7 @@ def dashboard_home(request):
         slots_json = json.dumps({
             str(s["id"]): {
                 "start": s["start_time"].strftime("%H:%M"),
-                "end": s["end_time"].strftime("%H:%M"),
+                "end":   s["end_time"].strftime("%H:%M"),
             }
             for s in slots_data
         })
@@ -113,35 +122,152 @@ def dashboard_home(request):
             form = ReservationForm(instance=selected_reservation)
         else:
             mode = "list"
-        # ADD THIS at the end of the reservations block:
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
             html = render_to_string(
-                'dashboard/_reservation_rows.html',
-                {'reservations': reservations, 'today': today},
+                "dashboard/_reservation_rows.html",
+                {"reservations": reservations, "today": today},
                 request=request,
             )
-            return JsonResponse({
-                'html': html,
-                'count': reservations.count(),
-            })
+            return JsonResponse({"html": html, "count": reservations.count()})
+
+    # ── Feedback ─────────────────────────────────────────────
+    elif section == "feedback":
+        date_filter     = request.GET.get("date_filter", "all")
+        location_filter = request.GET.get("location_filter", "")
+        search          = request.GET.get("search", "")
+
+        feedback_list = Feedback.objects.order_by("-created_at")
+
+        # Date filter
+        if date_filter == "today":
+            feedback_list = feedback_list.filter(created_at__date=today)
+        elif date_filter == "week":
+            feedback_list = feedback_list.filter(created_at__date__gte=today - timedelta(days=7))
+        elif date_filter == "month":
+            feedback_list = feedback_list.filter(created_at__date__gte=today - timedelta(days=30))
+
+        # Location filter
+        if location_filter:
+            feedback_list = feedback_list.filter(location_slug=location_filter)
+
+        # Search
+        if search:
+            feedback_list = feedback_list.filter(
+                Q(what_went_wrong__icontains=search)
+                | Q(email__icontains=search)
+                | Q(location_slug__icontains=search)
+            )
+
+        # Detail view — show selected feedback in right panel
+        if mode == "view" and edit_id:
+            selected_feedback = get_object_or_404(Feedback, pk=edit_id)
+        else:
+            mode = "list"
+
+        # AJAX live search
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            html = render_to_string(
+                "dashboard/_feedback_rows.html",
+                {"feedback_list": feedback_list, "selected_feedback": selected_feedback},
+                request=request,
+            )
+            return JsonResponse({"html": html, "count": feedback_list.count()})
+
+        # Distinct location slugs for the filter dropdown
+        location_slugs = (
+            Feedback.objects
+            .exclude(location_slug__isnull=True)
+            .exclude(location_slug="")
+            .values_list("location_slug", flat=True)
+            .distinct()
+            .order_by("location_slug")
+        )
+
+        return render(request, "dashboard/index.html", {
+            "section":          section,
+            "mode":             mode,
+            "slots":            slots,
+            "blocked_days":     blocked_days,
+            "form":             None,
+            "slot_block_formset": None,
+            "selected_slot":    None,
+            "selected_blocked_day": None,
+            "reservations":     None,
+            "selected_reservation": None,
+            "feedback_list":    feedback_list,
+            "selected_feedback": selected_feedback,
+        "site_settings": site_settings,
+            "date_filter":      date_filter,
+            "location_filter":  location_filter,
+            "location_slugs":   location_slugs,
+            "search":           search,
+            "slot_filter":      "",
+            "slots_json":       "[]",
+            "today":            today,
+        })
 
     return render(request, "dashboard/index.html", {
-        "section": section,
-        "mode": mode,
+        "section":           section,
+        "mode":              mode,
+        "slots":             slots,
+        "blocked_days":      blocked_days,
+        "form":              form,
+        "slot_block_formset": slot_block_formset,
+        "selected_slot":     selected_slot,
+        "selected_blocked_day": selected_blocked_day,
+        "reservations":      reservations,
+        "selected_reservation": selected_reservation,
+        "feedback_list":     feedback_list,
+        "selected_feedback": selected_feedback,
+        "site_settings": site_settings,
+        "date_filter":       date_filter,
+        "location_filter":   location_filter,
+        "location_slugs":    [],
+        "search":            search,
+        "slot_filter":       slot_filter,
+        "slots_json":        slots_json,
+        "today":             today,
+    })
+
+
+def site_settings_save(request):
+    if request.method != "POST":
+        return redirect(f"{reverse('dashboard:home')}?section=settings")
+
+    site_settings = SiteSettings.objects.first() or SiteSettings()
+    form = SiteSettingsForm(request.POST, instance=site_settings)
+
+    if form.is_valid():
+        form.save()
+        messages.success(request, "Site settings updated successfully.")
+        return redirect(f"{reverse('dashboard:home')}?section=settings")
+
+    slots = TimeSlotModel.objects.all().order_by("sort_order", "start_time")
+    blocked_days = BlockedDayModel.objects.prefetch_related("slot_blocks__slot").order_by("-date")
+    messages.error(request, "Please fix the form errors and try again.")
+
+    return render(request, "dashboard/index.html", {
+        "section": "settings",
+        "mode": "edit",
         "slots": slots,
         "blocked_days": blocked_days,
         "form": form,
-        "slot_block_formset": slot_block_formset,
-        "selected_slot": selected_slot,
-        "selected_blocked_day": selected_blocked_day,
-        # Reservations extras
-        "reservations": reservations,
-        "selected_reservation": selected_reservation,
-        "date_filter": date_filter,
-        "slot_filter": slot_filter,
-        "search": search,
-        "slots_json": slots_json,
-        "today": today,
+        "slot_block_formset": None,
+        "selected_slot": None,
+        "selected_blocked_day": None,
+        "reservations": None,
+        "selected_reservation": None,
+        "feedback_list": None,
+        "selected_feedback": None,
+        "site_settings": site_settings,
+        "date_filter": "upcoming",
+        "location_filter": "",
+        "location_slugs": [],
+        "search": "",
+        "slot_filter": "",
+        "slots_json": "[]",
+        "today": date.today(),
     })
 
 
@@ -159,20 +285,17 @@ def timeslot_create(request):
         messages.success(request, "Time slot created successfully.")
         return redirect(f"{reverse('dashboard:home')}?section=timeslots")
 
-    slots = TimeSlotModel.objects.all().order_by("sort_order", "start_time")
+    slots        = TimeSlotModel.objects.all().order_by("sort_order", "start_time")
     blocked_days = BlockedDayModel.objects.prefetch_related("slot_blocks__slot").order_by("-date")
     messages.error(request, "Please fix the form errors and try again.")
 
     return render(request, "dashboard/index.html", {
-        "section": "timeslots",
-        "mode": "create",
-        "slots": slots,
-        "blocked_days": blocked_days,
-        "form": form,
-        "slot_block_formset": None,
-        "selected_slot": None,
-        "selected_blocked_day": None,
-        "reservations": None,
+        "section": "timeslots", "mode": "create",
+        "slots": slots, "blocked_days": blocked_days,
+        "form": form, "slot_block_formset": None,
+        "selected_slot": None, "selected_blocked_day": None,
+        "reservations": None, "feedback_list": None,
+        "selected_feedback": None, "today": date.today(),
     })
 
 
@@ -188,20 +311,17 @@ def timeslot_update(request, pk):
         messages.success(request, "Time slot updated successfully.")
         return redirect(f"{reverse('dashboard:home')}?section=timeslots")
 
-    slots = TimeSlotModel.objects.all().order_by("sort_order", "start_time")
+    slots        = TimeSlotModel.objects.all().order_by("sort_order", "start_time")
     blocked_days = BlockedDayModel.objects.prefetch_related("slot_blocks__slot").order_by("-date")
     messages.error(request, "Please fix the form errors and try again.")
 
     return render(request, "dashboard/index.html", {
-        "section": "timeslots",
-        "mode": "edit",
-        "slots": slots,
-        "blocked_days": blocked_days,
-        "form": form,
-        "slot_block_formset": None,
-        "selected_slot": slot,
-        "selected_blocked_day": None,
-        "reservations": None,
+        "section": "timeslots", "mode": "edit",
+        "slots": slots, "blocked_days": blocked_days,
+        "form": form, "slot_block_formset": None,
+        "selected_slot": slot, "selected_blocked_day": None,
+        "reservations": None, "feedback_list": None,
+        "selected_feedback": None, "today": date.today(),
     })
 
 
@@ -210,7 +330,6 @@ def timeslot_delete(request, pk):
         return redirect(f"{reverse('dashboard:home')}?section=timeslots")
 
     slot = get_object_or_404(TimeSlotModel, pk=pk)
-
     try:
         label = slot.label
         slot.delete()
@@ -221,7 +340,6 @@ def timeslot_delete(request, pk):
             f'"{slot.label}" cannot be deleted because it is already used in reservations. '
             f'Please deactivate it instead.'
         )
-
     return redirect(f"{reverse('dashboard:home')}?section=timeslots")
 
 
@@ -232,12 +350,8 @@ def timeslot_toggle_active(request, pk):
     slot = get_object_or_404(TimeSlotModel, pk=pk)
     slot.is_active = not slot.is_active
     slot.save(update_fields=["is_active"])
-
-    if slot.is_active:
-        messages.success(request, f'"{slot.label}" is now active.')
-    else:
-        messages.success(request, f'"{slot.label}" is now inactive.')
-
+    msg = f'"{slot.label}" is now {"active" if slot.is_active else "inactive"}.'
+    messages.success(request, msg)
     return redirect(f"{reverse('dashboard:home')}?section=timeslots")
 
 
@@ -249,30 +363,27 @@ def blocked_day_create(request):
     if request.method != "POST":
         return redirect(f"{reverse('dashboard:home')}?section=blocked-days")
 
-    form = BlockedDayForm(request.POST)
+    form    = BlockedDayForm(request.POST)
     formset = BlockedDaySlotBlockFormSet(request.POST, prefix="slot_blocks")
 
     if form.is_valid() and formset.is_valid():
-        blocked_day = form.save()
-        formset.instance = blocked_day
+        blocked_day          = form.save()
+        formset.instance     = blocked_day
         formset.save()
         messages.success(request, "Blocked day created successfully.")
         return redirect(f"{reverse('dashboard:home')}?section=blocked-days")
 
-    slots = TimeSlotModel.objects.all().order_by("sort_order", "start_time")
+    slots        = TimeSlotModel.objects.all().order_by("sort_order", "start_time")
     blocked_days = BlockedDayModel.objects.prefetch_related("slot_blocks__slot").order_by("-date")
     messages.error(request, "Please fix the form errors and try again.")
 
     return render(request, "dashboard/index.html", {
-        "section": "blocked-days",
-        "mode": "create",
-        "slots": slots,
-        "blocked_days": blocked_days,
-        "form": form,
-        "slot_block_formset": formset,
-        "selected_slot": None,
-        "selected_blocked_day": None,
-        "reservations": None,
+        "section": "blocked-days", "mode": "create",
+        "slots": slots, "blocked_days": blocked_days,
+        "form": form, "slot_block_formset": formset,
+        "selected_slot": None, "selected_blocked_day": None,
+        "reservations": None, "feedback_list": None,
+        "selected_feedback": None, "today": date.today(),
     })
 
 
@@ -282,12 +393,8 @@ def blocked_day_update(request, pk):
     if request.method != "POST":
         return redirect(f"{reverse('dashboard:home')}?section=blocked-days")
 
-    form = BlockedDayForm(request.POST, instance=blocked_day)
-    formset = BlockedDaySlotBlockFormSet(
-        request.POST,
-        instance=blocked_day,
-        prefix="slot_blocks",
-    )
+    form    = BlockedDayForm(request.POST, instance=blocked_day)
+    formset = BlockedDaySlotBlockFormSet(request.POST, instance=blocked_day, prefix="slot_blocks")
 
     if form.is_valid() and formset.is_valid():
         form.save()
@@ -295,20 +402,17 @@ def blocked_day_update(request, pk):
         messages.success(request, "Blocked day updated successfully.")
         return redirect(f"{reverse('dashboard:home')}?section=blocked-days")
 
-    slots = TimeSlotModel.objects.all().order_by("sort_order", "start_time")
+    slots        = TimeSlotModel.objects.all().order_by("sort_order", "start_time")
     blocked_days = BlockedDayModel.objects.prefetch_related("slot_blocks__slot").order_by("-date")
     messages.error(request, "Please fix the form errors and try again.")
 
     return render(request, "dashboard/index.html", {
-        "section": "blocked-days",
-        "mode": "edit",
-        "slots": slots,
-        "blocked_days": blocked_days,
-        "form": form,
-        "slot_block_formset": formset,
-        "selected_slot": None,
-        "selected_blocked_day": blocked_day,
-        "reservations": None,
+        "section": "blocked-days", "mode": "edit",
+        "slots": slots, "blocked_days": blocked_days,
+        "form": form, "slot_block_formset": formset,
+        "selected_slot": None, "selected_blocked_day": blocked_day,
+        "reservations": None, "feedback_list": None,
+        "selected_feedback": None, "today": date.today(),
     })
 
 
@@ -341,7 +445,7 @@ def reservation_create(request):
         messages.success(request, "Reservation created successfully.")
         return redirect(_reservation_list_url())
 
-    slots = TimeSlotModel.objects.all().order_by("sort_order", "start_time")
+    slots        = TimeSlotModel.objects.all().order_by("sort_order", "start_time")
     blocked_days = BlockedDayModel.objects.prefetch_related("slot_blocks__slot").order_by("-date")
     reservations = ReservationModel.objects.select_related("slot").filter(
         date__gte=date.today()
@@ -354,28 +458,19 @@ def reservation_create(request):
         .order_by("sort_order", "start_time")
     )
     slots_json = json.dumps({
-        str(s["id"]): {
-            "start": s["start_time"].strftime("%H:%M"),
-            "end": s["end_time"].strftime("%H:%M"),
-        }
+        str(s["id"]): {"start": s["start_time"].strftime("%H:%M"), "end": s["end_time"].strftime("%H:%M")}
         for s in slots_data
     })
 
     return render(request, "dashboard/index.html", {
-        "section": "reservations",
-        "mode": "create",
-        "slots": slots,
-        "blocked_days": blocked_days,
-        "form": form,
-        "slot_block_formset": None,
-        "selected_slot": None,
-        "selected_blocked_day": None,
-        "reservations": reservations,
-        "selected_reservation": None,
-        "date_filter": "upcoming",
-        "slot_filter": "",
-        "search": "",
-        "slots_json": slots_json,
+        "section": "reservations", "mode": "create",
+        "slots": slots, "blocked_days": blocked_days,
+        "form": form, "slot_block_formset": None,
+        "selected_slot": None, "selected_blocked_day": None,
+        "reservations": reservations, "selected_reservation": None,
+        "feedback_list": None, "selected_feedback": None,
+        "date_filter": "upcoming", "slot_filter": "", "search": "",
+        "slots_json": slots_json, "today": date.today(),
     })
 
 
@@ -391,7 +486,7 @@ def reservation_update(request, pk):
         messages.success(request, f'Reservation for "{reservation.name}" updated successfully.')
         return redirect(_reservation_list_url())
 
-    slots = TimeSlotModel.objects.all().order_by("sort_order", "start_time")
+    slots        = TimeSlotModel.objects.all().order_by("sort_order", "start_time")
     blocked_days = BlockedDayModel.objects.prefetch_related("slot_blocks__slot").order_by("-date")
     reservations = ReservationModel.objects.select_related("slot").filter(
         date__gte=date.today()
@@ -404,29 +499,21 @@ def reservation_update(request, pk):
         .order_by("sort_order", "start_time")
     )
     slots_json = json.dumps({
-        str(s["id"]): {
-            "start": s["start_time"].strftime("%H:%M"),
-            "end": s["end_time"].strftime("%H:%M"),
-        }
+        str(s["id"]): {"start": s["start_time"].strftime("%H:%M"), "end": s["end_time"].strftime("%H:%M")}
         for s in slots_data
     })
 
     return render(request, "dashboard/index.html", {
-        "section": "reservations",
-        "mode": "edit",
-        "slots": slots,
-        "blocked_days": blocked_days,
-        "form": form,
-        "slot_block_formset": None,
-        "selected_slot": None,
-        "selected_blocked_day": None,
-        "reservations": reservations,
-        "selected_reservation": reservation,
-        "date_filter": "upcoming",
-        "slot_filter": "",
-        "search": "",
-        "slots_json": slots_json,
+        "section": "reservations", "mode": "edit",
+        "slots": slots, "blocked_days": blocked_days,
+        "form": form, "slot_block_formset": None,
+        "selected_slot": None, "selected_blocked_day": None,
+        "reservations": reservations, "selected_reservation": reservation,
+        "feedback_list": None, "selected_feedback": None,
+        "date_filter": "upcoming", "slot_filter": "", "search": "",
+        "slots_json": slots_json, "today": date.today(),
     })
+
 
 def reservation_delete(request, pk):
     if request.method != "POST":
@@ -437,11 +524,10 @@ def reservation_delete(request, pk):
     reservation.delete()
 
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-        today = date.today()
-
+        today       = date.today()
         date_filter = request.GET.get("date_filter", "upcoming")
         slot_filter = request.GET.get("slot_filter", "")
-        search = request.GET.get("search", "").strip()
+        search      = request.GET.get("search", "").strip()
 
         reservations = ReservationModel.objects.select_related("slot")
 
@@ -457,9 +543,9 @@ def reservation_delete(request, pk):
 
         if search:
             reservations = reservations.filter(
-                Q(name__icontains=search) |
-                Q(email__icontains=search) |
-                Q(phone__icontains=search)
+                Q(name__icontains=search)
+                | Q(email__icontains=search)
+                | Q(phone__icontains=search)
             )
 
         reservations = reservations.order_by("date", "time")
@@ -469,13 +555,59 @@ def reservation_delete(request, pk):
             {"reservations": reservations, "today": today},
             request=request,
         )
-
         return JsonResponse({
             "success": True,
             "message": f'Reservation for "{name}" was deleted successfully.',
-            "html": html,
-            "count": reservations.count(),
+            "html":    html,
+            "count":   reservations.count(),
         })
 
     messages.success(request, f'Reservation for "{name}" was deleted successfully.')
     return redirect(_reservation_list_url())
+
+
+# ─────────────────────────────────────────────
+#  FEEDBACK VIEWS
+# ─────────────────────────────────────────────
+
+def feedback_delete(request, pk):
+    if request.method != "POST":
+        return redirect(f"{reverse('dashboard:home')}?section=feedback")
+
+    feedback = get_object_or_404(Feedback, pk=pk)
+    feedback.delete()
+
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        today           = date.today()
+        date_filter     = request.GET.get("date_filter", "all")
+        location_filter = request.GET.get("location_filter", "")
+        search          = request.GET.get("search", "").strip()
+
+        feedback_list = Feedback.objects.order_by("-created_at")
+
+        if date_filter == "today":
+            feedback_list = feedback_list.filter(created_at__date=today)
+        elif date_filter == "week":
+            feedback_list = feedback_list.filter(created_at__date__gte=today - timedelta(days=7))
+        elif date_filter == "month":
+            feedback_list = feedback_list.filter(created_at__date__gte=today - timedelta(days=30))
+
+        if location_filter:
+            feedback_list = feedback_list.filter(location_slug=location_filter)
+
+        if search:
+            feedback_list = feedback_list.filter(
+                Q(what_went_wrong__icontains=search)
+                | Q(email__icontains=search)
+                | Q(location_slug__icontains=search)
+            )
+
+        html = render_to_string(
+            "dashboard/_feedback_rows.html",
+            {"feedback_list": feedback_list, "selected_feedback": None},
+            request=request,
+        )
+        return JsonResponse({"html": html, "count": feedback_list.count()})
+
+    messages.success(request, "Feedback entry deleted successfully.")
+    return redirect(f"{reverse('dashboard:home')}?section=feedback")

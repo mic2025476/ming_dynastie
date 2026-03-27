@@ -124,18 +124,8 @@
       line-height: 1.15;
     }
 
-    .page-subtitle {
-      color: var(--muted);
-      font-size: 0.97rem;
-      margin-top: 5px;
-    }
-
-    .page-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
+    .page-subtitle { color: var(--muted); font-size: 0.97rem; margin-top: 5px; }
+    .page-actions  { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 
     /* ── NAV TABS ── */
     .top-nav {
@@ -165,13 +155,8 @@
       white-space: nowrap;
     }
 
-    .top-nav a:hover { background: var(--primary-light); color: var(--primary); }
-
-    .top-nav a.active {
-      background: var(--primary);
-      color: white;
-      box-shadow: 0 2px 8px rgba(37,99,235,0.25);
-    }
+    .top-nav a:hover  { background: var(--primary-light); color: var(--primary); }
+    .top-nav a.active { background: var(--primary); color: white; box-shadow: 0 2px 8px rgba(37,99,235,0.25); }
 
     /* ── MESSAGES ── */
     .messages { margin-bottom: 20px; display: grid; gap: 10px; }
@@ -190,47 +175,21 @@
     .message.error   { background: var(--danger-light);  color: #991B1B; border: 1px solid #FECACA; }
 
     /* ── GRID ── */
-    .grid {
-      display: grid;
-      grid-template-columns: 1.4fr 1fr;
-      gap: 24px;
-      align-items: start;
-    }
-
-    .grid.reservations-grid {
-      grid-template-columns: 1.6fr 1fr;
-    }
+    .grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; align-items: start; }
+    .grid.reservations-grid { grid-template-columns: 1.6fr 1fr; }
+    .grid.feedback-grid     { grid-template-columns: 1.5fr 1fr; }
 
     /* ── CARD ── */
-    .card {
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border);
-      overflow: hidden;
-    }
-
+    .card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); overflow: hidden; }
     .card-header { padding: 22px 24px 16px; border-bottom: 1px solid var(--border); }
     .card-title  { font-family: 'Outfit', sans-serif; font-size: 1.12rem; font-weight: 700; }
     .card-desc   { color: var(--muted); font-size: 0.91rem; margin-top: 5px; line-height: 1.5; }
     .card-body   { padding: 20px 24px 24px; }
 
-    /* ── FILTER BAR (Reservations) ── */
-    .filter-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 18px;
-      align-items: center;
-    }
+    /* ── FILTER BAR ── */
+    .filter-bar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; align-items: center; }
 
-    .filter-tabs {
-      display: flex;
-      background: #F3F4F6;
-      border-radius: var(--radius-sm);
-      padding: 4px;
-      gap: 2px;
-    }
+    .filter-tabs { display: flex; background: #F3F4F6; border-radius: var(--radius-sm); padding: 4px; gap: 2px; }
 
     .filter-tab {
       text-decoration: none;
@@ -247,13 +206,8 @@
       font-family: 'DM Sans', sans-serif;
     }
 
-    .filter-tab:hover { background: white; color: var(--text); }
-
-    .filter-tab.active {
-      background: white;
-      color: var(--primary);
-      box-shadow: var(--shadow-sm);
-    }
+    .filter-tab:hover  { background: white; color: var(--text); }
+    .filter-tab.active { background: white; color: var(--primary); box-shadow: var(--shadow-sm); }
 
     .filter-select {
       border: 1.5px solid var(--border);
@@ -284,18 +238,6 @@
 
     .search-input:focus { outline: none; border-color: var(--primary); }
 
-    .filter-submit {
-      border: none;
-      background: var(--primary);
-      color: white;
-      border-radius: var(--radius-sm);
-      padding: 8px 16px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.88rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
     /* ── SLOT / RESERVATION LIST ── */
     .slot-list { display: grid; gap: 12px; }
 
@@ -313,7 +255,7 @@
       border-left: 4px solid var(--border);
     }
 
-    .slot-item:hover { box-shadow: var(--shadow); }
+    .slot-item:hover    { box-shadow: var(--shadow); }
     .slot-item.is-active   { border-left-color: var(--success); }
     .slot-item.is-inactive { border-left-color: var(--danger); background: #FDFCFC; }
     .slot-item.is-closed   { border-left-color: var(--danger); background: #FDFCFC; }
@@ -322,35 +264,50 @@
     .slot-item.is-past     { border-left-color: #D1D5DB; background: #FAFAFA; }
     .slot-item.is-today    { border-left-color: var(--success); background: #F0FDF9; }
 
-    .slot-main { min-width: 0; flex: 1; }
+    /* ── FEEDBACK SPECIFIC ── */
+    .slot-item.is-feedback          { border-left-color: #8B5CF6; }
+    .slot-item.is-feedback.is-selected { border-left-color: #7C3AED; background: #F5F3FF; }
 
-    .slot-title {
-      font-family: 'Outfit', sans-serif;
-      font-size: 1.05rem;
-      font-weight: 700;
+    .feedback-preview {
+      color: var(--text);
+      font-size: 0.91rem;
+      line-height: 1.5;
       margin-bottom: 8px;
     }
 
-    .res-name-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
-      flex-wrap: wrap;
+    .feedback-detail      { display: grid; gap: 16px; }
+
+    .feedback-detail-text {
+      background: #F9FAFB;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text);
+      white-space: pre-wrap;
     }
 
-    .res-name {
-      font-family: 'Outfit', sans-serif;
-      font-size: 1.05rem;
+    .feedback-meta-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .feedback-meta-item  { display: flex; flex-direction: column; gap: 4px; }
+
+    .feedback-meta-label {
+      font-size: 0.8rem;
       font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
     }
 
-    .slot-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-    }
+    .feedback-meta-value { font-size: 0.94rem; font-weight: 500; color: var(--text); }
+
+    .slot-main  { min-width: 0; flex: 1; }
+    .slot-title { font-family: 'Outfit', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
+
+    .res-name-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+    .res-name     { font-family: 'Outfit', sans-serif; font-size: 1.05rem; font-weight: 700; }
+
+    .slot-meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 
     .meta-tag {
       background: #F3F4F6;
@@ -364,10 +321,7 @@
       gap: 4px;
     }
 
-    .meta-tag.highlight {
-      background: var(--primary-light);
-      color: var(--primary);
-    }
+    .meta-tag.highlight { background: var(--primary-light); color: var(--primary); }
 
     /* ── BADGES ── */
     .badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 999px; font-size: 0.8rem; font-weight: 700; }
@@ -380,14 +334,7 @@
     .badge.past     { background: #F9FAFB; color: #6B7280; border: 1px solid #D1D5DB; }
 
     /* ── ACTIONS ── */
-    .actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-      align-items: flex-start;
-      flex-shrink: 0;
-    }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; align-items: flex-start; flex-shrink: 0; }
 
     /* ── BUTTONS ── */
     .btn {
@@ -484,26 +431,21 @@
     .empty-title { font-family: 'Outfit', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; }
     .empty-text  { color: var(--muted); font-size: 0.91rem; line-height: 1.5; margin-bottom: 18px; }
 
-    /* ── INLINE CARDS ── */
-    .inline-list { display: grid; gap: 12px; margin-top: 12px; }
-    .inline-card { border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 16px 18px; background: #F9FAFB; }
-
-    /* ── TIP BOX ── */
-    .tip-box { background: var(--warning-light); border: 1px solid #FDE68A; border-radius: var(--radius-sm); padding: 12px 16px; margin-top: 14px; display: flex; gap: 10px; align-items: flex-start; }
+    /* ── MISC ── */
+    .inline-list  { display: grid; gap: 12px; margin-top: 12px; }
+    .inline-card  { border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 16px 18px; background: #F9FAFB; }
+    .tip-box      { background: var(--warning-light); border: 1px solid #FDE68A; border-radius: var(--radius-sm); padding: 12px 16px; margin-top: 14px; display: flex; gap: 10px; align-items: flex-start; }
     .tip-box-text { font-size: 0.87rem; color: #78350F; line-height: 1.5; }
-
-    /* ── DIVIDER ── */
-    .divider { height: 1px; background: var(--border); margin: 20px 0; }
-
+    .divider      { height: 1px; background: var(--border); margin: 20px 0; }
     .section-label { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 24px; margin-bottom: 12px; flex-wrap: wrap; }
     .section-label-text h3 { font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 700; }
     .section-label-text p  { font-size: 0.87rem; color: var(--muted); margin-top: 3px; }
-
     .results-count { font-size: 0.88rem; color: var(--muted); font-weight: 500; margin-bottom: 14px; }
 
     /* ── RESPONSIVE ── */
     @media (max-width: 1024px) {
-      .grid, .grid.reservations-grid { grid-template-columns: 1fr; }
+      .grid, .grid.reservations-grid, .grid.feedback-grid { grid-template-columns: 1fr; }
+      .grid.has-active-form > section:last-child { order: -1; }
     }
 
     @media (max-width: 640px) {
@@ -511,7 +453,7 @@
       .topbar     { padding: 0 16px; }
       .page-title { font-size: 1.5rem; }
       .top-nav    { width: 100%; }
-      .top-nav a  { flex: 1; justify-content: center; padding: 10px 10px; font-size: 0.85rem; }
+      .top-nav a  { flex: 1; justify-content: center; padding: 10px 6px; font-size: 0.82rem; }
       .form-grid  { grid-template-columns: 1fr; }
       .actions    { width: 100%; justify-content: stretch; }
       .actions .btn { flex: 1; min-width: 0; }
@@ -523,21 +465,8 @@
       .search-input { min-width: 0; width: 100%; }
       .filter-tabs  { width: 100%; }
       .filter-tab   { flex: 1; text-align: center; }
+      .feedback-meta-grid { grid-template-columns: 1fr; }
     }
-.contact-link {
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.18s ease;
-}
-
-.contact-link:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.06) inset;
-}
-.contact-link,
-.contact-link:visited {
-  color: inherit;
-}
   </style>
 </head>
 <body>
@@ -549,15 +478,12 @@
       {% trans "Store Dashboard" %}
     </a>
 
-    <!-- Language Switcher — Django built-in set_language view -->
-    {% get_current_language as CURRENT_LANGUAGE %}
-
     <form class="lang-switcher-form" action="{% url 'set_language' %}" method="post">
       {% csrf_token %}
       <input type="hidden" name="next" value="{{ request.get_full_path }}">
       <select name="language" class="lang-select" onchange="this.form.submit()">
-        <option value="de" {% if CURRENT_LANGUAGE|slice:":2" == "de" %}selected{% endif %}>🇩🇪 Deutsch</option>
-        <option value="en" {% if CURRENT_LANGUAGE|slice:":2" == "en" %}selected{% endif %}>🇬🇧 English</option>
+        <option value="de"      {% if CURRENT_LANGUAGE|slice:":2" == "de" %}selected{% endif %}>🇩🇪 Deutsch</option>
+        <option value="en"      {% if CURRENT_LANGUAGE|slice:":2" == "en" %}selected{% endif %}>🇬🇧 English</option>
         <option value="zh-hans" {% if CURRENT_LANGUAGE|slice:":2" == "zh" %}selected{% endif %}>🇨🇳 中文</option>
       </select>
     </form>
@@ -571,6 +497,8 @@
         <h1 class="page-title">
           {% if section == "timeslots" %}⏰ {% trans "Time Slots" %}
           {% elif section == "blocked-days" %}📅 {% trans "Blocked Days" %}
+          {% elif section == "feedback" %}💬 {% trans "Customer Feedback" %}
+          {% elif section == "settings" %}⚙️ {% trans "Site Settings" %}
           {% else %}📋 {% trans "Reservations" %}
           {% endif %}
         </h1>
@@ -579,6 +507,10 @@
             {% trans "Manage the reservation windows your customers can book." %}
           {% elif section == "blocked-days" %}
             {% trans "Mark days as closed or limit specific slots on certain dates." %}
+          {% elif section == "feedback" %}
+            {% trans "Read and manage feedback submitted by customers via QR code." %}
+          {% elif section == "settings" %}
+            {% trans "Control your core booking rules in one simple place for staff." %}
           {% else %}
             {% trans "View, create, and manage all customer reservations." %}
           {% endif %}
@@ -591,11 +523,19 @@
             <a href="{% url 'dashboard:home' %}?section=timeslots&mode=create" class="btn btn-primary btn-lg">＋ {% trans "Add Time Slot" %}</a>
           {% elif section == "blocked-days" %}
             <a href="{% url 'dashboard:home' %}?section=blocked-days&mode=create" class="btn btn-primary btn-lg">＋ {% trans "Add Blocked Day" %}</a>
+          {% elif section == "feedback" %}
+            {# read-only — no add button #}
+          {% elif section == "settings" %}
+            {# settings are edited in the right panel #}
           {% else %}
             <a href="{% url 'dashboard:home' %}?section=reservations&mode=create" class="btn btn-primary btn-lg">＋ {% trans "New Reservation" %}</a>
           {% endif %}
         {% else %}
-          <a href="{% url 'dashboard:home' %}?section={{ section }}" class="btn btn-secondary">← {% trans "Back to List" %}</a>
+          {% if section == "settings" %}
+            {# settings form stays open on purpose #}
+          {% else %}
+            <a href="{% url 'dashboard:home' %}?section={{ section }}" class="btn btn-secondary">← {% trans "Back to List" %}</a>
+          {% endif %}
         {% endif %}
       </div>
     </div>
@@ -605,6 +545,8 @@
       <a href="{% url 'dashboard:home' %}?section=timeslots"    class="{% if section == 'timeslots' %}active{% endif %}">⏰ {% trans "Time Slots" %}</a>
       <a href="{% url 'dashboard:home' %}?section=blocked-days" class="{% if section == 'blocked-days' %}active{% endif %}">📅 {% trans "Blocked Days" %}</a>
       <a href="{% url 'dashboard:home' %}?section=reservations" class="{% if section == 'reservations' %}active{% endif %}">📋 {% trans "Reservations" %}</a>
+      <a href="{% url 'dashboard:home' %}?section=settings"     class="{% if section == 'settings' %}active{% endif %}">⚙️ {% trans "Settings" %}</a>
+      <a href="{% url 'dashboard:home' %}?section=feedback"     class="{% if section == 'feedback' %}active{% endif %}">💬 {% trans "Feedback" %}</a>
     </nav>
 
     <!-- FLASH MESSAGES -->
@@ -620,9 +562,15 @@
     {% endif %}
 
     <!-- MAIN GRID -->
-    <div class="grid {% if section == 'reservations' %}reservations-grid{% endif %}">
+    <div class="grid
+      {% if section == 'reservations' %}reservations-grid
+      {% elif section == 'feedback' %}feedback-grid
+      {% endif %}
+      {% if mode == 'edit' or mode == 'create' or mode == 'view' %}has-active-form{% endif %}">
 
-      <!-- LEFT PANEL — List -->
+      <!-- ═══════════════════════════════
+           LEFT PANEL — List
+      ════════════════════════════════ -->
       <section class="card">
         <div class="card-header">
           {% if section == "timeslots" %}
@@ -631,6 +579,12 @@
           {% elif section == "blocked-days" %}
             <h2 class="card-title">📅 {% trans "All Blocked Days" %}</h2>
             <p class="card-desc">{% trans "Days marked here are closed or have reduced availability for customers." %}</p>
+          {% elif section == "feedback" %}
+            <h2 class="card-title">💬 {% trans "All Feedback" %}</h2>
+            <p class="card-desc">{% trans "Customer feedback submitted via QR code." %}</p>
+          {% elif section == "settings" %}
+            <h2 class="card-title">⚙️ {% trans "Current Settings" %}</h2>
+            <p class="card-desc">{% trans "A simple overview of the booking rules your staff is using right now." %}</p>
           {% else %}
             <h2 class="card-title">📋 {% trans "All Reservations" %}</h2>
             <p class="card-desc">{% trans "Filter by date or slot, or search by guest name, email, or phone." %}</p>
@@ -731,70 +685,142 @@
               {% endfor %}
             </div>
 
-          {# ── RESERVATIONS LIST ── #}
-          {% else %}
-          <!-- Filter Bar -->
-          <form method="get" action="{% url 'dashboard:home' %}" id="filter-form">
-            <input type="hidden" name="section" value="reservations">
-            <div class="filter-bar">
-              <div class="filter-tabs">
-                <button type="submit" name="date_filter" value="today"
-                  class="filter-tab {% if date_filter == 'today' %}active{% endif %}">
-                  {% trans "Today" %}
-                </button>
-                <button type="submit" name="date_filter" value="upcoming"
-                  class="filter-tab {% if date_filter == 'upcoming' or not date_filter %}active{% endif %}">
-                  {% trans "Upcoming" %}
-                </button>
-                <button type="submit" name="date_filter" value="past"
-                  class="filter-tab {% if date_filter == 'past' %}active{% endif %}">
-                  {% trans "Past" %}
-                </button>
-                <button type="submit" name="date_filter" value="all"
-                  class="filter-tab {% if date_filter == 'all' %}active{% endif %}">
-                  {% trans "All" %}
-                </button>
+          {# ── SITE SETTINGS LIST ── #}
+          {% elif section == "settings" %}
+            <div class="inline-list">
+              <div class="inline-card">
+                <div class="section-label-text">
+                  <h3>🗓 {% trans "Advance Booking Window" %}</h3>
+                  <p>{% trans "How many days ahead customers are allowed to book." %}</p>
+                </div>
+                <div class="slot-meta" style="margin-top: 10px;">
+                  <span class="meta-tag highlight">{{ site_settings.booking_days_in_advance|default:3 }} {% trans "days" %}</span>
+                </div>
               </div>
 
-              <select name="slot_filter" class="filter-select" id="slot-filter">
-                <option value="">{% trans "All Slots" %}</option>
-                {% for slot in slots %}
-                  <option value="{{ slot.id }}" {% if slot_filter == slot.id|stringformat:"s" %}selected{% endif %}>
-                    {{ slot.label }}
-                  </option>
-                {% endfor %}
-              </select>
+              <div class="inline-card">
+                <div class="section-label-text">
+                  <h3>🕐 {% trans "Opening Hours for Reservations" %}</h3>
+                  <p>{% trans "The earliest and latest times staff allow for bookings." %}</p>
+                </div>
+                <div class="slot-meta" style="margin-top: 10px;">
+                  <span class="meta-tag">{% trans "From" %}: {{ site_settings.opening_time|default:"12:00"|time:"H:i" }}</span>
+                  <span class="meta-tag">{% trans "Until" %}: {{ site_settings.closing_time|default:"22:00"|time:"H:i" }}</span>
+                </div>
+              </div>
 
-              <!-- No submit button anymore -->
-              <input
-                type="search"
-                name="search"
-                id="search-input"
-                value="{{ search }}"
-                class="search-input"
-                placeholder="{% trans "Search name, email, phone…" %}"
-                autocomplete="off"
-                spellcheck="false"
-                enterkeyhint="search"
-              >
+              <div class="tip-box">
+                <span>💡</span>
+                <div class="tip-box-text">
+                  {% trans "These settings affect the overall reservation flow, so staff should update them carefully." %}
+                </div>
+              </div>
             </div>
-          </form>
 
-          <!-- Results count -->
-          <div class="results-count" id="results-count"></div>
+          {# ── FEEDBACK LIST ── #}
+          {% elif section == "feedback" %}
+            <form method="get" action="{% url 'dashboard:home' %}" id="feedback-filter-form">
+              <input type="hidden" name="section" value="feedback">
+              <div class="filter-bar">
+                <div class="filter-tabs">
+                  <button type="submit" name="date_filter" value="today"
+                    class="filter-tab {% if date_filter == 'today' %}active{% endif %}">
+                    {% trans "Today" %}
+                  </button>
+                  <button type="submit" name="date_filter" value="week"
+                    class="filter-tab {% if date_filter == 'week' %}active{% endif %}">
+                    {% trans "This Week" %}
+                  </button>
+                  <button type="submit" name="date_filter" value="month"
+                    class="filter-tab {% if date_filter == 'month' %}active{% endif %}">
+                    {% trans "This Month" %}
+                  </button>
+                  <button type="submit" name="date_filter" value="all"
+                    class="filter-tab {% if date_filter == 'all' or not date_filter %}active{% endif %}">
+                    {% trans "All" %}
+                  </button>
+                </div>
 
-          <!-- Results list — rendered by JS -->
-          <div class="slot-list" id="reservations-list">
-            {# initially rendered by Django on page load #}
-            {% include "dashboard/_reservation_rows.html" %}
-          </div>
+                {% if location_slugs %}
+                  <select name="location_filter" class="filter-select" onchange="this.form.submit()">
+                    <option value="">{% trans "All Locations" %}</option>
+                    {% for slug in location_slugs %}
+                      <option value="{{ slug }}" {% if location_filter == slug %}selected{% endif %}>{{ slug }}</option>
+                    {% endfor %}
+                  </select>
+                {% endif %}
+
+                <input type="text" name="search" id="feedback-search-input" value="{{ search }}"
+                  class="search-input"
+                  placeholder="{% trans "Search feedback, email, location…" %}"
+                  autocomplete="off">
+              </div>
+            </form>
+
+            <div class="results-count" id="feedback-results-count">
+              {% if feedback_list is not None %}
+                {{ feedback_list|length }} {% trans "entries found" %}
+              {% endif %}
+            </div>
+
+            <div class="slot-list" id="feedback-list">
+              {% include "dashboard/_feedback_rows.html" %}
+            </div>
+
+          {# ── RESERVATIONS LIST ── #}
+          {% else %}
+            <form method="get" action="{% url 'dashboard:home' %}" id="filter-form">
+              <input type="hidden" name="section" value="reservations">
+              <div class="filter-bar">
+                <div class="filter-tabs">
+                  <button type="submit" name="date_filter" value="today"
+                    class="filter-tab {% if date_filter == 'today' %}active{% endif %}">
+                    {% trans "Today" %}
+                  </button>
+                  <button type="submit" name="date_filter" value="upcoming"
+                    class="filter-tab {% if date_filter == 'upcoming' or not date_filter %}active{% endif %}">
+                    {% trans "Upcoming" %}
+                  </button>
+                  <button type="submit" name="date_filter" value="past"
+                    class="filter-tab {% if date_filter == 'past' %}active{% endif %}">
+                    {% trans "Past" %}
+                  </button>
+                  <button type="submit" name="date_filter" value="all"
+                    class="filter-tab {% if date_filter == 'all' %}active{% endif %}">
+                    {% trans "All" %}
+                  </button>
+                </div>
+
+                <select name="slot_filter" class="filter-select" id="slot-filter">
+                  <option value="">{% trans "All Slots" %}</option>
+                  {% for slot in slots %}
+                    <option value="{{ slot.id }}" {% if slot_filter == slot.id|stringformat:"s" %}selected{% endif %}>
+                      {{ slot.label }}
+                    </option>
+                  {% endfor %}
+                </select>
+
+                <input type="search" name="search" id="search-input" value="{{ search }}"
+                  class="search-input"
+                  placeholder="{% trans "Search name, email, phone…" %}"
+                  autocomplete="off" spellcheck="false" enterkeyhint="search">
+              </div>
+            </form>
+
+            <div class="results-count" id="results-count"></div>
+
+            <div class="slot-list" id="reservations-list">
+              {% include "dashboard/_reservation_rows.html" %}
+            </div>
 
           {% endif %}
 
         </div>
       </section>
 
-      <!-- RIGHT PANEL — Form -->
+      <!-- ═══════════════════════════════
+           RIGHT PANEL — Form / Detail
+      ════════════════════════════════ -->
       <section class="card">
         <div class="card-header">
           {% if section == "timeslots" %}
@@ -819,6 +845,17 @@
               <h2 class="card-title">💡 {% trans "Getting Started" %}</h2>
               <p class="card-desc">{% trans "Select an entry to edit, or block a new day." %}</p>
             {% endif %}
+          {% elif section == "settings" %}
+            <h2 class="card-title">⚙️ {% trans "Edit Site Settings" %}</h2>
+            <p class="card-desc">{% trans "Use clear booking rules so non-technical staff can manage reservations with confidence." %}</p>
+          {% elif section == "feedback" %}
+            {% if mode == "view" and selected_feedback %}
+              <h2 class="card-title">💬 {% trans "Feedback Detail" %}</h2>
+              <p class="card-desc">{% trans "Full feedback from the customer." %}</p>
+            {% else %}
+              <h2 class="card-title">💡 {% trans "Select Feedback" %}</h2>
+              <p class="card-desc">{% trans "Click View on any entry to read the full message." %}</p>
+            {% endif %}
           {% else %}
             {% if mode == "create" %}
               <h2 class="card-title">➕ {% trans "New Reservation" %}</h2>
@@ -833,7 +870,8 @@
           {% endif %}
         </div>
 
-        <div class="card-body">
+        <div class="card-body"
+        {% if section == "feedback" %}id="feedback-detail-panel"{% elif section == "reservations" %}id="reservation-detail-panel"{% endif %}>
           {% if section == "timeslots" %}
             {% if mode == "create" or mode == "edit" %}
               {% include "dashboard/_timeslot_form.html" %}
@@ -858,6 +896,44 @@
               </div>
             {% endif %}
 
+          {% elif section == "settings" %}
+            {% include "dashboard/_site_settings_form.html" %}
+
+          {% elif section == "feedback" %}
+            {% if mode == "view" and selected_feedback %}
+              <div class="feedback-detail">
+                <div class="feedback-meta-grid">
+                  <div class="feedback-meta-item">
+                    <span class="feedback-meta-label">{% trans "Email" %}</span>
+                    <span class="feedback-meta-value">{{ selected_feedback.email }}</span>
+                  </div>
+                  <div class="feedback-meta-item">
+                    <span class="feedback-meta-label">{% trans "Location" %}</span>
+                    <span class="feedback-meta-value">{{ selected_feedback.location_slug|default:"—" }}</span>
+                  </div>
+                  <div class="feedback-meta-item">
+                    <span class="feedback-meta-label">{% trans "Submitted" %}</span>
+                    <span class="feedback-meta-value">{{ selected_feedback.created_at|date:"d.m.Y H:i" }}</span>
+                  </div>
+                </div>
+                <div>
+                  <div class="feedback-meta-label" style="margin-bottom: 8px;">{% trans "What went wrong" %}</div>
+                  <div class="feedback-detail-text">{{ selected_feedback.what_went_wrong }}</div>
+                </div>
+                <form action="{% url 'dashboard:feedback_delete' selected_feedback.id %}" method="post"
+                      onsubmit="return confirm('{% trans "Are you sure you want to delete this feedback?" %}');">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger btn-full">🗑 {% trans "Delete this Feedback" %}</button>
+                </form>
+              </div>
+            {% else %}
+              <div class="empty-state">
+                <span class="empty-icon">💬</span>
+                <div class="empty-title">{% trans "Nothing selected" %}</div>
+                <p class="empty-text">{% trans "Click View on any feedback entry to read the full message." %}</p>
+              </div>
+            {% endif %}
+
           {% else %}
             {% if mode == "create" or mode == "edit" %}
               {% include "dashboard/_reservation_form.html" %}
@@ -871,175 +947,231 @@
             {% endif %}
           {% endif %}
         </div>
-      </section>
+      </section>      </section>
 
     </div>
   </div>
-<script>
-(function () {
-  const form        = document.getElementById('filter-form');
-  const searchInput = document.getElementById('search-input');
-  const slotFilter  = document.getElementById('slot-filter');
-  const listEl      = document.getElementById('reservations-list');
-  const countEl     = document.getElementById('results-count');
 
-  if (!form || !searchInput || !listEl || !countEl) return;
+  <!-- ── RESERVATIONS AJAX SCRIPT ── -->
+  <script>
+  (function () {
+    const form        = document.getElementById('filter-form');
+    const searchInput = document.getElementById('search-input');
+    const slotFilter  = document.getElementById('slot-filter');
+    const listEl      = document.getElementById('reservations-list');
+    const countEl     = document.getElementById('results-count');
 
-  let timer = null;
-  let controller = null;
-  let currentDateFilter = "{{ date_filter|default:'upcoming' }}";
+    if (!form || !searchInput || !listEl || !countEl) return;
 
-  function updateUrl(search, slot) {
-    const params = new URLSearchParams();
-    params.set('section', 'reservations');
-    params.set('date_filter', currentDateFilter);
+    let timer = null;
+    let controller = null;
+    let currentDateFilter = "{{ date_filter|default:'upcoming' }}";
 
-    if (slot) {
-      params.set('slot_filter', slot);
-    }
-    if (search) {
-      params.set('search', search);
-    }
-
-    const newUrl = `${window.location.pathname}?${params.toString()}`;
-    window.history.replaceState({}, '', newUrl);
-  }
-
-  function updateCount(count) {
-    countEl.textContent = `${count} reservation${count === 1 ? '' : 's'} found`;
-  }
-
-  function fetchResults() {
-    const search = searchInput.value;
-    const slot = slotFilter ? slotFilter.value : '';
-
-    if (controller) {
-      controller.abort();
-    }
-    controller = new AbortController();
-
-    const cursorStart = searchInput.selectionStart;
-    const cursorEnd = searchInput.selectionEnd;
-
-    const params = new URLSearchParams();
-    params.set('section', 'reservations');
-    params.set('date_filter', currentDateFilter);
-    params.set('ajax', '1');
-
-    if (slot) {
-      params.set('slot_filter', slot);
-    }
-    if (search) {
-      params.set('search', search);
+    function updateUrl(search, slot) {
+      const params = new URLSearchParams();
+      params.set('section', 'reservations');
+      params.set('date_filter', currentDateFilter);
+      if (slot)   params.set('slot_filter', slot);
+      if (search) params.set('search', search);
+      window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
     }
 
-    fetch(`?${params.toString()}`, {
-      headers: { 'X-Requested-With': 'XMLHttpRequest' },
-      signal: controller.signal
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Search request failed');
-        }
-        return response.json();
+    function updateCount(count) {
+      countEl.textContent = `${count} reservation${count === 1 ? '' : 's'} found`;
+    }
+
+    function fetchResults() {
+      const search = searchInput.value;
+      const slot   = slotFilter ? slotFilter.value : '';
+
+      if (controller) controller.abort();
+      controller = new AbortController();
+
+      const cursorStart = searchInput.selectionStart;
+      const cursorEnd   = searchInput.selectionEnd;
+
+      const params = new URLSearchParams();
+      params.set('section', 'reservations');
+      params.set('date_filter', currentDateFilter);
+      params.set('ajax', '1');
+      if (slot)   params.set('slot_filter', slot);
+      if (search) params.set('search', search);
+
+      fetch(`?${params.toString()}`, {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        signal: controller.signal
       })
-      .then(data => {
-        listEl.innerHTML = data.html;
-        updateCount(data.count);
-
-        updateUrl(search, slot);
-
-        searchInput.focus();
-        searchInput.setSelectionRange(cursorStart, cursorEnd);
-      })
-      .catch(error => {
-        if (error.name !== 'AbortError') {
-          console.error(error);
-        }
-      });
-  }
-
-  searchInput.addEventListener('input', function () {
-    clearTimeout(timer);
-    timer = setTimeout(fetchResults, 300);
-  });
-
-  searchInput.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      clearTimeout(timer);
-      fetchResults();
+        .then(r => { if (!r.ok) throw new Error('failed'); return r.json(); })
+        .then(data => {
+          listEl.innerHTML = data.html;
+          updateCount(data.count);
+          updateUrl(search, slot);
+          searchInput.focus();
+          searchInput.setSelectionRange(cursorStart, cursorEnd);
+        })
+        .catch(e => { if (e.name !== 'AbortError') console.error(e); });
     }
-  });
 
-  if (slotFilter) {
-    slotFilter.addEventListener('change', function () {
+    searchInput.addEventListener('input', function () {
       clearTimeout(timer);
-      fetchResults();
+      timer = setTimeout(fetchResults, 300);
     });
-  }
 
-  document.querySelectorAll('.filter-tab').forEach(btn => {
-    btn.addEventListener('click', function (e) {
-      e.preventDefault();
-      currentDateFilter = this.value;
-
-      document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
-      this.classList.add('active');
-
-      clearTimeout(timer);
-      fetchResults();
+    searchInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); clearTimeout(timer); fetchResults(); }
     });
-  });
 
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    clearTimeout(timer);
-    fetchResults();
-  });
-
-  listEl.addEventListener('submit', function (e) {
-    const deleteForm = e.target.closest('.reservation-delete-form');
-    if (!deleteForm) return;
-
-    e.preventDefault();
-
-    const confirmMessage = deleteForm.dataset.confirm || 'Are you sure?';
-    if (!window.confirm(confirmMessage)) {
-      return;
+    if (slotFilter) {
+      slotFilter.addEventListener('change', function () { clearTimeout(timer); fetchResults(); });
     }
 
-    const submitButton = deleteForm.querySelector('button[type="submit"]');
-    if (submitButton) {
-      submitButton.disabled = true;
-    }
-
-    fetch(deleteForm.action, {
-      method: 'POST',
-      headers: {
-        'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRFToken': deleteForm.querySelector('[name=csrfmiddlewaretoken]').value,
-      }
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Delete request failed');
-        }
-        return response.json();
-      })
-      .then(data => {
-        listEl.innerHTML = data.html;
-        updateCount(data.count);
-      })
-      .catch(error => {
-        console.error(error);
-        if (submitButton) {
-          submitButton.disabled = false;
-        }
-        alert('Something went wrong while deleting the reservation.');
+    document.querySelectorAll('.filter-tab').forEach(btn => {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        currentDateFilter = this.value;
+        document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        clearTimeout(timer);
+        fetchResults();
       });
-  });
-})();
-</script>
+    });
+
+    form.addEventListener('submit', function (e) { e.preventDefault(); clearTimeout(timer); fetchResults(); });
+
+    listEl.addEventListener('submit', function (e) {
+      const deleteForm = e.target.closest('.reservation-delete-form');
+      if (!deleteForm) return;
+      e.preventDefault();
+      if (!window.confirm(deleteForm.dataset.confirm || 'Are you sure?')) return;
+      const btn = deleteForm.querySelector('button[type="submit"]');
+      if (btn) btn.disabled = true;
+      fetch(deleteForm.action, {
+        method: 'POST',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': deleteForm.querySelector('[name=csrfmiddlewaretoken]').value,
+        }
+      })
+        .then(r => { if (!r.ok) throw new Error('failed'); return r.json(); })
+        .then(data => {
+          listEl.innerHTML = data.html;
+          if (countEl) countEl.textContent = `${data.count} {% trans "entries found" %}`;
+
+          const detailPanel = document.getElementById('reservation-detail-panel');
+          if (detailPanel) {
+            detailPanel.innerHTML = `
+              <div class="empty-state">
+                <span class="empty-icon">👈</span>
+                <div class="empty-title">{% trans "Nothing open yet" %}</div>
+                <p class="empty-text">{% trans "Click Edit on a reservation to modify it, or create a new one manually." %}</p>
+                <a href="{% url 'dashboard:home' %}?section=reservations&mode=create" class="btn btn-primary">＋ {% trans "New Reservation" %}</a>
+              </div>
+            `;
+          }
+        })
+        .catch(e => { console.error(e); if (btn) btn.disabled = false; alert('Something went wrong.'); });
+    });
+  })();
+  </script>
+
+  <!-- ── FEEDBACK AJAX SCRIPT ── -->
+  <script>
+  (function () {
+    const searchInput = document.getElementById('feedback-search-input');
+    const listEl      = document.getElementById('feedback-list');
+    const countEl     = document.getElementById('feedback-results-count');
+    const filterForm  = document.getElementById('feedback-filter-form');
+
+    if (!searchInput || !listEl) return;
+
+    let timer;
+    let currentDateFilter = "{{ date_filter|default:'all' }}";
+
+    function fetchFeedback() {
+      const search   = searchInput.value;
+      const location = filterForm ? (filterForm.querySelector('[name="location_filter"]')?.value || '') : '';
+      const cursorStart = searchInput.selectionStart;
+      const cursorEnd   = searchInput.selectionEnd;
+
+      const params = new URLSearchParams();
+      params.set('section', 'feedback');
+      params.set('date_filter', currentDateFilter);
+      if (location) params.set('location_filter', location);
+      if (search)   params.set('search', search);
+
+      fetch(`?${params.toString()}`, {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      })
+        .then(r => r.json())
+        .then(data => {
+          listEl.innerHTML = data.html;
+          if (countEl) countEl.textContent = `${data.count} {% trans "entries found" %}`;
+          searchInput.focus();
+          searchInput.setSelectionRange(cursorStart, cursorEnd);
+        });
+    }
+
+    searchInput.addEventListener('input', function () {
+      clearTimeout(timer);
+      timer = setTimeout(fetchFeedback, 400);
+    });
+
+    if (filterForm) {
+      filterForm.querySelectorAll('.filter-tab').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+          e.preventDefault();
+          currentDateFilter = this.value;
+          filterForm.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          fetchFeedback();
+        });
+      });
+    }
+
+    listEl.addEventListener('submit', function (e) {
+      const deleteForm = e.target.closest('.feedback-delete-form');
+      if (!deleteForm) return;
+      e.preventDefault();
+      if (!window.confirm(deleteForm.dataset.confirm || 'Are you sure?')) return;
+      const btn = deleteForm.querySelector('button[type="submit"]');
+      if (btn) btn.disabled = true;
+      fetch(deleteForm.action, {
+        method: 'POST',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': deleteForm.querySelector('[name=csrfmiddlewaretoken]').value,
+        }
+      })
+        .then(r => r.json())
+        .then(data => {
+          listEl.innerHTML = data.html;
+          if (countEl) countEl.textContent = `${data.count} {% trans "entries found" %}`;
+
+          const detailPanel = document.getElementById('feedback-detail-panel');
+          if (detailPanel) {
+            detailPanel.innerHTML = `
+              <div class="empty-state">
+                <span class="empty-icon">💬</span>
+                <div class="empty-title">{% trans "Nothing selected" %}</div>
+                <p class="empty-text">{% trans "Click View on any feedback entry to read the full message." %}</p>
+              </div>
+            `;
+          }
+        })
+        .catch(e => { console.error(e); if (btn) btn.disabled = false; });
+    });
+  })();
+  </script>
+
+  <!-- scroll right panel into view on edit/create/view -->
+  {% if mode == "edit" or mode == "create" or mode == "view" %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const rightPanel = document.querySelector('.grid > .card:last-child');
+      if (rightPanel) rightPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+  {% endif %}
+
 </body>
 </html>

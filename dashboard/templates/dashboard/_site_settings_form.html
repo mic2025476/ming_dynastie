@@ -1,0 +1,40 @@
+{% load i18n %}
+<form method="post" action="{% url 'dashboard:site_settings_save' %}">
+  {% csrf_token %}
+
+  {% if form.non_field_errors %}
+    <div class="message error" style="margin-bottom: 16px;">⚠️ {{ form.non_field_errors|join:", " }}</div>
+  {% endif %}
+
+  <div class="form-grid">
+    <div class="form-group full">
+      <label for="{{ form.booking_days_in_advance.id_for_label }}">🗓 {% trans "Booking Days in Advance" %}</label>
+      {{ form.booking_days_in_advance }}
+      {% if form.booking_days_in_advance.errors %}<div class="field-error">{{ form.booking_days_in_advance.errors|join:", " }}</div>{% endif %}
+      <div class="help">{% trans "Example: set 3 if customers should only be able to book up to three days ahead." %}</div>
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.opening_time.id_for_label }}">🌅 {% trans "Opening Time" %}</label>
+      {{ form.opening_time }}
+      {% if form.opening_time.errors %}<div class="field-error">{{ form.opening_time.errors|join:", " }}</div>{% endif %}
+      <div class="help">{% trans "Earliest reservable time for guests." %}</div>
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.closing_time.id_for_label }}">🌙 {% trans "Closing Time" %}</label>
+      {{ form.closing_time }}
+      {% if form.closing_time.errors %}<div class="field-error">{{ form.closing_time.errors|join:", " }}</div>{% endif %}
+      <div class="help">{% trans "Latest reservable time for guests." %}</div>
+    </div>
+  </div>
+
+  <div class="tip-box">
+    <span>ℹ️</span>
+    <div class="tip-box-text">{% trans "These values apply across the booking system, so small changes can affect availability for all customers." %}</div>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary btn-lg btn-full">💾 {% trans "Save Settings" %}</button>
+  </div>
+</form>

@@ -11,6 +11,7 @@ from reservations.models import (
     DaySlotBlockModel,
     ReservationModel,
 )
+from core_settings.models import SiteSettings
 
 
 class TimeSlotForm(forms.ModelForm):
@@ -202,5 +203,39 @@ class ReservationForm(forms.ModelForm):
                         f'Only {remaining} seat(s) are available for "{slot.label}" on this date.'
                     )
                 })
+
+        return cleaned_data
+
+class SiteSettingsForm(forms.ModelForm):
+    class Meta:
+        model = SiteSettings
+        fields = [
+            "booking_days_in_advance",
+            "opening_time",
+            "closing_time",
+        ]
+        widgets = {
+            "booking_days_in_advance": forms.NumberInput(attrs={
+                "class": "form-input",
+                "min": "0",
+                "placeholder": "e.g. 3",
+            }),
+            "opening_time": forms.TimeInput(attrs={
+                "type": "time",
+                "class": "form-input",
+            }),
+            "closing_time": forms.TimeInput(attrs={
+                "type": "time",
+                "class": "form-input",
+            }),
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        opening_time = cleaned_data.get("opening_time")
+        closing_time = cleaned_data.get("closing_time")
+
+        if opening_time and closing_time and opening_time >= closing_time:
+            self.add_error("closing_time", "Closing time must be later than opening time.")
 
         return cleaned_data

@@ -1,0 +1,38 @@
+{% load i18n %}
+{% for fb in feedback_list %}
+  <div class="slot-item is-feedback {% if selected_feedback and selected_feedback.id == fb.id %}is-selected{% endif %}">
+    <div class="slot-main">
+      <div class="res-name-row">
+        <span class="res-name">{{ fb.email }}</span>
+        {% if fb.location_slug %}
+          <span class="meta-tag">📍 {{ fb.location_slug }}</span>
+        {% endif %}
+      </div>
+      <div class="help feedback-preview" style="margin-bottom: 8px;">
+        {{ fb.what_went_wrong|truncatechars:120 }}
+      </div>
+      <div class="slot-meta">
+        <span class="meta-tag">🕐 {{ fb.created_at|date:"d.m.Y H:i" }}</span>
+      </div>
+    </div>
+    <div class="actions">
+      <a class="btn btn-secondary"
+         href="{% url 'dashboard:home' %}?section=feedback&mode=view&id={{ fb.id }}">
+        👁 {% trans "View" %}
+      </a>
+      <form class="feedback-delete-form"
+            action="{% url 'dashboard:feedback_delete' fb.id %}"
+            method="post"
+            data-confirm="{% trans "Are you sure you want to delete this feedback?" %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">🗑 {% trans "Delete" %}</button>
+      </form>
+    </div>
+  </div>
+{% empty %}
+  <div class="empty-state">
+    <span class="empty-icon">💬</span>
+    <div class="empty-title">{% trans "No feedback found" %}</div>
+    <p class="empty-text">{% trans "No feedback matches your current filters." %}</p>
+  </div>
+{% endfor %}
