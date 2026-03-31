@@ -178,6 +178,7 @@
     .grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; align-items: start; }
     .grid.reservations-grid { grid-template-columns: 1.6fr 1fr; }
     .grid.feedback-grid     { grid-template-columns: 1.5fr 1fr; }
+    .grid.locations-grid    { grid-template-columns: 1.55fr 1fr; }
 
     /* ── CARD ── */
     .card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); overflow: hidden; }
@@ -444,7 +445,7 @@
 
     /* ── RESPONSIVE ── */
     @media (max-width: 1024px) {
-      .grid, .grid.reservations-grid, .grid.feedback-grid { grid-template-columns: 1fr; }
+      .grid, .grid.reservations-grid, .grid.feedback-grid, .grid.locations-grid { grid-template-columns: 1fr; }
       .grid.has-active-form > section:last-child { order: -1; }
     }
 
@@ -498,6 +499,7 @@
           {% if section == "timeslots" %}⏰ {% trans "Time Slots" %}
           {% elif section == "blocked-days" %}📅 {% trans "Blocked Days" %}
           {% elif section == "feedback" %}💬 {% trans "Customer Feedback" %}
+          {% elif section == "locations" %}📍 {% trans "Locations" %}
           {% elif section == "settings" %}⚙️ {% trans "Site Settings" %}
           {% else %}📋 {% trans "Reservations" %}
           {% endif %}
@@ -509,6 +511,8 @@
             {% trans "Mark days as closed or limit specific slots on certain dates." %}
           {% elif section == "feedback" %}
             {% trans "Read and manage feedback submitted by customers via QR code." %}
+          {% elif section == "locations" %}
+            {% trans "Manage restaurant locations, contact details, and customer-facing links." %}
           {% elif section == "settings" %}
             {% trans "Control your core booking rules in one simple place for staff." %}
           {% else %}
@@ -525,6 +529,8 @@
             <a href="{% url 'dashboard:home' %}?section=blocked-days&mode=create" class="btn btn-primary btn-lg">＋ {% trans "Add Blocked Day" %}</a>
           {% elif section == "feedback" %}
             {# read-only — no add button #}
+          {% elif section == "locations" %}
+            <a href="{% url 'dashboard:home' %}?section=locations&mode=create" class="btn btn-primary btn-lg">＋ {% trans "Add Location" %}</a>
           {% elif section == "settings" %}
             {# settings are edited in the right panel #}
           {% else %}
@@ -545,6 +551,7 @@
       <a href="{% url 'dashboard:home' %}?section=timeslots"    class="{% if section == 'timeslots' %}active{% endif %}">⏰ {% trans "Time Slots" %}</a>
       <a href="{% url 'dashboard:home' %}?section=blocked-days" class="{% if section == 'blocked-days' %}active{% endif %}">📅 {% trans "Blocked Days" %}</a>
       <a href="{% url 'dashboard:home' %}?section=reservations" class="{% if section == 'reservations' %}active{% endif %}">📋 {% trans "Reservations" %}</a>
+      <a href="{% url 'dashboard:home' %}?section=locations"    class="{% if section == 'locations' %}active{% endif %}">📍 {% trans "Locations" %}</a>
       <a href="{% url 'dashboard:home' %}?section=settings"     class="{% if section == 'settings' %}active{% endif %}">⚙️ {% trans "Settings" %}</a>
       <a href="{% url 'dashboard:home' %}?section=feedback"     class="{% if section == 'feedback' %}active{% endif %}">💬 {% trans "Feedback" %}</a>
     </nav>
@@ -565,6 +572,7 @@
     <div class="grid
       {% if section == 'reservations' %}reservations-grid
       {% elif section == 'feedback' %}feedback-grid
+      {% elif section == 'locations' %}locations-grid
       {% endif %}
       {% if mode == 'edit' or mode == 'create' or mode == 'view' %}has-active-form{% endif %}">
 
@@ -582,6 +590,9 @@
           {% elif section == "feedback" %}
             <h2 class="card-title">💬 {% trans "All Feedback" %}</h2>
             <p class="card-desc">{% trans "Customer feedback submitted via QR code." %}</p>
+          {% elif section == "locations" %}
+            <h2 class="card-title">📍 {% trans "All Locations" %}</h2>
+            <p class="card-desc">{% trans "Manage branch details, customer-facing links, and contact information." %}</p>
           {% elif section == "settings" %}
             <h2 class="card-title">⚙️ {% trans "Current Settings" %}</h2>
             <p class="card-desc">{% trans "A simple overview of the booking rules your staff is using right now." %}</p>
@@ -767,6 +778,60 @@
               {% include "dashboard/_feedback_rows.html" %}
             </div>
 
+          {# ── LOCATIONS LIST ── #}
+          {% elif section == "locations" %}
+            <form method="get" action="{% url 'dashboard:home' %}">
+              <input type="hidden" name="section" value="locations">
+              <div class="filter-bar">
+                <input type="search" name="search" value="{{ location_search }}" class="search-input" placeholder="{% trans "Search location name, slug, address…" %}" autocomplete="off" spellcheck="false">
+                <button type="submit" class="btn btn-primary">{% trans "Search" %}</button>
+              </div>
+            </form>
+
+            {% if locations_list is not None %}
+              <div class="results-count">{{ locations_list|length }} {% trans "locations found" %}</div>
+            {% endif %}
+
+            <div class="slot-list">
+              {% for loc in locations_list %}
+                <div class="slot-item is-upcoming">
+                  <div class="slot-main">
+                    <div class="res-name-row">
+                      <span class="res-name">{{ loc.name }}</span>
+                      <span class="meta-tag highlight">🔑 {{ loc.slug }}</span>
+                    </div>
+                    <div class="slot-meta" style="margin-bottom: 8px;">
+                      {% if loc.phone %}<span class="meta-tag">📞 {{ loc.phone }}</span>{% endif %}
+                      {% if loc.email %}<span class="meta-tag">✉️ {{ loc.email }}</span>{% endif %}
+                      {% if loc.opening_hours %}<span class="meta-tag">🕐 {{ loc.opening_hours }}</span>{% endif %}
+                    </div>
+                    <div class="help" style="margin-top: 4px;">📍 {{ loc.address|linebreaksbr }}</div>
+                    {% if loc.menu_pdf or loc.order_url or loc.map_url %}
+                      <div class="slot-meta" style="margin-top: 10px;">
+                        {% if loc.menu_pdf %}<a href="{{ loc.menu_pdf }}" target="_blank" rel="noopener" class="meta-tag">📄 {% trans "Menu PDF" %}</a>{% endif %}
+                        {% if loc.order_url %}<a href="{{ loc.order_url }}" target="_blank" rel="noopener" class="meta-tag">🛒 {% trans "Order Link" %}</a>{% endif %}
+                        {% if loc.map_url %}<a href="{{ loc.map_url }}" target="_blank" rel="noopener" class="meta-tag">🗺️ {% trans "Map Link" %}</a>{% endif %}
+                      </div>
+                    {% endif %}
+                  </div>
+                  <div class="actions">
+                    <a class="btn btn-secondary" href="{% url 'dashboard:home' %}?section=locations&mode=edit&id={{ loc.id }}">✏️ {% trans "Edit" %}</a>
+                    <form action="{% url 'dashboard:location_delete' loc.id %}" method="post" onsubmit="return confirm('{% trans "Are you sure you want to delete this location?" %}');">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-danger">🗑 {% trans "Delete" %}</button>
+                    </form>
+                  </div>
+                </div>
+              {% empty %}
+                <div class="empty-state">
+                  <span class="empty-icon">📍</span>
+                  <div class="empty-title">{% trans "No locations yet" %}</div>
+                  <p class="empty-text">{% trans "Create your first location so staff can manage addresses, contact details, maps, and menu links in one place." %}</p>
+                  <a href="{% url 'dashboard:home' %}?section=locations&mode=create" class="btn btn-primary btn-lg">＋ {% trans "Add Location" %}</a>
+                </div>
+              {% endfor %}
+            </div>
+
           {# ── RESERVATIONS LIST ── #}
           {% else %}
             <form method="get" action="{% url 'dashboard:home' %}" id="filter-form">
@@ -856,6 +921,17 @@
               <h2 class="card-title">💡 {% trans "Select Feedback" %}</h2>
               <p class="card-desc">{% trans "Click View on any entry to read the full message." %}</p>
             {% endif %}
+          {% elif section == "locations" %}
+            {% if mode == "create" %}
+              <h2 class="card-title">➕ {% trans "Add Location" %}</h2>
+              <p class="card-desc">{% trans "Create a location with its contact details and useful public links." %}</p>
+            {% elif mode == "edit" %}
+              <h2 class="card-title">✏️ {% trans "Edit Location" %}</h2>
+              <p class="card-desc">{% trans "Update the details for this location below." %}</p>
+            {% else %}
+              <h2 class="card-title">💡 {% trans "Quick Actions" %}</h2>
+              <p class="card-desc">{% trans "Click Edit on a location, or create a new one for your team." %}</p>
+            {% endif %}
           {% else %}
             {% if mode == "create" %}
               <h2 class="card-title">➕ {% trans "New Reservation" %}</h2>
@@ -898,6 +974,18 @@
 
           {% elif section == "settings" %}
             {% include "dashboard/_site_settings_form.html" %}
+
+          {% elif section == "locations" %}
+            {% if mode == "create" or mode == "edit" %}
+              {% include "dashboard/_location_form.html" %}
+            {% else %}
+              <div class="empty-state">
+                <span class="empty-icon">📍</span>
+                <div class="empty-title">{% trans "Nothing open yet" %}</div>
+                <p class="empty-text">{% trans "Click Edit on a location to update it, or add a new one for another branch." %}</p>
+                <a href="{% url 'dashboard:home' %}?section=locations&mode=create" class="btn btn-primary">＋ {% trans "Add Location" %}</a>
+              </div>
+            {% endif %}
 
           {% elif section == "feedback" %}
             {% if mode == "view" and selected_feedback %}

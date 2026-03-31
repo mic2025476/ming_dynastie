@@ -1,0 +1,96 @@
+{% load i18n %}
+{% if selected_location %}
+  <form method="post" action="{% url 'dashboard:location_update' selected_location.id %}" enctype="multipart/form-data">
+{% else %}
+  <form method="post" action="{% url 'dashboard:location_create' %}" enctype="multipart/form-data">
+{% endif %}
+  {% csrf_token %}
+
+  <div class="form-grid">
+    <div class="form-group full">
+      <label for="{{ form.name.id_for_label }}">📍 {% trans "Location Name" %}</label>
+      {{ form.name }}
+      {% if form.name.errors %}<div class="field-error">⚠ {{ form.name.errors|join:", " }}</div>{% endif %}
+      <div class="help">{% trans "Use the name staff and customers will recognize immediately." %}</div>
+    </div>
+
+    <div class="form-group full">
+      <label for="{{ form.slug.id_for_label }}">🔑 {% trans "System Name (Slug)" %}</label>
+      {{ form.slug }}
+      {% if form.slug.errors %}<div class="field-error">⚠ {{ form.slug.errors|join:", " }}</div>{% endif %}
+      <div class="help">{% trans "Keep it short, lowercase, and without spaces for clean URLs." %}</div>
+    </div>
+
+    <div class="form-group full">
+      <label for="{{ form.address.id_for_label }}">🏠 {% trans "Address" %}</label>
+      {{ form.address }}
+      {% if form.address.errors %}<div class="field-error">⚠ {{ form.address.errors|join:", " }}</div>{% endif %}
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.phone.id_for_label }}">📞 {% trans "Phone" %}</label>
+      {{ form.phone }}
+      {% if form.phone.errors %}<div class="field-error">⚠ {{ form.phone.errors|join:", " }}</div>{% endif %}
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.email.id_for_label }}">✉️ {% trans "Email" %}</label>
+      {{ form.email }}
+      {% if form.email.errors %}<div class="field-error">⚠ {{ form.email.errors|join:", " }}</div>{% endif %}
+    </div>
+
+    <div class="form-group full">
+      <label for="{{ form.opening_hours.id_for_label }}">🕐 {% trans "Opening Hours" %}</label>
+      {{ form.opening_hours }}
+      {% if form.opening_hours.errors %}<div class="field-error">⚠ {{ form.opening_hours.errors|join:", " }}</div>{% endif %}
+      <div class="help">{% trans "Example: Mon–Sun, 12:00–22:00" %}</div>
+    </div>
+
+    <div class="form-group full">
+      <label for="{{ form.menu_pdf.id_for_label }}">📄 {% trans "Menu PDF Link" %}</label>
+      {{ form.menu_pdf }}
+      {% if form.menu_pdf.errors %}<div class="field-error">⚠ {{ form.menu_pdf.errors|join:", " }}</div>{% endif %}
+    </div>
+
+    <div class="form-group full">
+      <label for="{{ form.order_url.id_for_label }}">🛒 {% trans "Order Link" %}</label>
+      {{ form.order_url }}
+      {% if form.order_url.errors %}<div class="field-error">⚠ {{ form.order_url.errors|join:", " }}</div>{% endif %}
+    </div>
+
+    <div class="form-group full">
+      <label for="{{ form.map_url.id_for_label }}">🗺️ {% trans "Map Link" %}</label>
+      {{ form.map_url }}
+      {% if form.map_url.errors %}<div class="field-error">⚠ {{ form.map_url.errors|join:", " }}</div>{% endif %}
+    </div>
+
+    <div class="form-group full">
+      <label for="{{ form.hero_image.id_for_label }}">🖼️ {% trans "Hero Image" %}</label>
+      {{ form.hero_image }}
+      {% if form.hero_image.errors %}<div class="field-error">⚠ {{ form.hero_image.errors|join:", " }}</div>{% endif %}
+      <div class="help">{% trans "Upload a location photo used for cards or public pages." %}</div>
+      {% if selected_location and selected_location.hero_image %}
+        <div class="inline-card" style="margin-top: 10px;">
+          <div class="help" style="margin-bottom: 8px;">{% trans "Current image preview" %}</div>
+          <img src="{{ selected_location.hero_image.url }}" alt="{{ selected_location.name }}" style="width: 100%; max-height: 180px; object-fit: cover; border-radius: 12px;">
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if form.non_field_errors %}
+    <div class="field-error" style="margin-top: 12px;">⚠ {{ form.non_field_errors|join:", " }}</div>
+  {% endif %}
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary btn-full btn-lg">
+      {% if selected_location %}💾 {% trans "Save Changes" %}{% else %}✅ {% trans "Create Location" %}{% endif %}
+    </button>
+    <a href="{% url 'dashboard:home' %}?section=locations" class="btn btn-secondary btn-full">← {% trans "Back to List" %}</a>
+  </div>
+
+  <div class="tip-box" style="margin-top: 16px;">
+    <span class="tip-box-icon">💡</span>
+    <span class="tip-box-text">{% trans "Add menu, order, and map links here so staff can quickly verify what customers will see publicly." %}</span>
+  </div>
+</form>
