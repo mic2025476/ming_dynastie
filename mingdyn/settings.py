@@ -139,6 +139,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'de'
 
+DASHBOARD_ACCESS_PASSWORD = os.getenv("DASHBOARD_ACCESS_PASSWORD", "change-this-now")
+
 TIME_ZONE = "Europe/Berlin"
 USE_TZ = True
 USE_I18N = True

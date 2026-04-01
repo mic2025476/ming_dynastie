@@ -4,7 +4,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.db.models import Sum
 from django.forms import inlineformset_factory
-
+from core_settings.models import SiteSettings
 from locations.models import Location
 from reservations.models import (
     TimeSlotModel,
@@ -232,4 +232,29 @@ class LocationForm(forms.ModelForm):
             "order_url": forms.URLInput(attrs={"class": "form-input", "placeholder": "https://..."}),
             "map_url": forms.URLInput(attrs={"class": "form-input", "placeholder": "https://maps.google.com/..."}),
             "hero_image": forms.ClearableFileInput(attrs={"class": "form-input"}),
+        }
+
+
+class SiteSettingsForm(forms.ModelForm):
+    class Meta:
+        model = SiteSettings
+        fields = [
+            "booking_days_in_advance",
+            "opening_time",
+            "closing_time",
+        ]
+        widgets = {
+            "booking_days_in_advance": forms.NumberInput(attrs={
+                "class": "form-input",
+                "min": "0",
+                "placeholder": "e.g. 30",
+            }),
+            "opening_time": forms.TimeInput(attrs={
+                "type": "time",
+                "class": "form-input",
+            }),
+            "closing_time": forms.TimeInput(attrs={
+                "type": "time",
+                "class": "form-input",
+            }),
         }

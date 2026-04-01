@@ -27,4 +27,7 @@ urlpatterns = [
 
     # Site Settings
     path("settings/save/",                     views.site_settings_save,     name="site_settings_save"),
+    path("access/", views.dashboard_password_login, name="password_login"),
+    path("logout/", views.dashboard_password_logout, name="password_logout"),
+
 ]

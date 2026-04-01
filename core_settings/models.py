@@ -14,7 +14,8 @@ class SiteSettings(models.Model):
         default="22:00",
         help_text="Latest reservable time."
     )
-
+    dashboard_password_hash = models.CharField(max_length=255, blank=True, default="")
+    dashboard_password_version = models.PositiveIntegerField(default=1)
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):

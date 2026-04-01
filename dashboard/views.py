@@ -1,14 +1,18 @@
 import json
 from datetime import date, timedelta
-
+from django.conf import settings
+from django.contrib.auth.hashers import check_password, make_password
+from core_settings.models import SiteSettings
 from django.contrib import messages
 from django.db.models import Q
 from django.db.models.deletion import ProtectedError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.middleware.csrf import rotate_token
 from django.http import JsonResponse
 from django.template.loader import render_to_string
-
+from .decorators import dashboard_password_required
+from mingdyn import settings
 from reservations.models import TimeSlotModel, BlockedDayModel, ReservationModel
 from qrflow.models import Feedback  # adjust import path if different in your project
 from core_settings.models import SiteSettings
@@ -19,6 +23,7 @@ from .forms import TimeSlotForm, BlockedDayForm, BlockedDaySlotBlockFormSet, Res
 #  MAIN DASHBOARD HOME (handles all sections)
 # ─────────────────────────────────────────────
 
+@dashboard_password_required
 def dashboard_home(request):
     section = request.GET.get("section", "timeslots")
     mode    = request.GET.get("mode", "list")
@@ -230,7 +235,7 @@ def dashboard_home(request):
         "today":             today,
     })
 
-
+@dashboard_password_required
 def site_settings_save(request):
     if request.method != "POST":
         return redirect(f"{reverse('dashboard:home')}?section=settings")
@@ -239,10 +244,22 @@ def site_settings_save(request):
     form = SiteSettingsForm(request.POST, instance=site_settings)
 
     if form.is_valid():
-        form.save()
-        messages.success(request, "Site settings updated successfully.")
-        return redirect(f"{reverse('dashboard:home')}?section=settings")
+        site_settings = form.save(commit=False)
 
+        new_password = form.cleaned_data.get("new_dashboard_password")
+
+        if new_password:
+            site_settings.dashboard_password_hash = make_password(new_password)
+            site_settings.dashboard_password_version += 1
+
+        site_settings.save()
+
+        if new_password:
+            messages.success(request, "Settings saved. Dashboard password updated and all active users have been logged out.")
+        else:
+            messages.success(request, "Site settings updated successfully.")
+
+        return redirect(f"{reverse('dashboard:home')}?section=settings")
     slots = TimeSlotModel.objects.all().order_by("sort_order", "start_time")
     blocked_days = BlockedDayModel.objects.prefetch_related("slot_blocks__slot").order_by("-date")
     messages.error(request, "Please fix the form errors and try again.")
@@ -274,7 +291,7 @@ def site_settings_save(request):
 # ─────────────────────────────────────────────
 #  TIME SLOT VIEWS
 # ─────────────────────────────────────────────
-
+@dashboard_password_required
 def timeslot_create(request):
     if request.method != "POST":
         return redirect(f"{reverse('dashboard:home')}?section=timeslots")
@@ -298,7 +315,7 @@ def timeslot_create(request):
         "selected_feedback": None, "today": date.today(),
     })
 
-
+@dashboard_password_required
 def timeslot_update(request, pk):
     slot = get_object_or_404(TimeSlotModel, pk=pk)
 
@@ -324,7 +341,7 @@ def timeslot_update(request, pk):
         "selected_feedback": None, "today": date.today(),
     })
 
-
+@dashboard_password_required
 def timeslot_delete(request, pk):
     if request.method != "POST":
         return redirect(f"{reverse('dashboard:home')}?section=timeslots")
@@ -342,7 +359,7 @@ def timeslot_delete(request, pk):
         )
     return redirect(f"{reverse('dashboard:home')}?section=timeslots")
 
-
+@dashboard_password_required
 def timeslot_toggle_active(request, pk):
     if request.method != "POST":
         return redirect(f"{reverse('dashboard:home')}?section=timeslots")
@@ -358,7 +375,7 @@ def timeslot_toggle_active(request, pk):
 # ─────────────────────────────────────────────
 #  BLOCKED DAY VIEWS
 # ─────────────────────────────────────────────
-
+@dashboard_password_required
 def blocked_day_create(request):
     if request.method != "POST":
         return redirect(f"{reverse('dashboard:home')}?section=blocked-days")
@@ -386,7 +403,7 @@ def blocked_day_create(request):
         "selected_feedback": None, "today": date.today(),
     })
 
-
+@dashboard_password_required
 def blocked_day_update(request, pk):
     blocked_day = get_object_or_404(BlockedDayModel, pk=pk)
 
@@ -415,7 +432,7 @@ def blocked_day_update(request, pk):
         "selected_feedback": None, "today": date.today(),
     })
 
-
+@dashboard_password_required
 def blocked_day_delete(request, pk):
     if request.method != "POST":
         return redirect(f"{reverse('dashboard:home')}?section=blocked-days")
@@ -429,12 +446,12 @@ def blocked_day_delete(request, pk):
 # ─────────────────────────────────────────────
 #  RESERVATION VIEWS
 # ─────────────────────────────────────────────
-
+@dashboard_password_required
 def _reservation_list_url(extra=""):
     base = f"{reverse('dashboard:home')}?section=reservations"
     return f"{base}{extra}"
 
-
+@dashboard_password_required
 def reservation_create(request):
     if request.method != "POST":
         return redirect(_reservation_list_url())
@@ -473,7 +490,7 @@ def reservation_create(request):
         "slots_json": slots_json, "today": date.today(),
     })
 
-
+@dashboard_password_required
 def reservation_update(request, pk):
     reservation = get_object_or_404(ReservationModel, pk=pk)
 
@@ -514,7 +531,7 @@ def reservation_update(request, pk):
         "slots_json": slots_json, "today": date.today(),
     })
 
-
+@dashboard_password_required
 def reservation_delete(request, pk):
     if request.method != "POST":
         return redirect(_reservation_list_url())
@@ -569,7 +586,7 @@ def reservation_delete(request, pk):
 # ─────────────────────────────────────────────
 #  FEEDBACK VIEWS
 # ─────────────────────────────────────────────
-
+@dashboard_password_required
 def feedback_delete(request, pk):
     if request.method != "POST":
         return redirect(f"{reverse('dashboard:home')}?section=feedback")
@@ -611,3 +628,28 @@ def feedback_delete(request, pk):
 
     messages.success(request, "Feedback entry deleted successfully.")
     return redirect(f"{reverse('dashboard:home')}?section=feedback")
+
+def dashboard_password_login(request):
+    site_settings, _ = SiteSettings.objects.get_or_create(pk=1)
+    print(f'sdvsdvvsvsdvsd {request.session.get("dashboard_access_granted")}')
+    if request.session.get("dashboard_access_granted"):
+        session_version = request.session.get("dashboard_password_version")
+        if session_version == site_settings.dashboard_password_version:
+            return redirect("dashboard:home")
+
+    if request.method == "POST":
+        password = request.POST.get("password", "").strip()
+
+        if site_settings.dashboard_password_hash and check_password(password, site_settings.dashboard_password_hash):
+            request.session["dashboard_access_granted"] = True
+            request.session["dashboard_password_version"] = site_settings.dashboard_password_version
+            rotate_token(request)
+            return redirect("dashboard:home")
+
+        messages.error(request, "Wrong password. Please try again.")
+
+    return render(request, "dashboard/password_gate.html")
+
+def dashboard_password_logout(request):
+    request.session.flush()
+    return redirect("dashboard:password_login")

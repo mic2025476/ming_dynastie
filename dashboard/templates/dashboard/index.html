@@ -479,15 +479,21 @@
       {% trans "Store Dashboard" %}
     </a>
 
-    <form class="lang-switcher-form" action="{% url 'set_language' %}" method="post">
-      {% csrf_token %}
-      <input type="hidden" name="next" value="{{ request.get_full_path }}">
-      <select name="language" class="lang-select" onchange="this.form.submit()">
-        <option value="de"      {% if CURRENT_LANGUAGE|slice:":2" == "de" %}selected{% endif %}>🇩🇪 Deutsch</option>
-        <option value="en"      {% if CURRENT_LANGUAGE|slice:":2" == "en" %}selected{% endif %}>🇬🇧 English</option>
-        <option value="zh-hans" {% if CURRENT_LANGUAGE|slice:":2" == "zh" %}selected{% endif %}>🇨🇳 中文</option>
-      </select>
-    </form>
+    <div style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
+      <form class="lang-switcher-form" action="{% url 'set_language' %}" method="post" style="margin-left: 0;">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+        <select name="language" class="lang-select" onchange="this.form.submit()">
+          <option value="de" {% if CURRENT_LANGUAGE|slice:":2" == "de" %}selected{% endif %}>🇩🇪 Deutsch</option>
+          <option value="en" {% if CURRENT_LANGUAGE|slice:":2" == "en" %}selected{% endif %}>🇬🇧 English</option>
+          <option value="zh-hans" {% if CURRENT_LANGUAGE|slice:":2" == "zh" %}selected{% endif %}>🇨🇳 中文</option>
+        </select>
+      </form>
+
+      <a href="{% url 'dashboard:password_logout' %}" class="btn btn-secondary">
+        🔓 {% trans "Logout" %}
+      </a>
+    </div>
   </header>
 
   <div class="container">

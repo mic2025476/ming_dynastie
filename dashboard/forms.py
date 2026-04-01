@@ -207,6 +207,24 @@ class ReservationForm(forms.ModelForm):
         return cleaned_data
 
 class SiteSettingsForm(forms.ModelForm):
+    new_dashboard_password = forms.CharField(
+        required=False,
+        widget=forms.PasswordInput(attrs={
+            "class": "form-input",
+            "placeholder": "Enter new dashboard password",
+        }),
+        label="New dashboard password",
+    )
+
+    confirm_dashboard_password = forms.CharField(
+        required=False,
+        widget=forms.PasswordInput(attrs={
+            "class": "form-input",
+            "placeholder": "Confirm new dashboard password",
+        }),
+        label="Confirm new dashboard password",
+    )
+
     class Meta:
         model = SiteSettings
         fields = [
@@ -215,27 +233,18 @@ class SiteSettingsForm(forms.ModelForm):
             "closing_time",
         ]
         widgets = {
-            "booking_days_in_advance": forms.NumberInput(attrs={
-                "class": "form-input",
-                "min": "0",
-                "placeholder": "e.g. 3",
-            }),
-            "opening_time": forms.TimeInput(attrs={
-                "type": "time",
-                "class": "form-input",
-            }),
-            "closing_time": forms.TimeInput(attrs={
-                "type": "time",
-                "class": "form-input",
-            }),
+            "booking_days_in_advance": forms.NumberInput(attrs={"class": "form-input"}),
+            "opening_time": forms.TimeInput(attrs={"type": "time", "class": "form-input"}),
+            "closing_time": forms.TimeInput(attrs={"type": "time", "class": "form-input"}),
         }
 
     def clean(self):
         cleaned_data = super().clean()
-        opening_time = cleaned_data.get("opening_time")
-        closing_time = cleaned_data.get("closing_time")
+        new_password = cleaned_data.get("new_dashboard_password")
+        confirm_password = cleaned_data.get("confirm_dashboard_password")
 
-        if opening_time and closing_time and opening_time >= closing_time:
-            self.add_error("closing_time", "Closing time must be later than opening time.")
+        if new_password or confirm_password:
+            if new_password != confirm_password:
+                self.add_error("confirm_dashboard_password", "Passwords do not match.")
 
         return cleaned_data

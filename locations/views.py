@@ -8,11 +8,13 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.http import JsonResponse
 from django.template.loader import render_to_string
-
+from core_settings.models import SiteSettings
+from .forms import SiteSettingsForm
 from locations.models import Location
 from reservations.models import TimeSlotModel, BlockedDayModel, ReservationModel
 from qrflow.models import Feedback  # adjust import path if different in your project
 from .forms import TimeSlotForm, BlockedDayForm, BlockedDaySlotBlockFormSet, ReservationForm, LocationForm
+
 
 
 # ─────────────────────────────────────────────
@@ -37,6 +39,7 @@ def dashboard_home(request):
     reservations        = None
     feedback_list       = None
     locations_list      = None
+    site_settings       = None
     date_filter         = "upcoming"
     slot_filter         = ""
     search              = ""
@@ -69,7 +72,11 @@ def dashboard_home(request):
             )
         else:
             mode = "list"
-
+    # ── Settings ─────────────────────────────────────────────
+    elif section == "settings":
+        site_settings, _ = SiteSettings.objects.get_or_create(pk=1)
+        form = SiteSettingsForm(instance=site_settings)
+        mode = "edit"
     # ── Locations ────────────────────────────────────────────
     elif section == "locations":
         location_search = request.GET.get("search", "").strip()
@@ -202,6 +209,7 @@ def dashboard_home(request):
         return render(request, "dashboard/index.html", {
             "section":          section,
             "mode":             mode,
+            "site_settings": site_settings,
             "slots":            slots,
             "blocked_days":     blocked_days,
             "form":             None,
