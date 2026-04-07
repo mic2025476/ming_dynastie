@@ -199,3 +199,426 @@ msgstr "Notizen / Besondere Wünsche"
 
 msgid "Create Reservation"
 msgstr "Reservierung erstellen"
+
+msgid "<strong>Tip:</strong> If this slot is already used in reservations, <strong>deactivate</strong> it rather than deleting it to keep your booking history intact."
+msgstr "<strong>Tipp:</strong> Wenn dieses Zeitfenster bereits in Reservierungen verwendet wird, <strong>deaktivieren</strong> Sie es, anstatt es zu löschen, damit Ihre Buchungshistorie erhalten bleibt."
+
+msgid "A simple overview of the booking rules your staff is using right now."
+msgstr "Ein einfacher Überblick über die Buchungsregeln, die Ihr Personal derzeit verwendet."
+
+msgid "Activate"
+msgstr "Aktivieren"
+
+msgid "Active"
+msgstr "Aktiv"
+
+msgid "Add Blocked Day"
+msgstr "Gesperrten Tag hinzufügen"
+
+msgid "Add Location"
+msgstr "Standort hinzufügen"
+
+msgid "Add Time Slot"
+msgstr "Zeitfenster hinzufügen"
+
+msgid "Add Your First Slot"
+msgstr "Fügen Sie Ihr erstes Zeitfenster hinzu"
+
+msgid "Add menu, order, and map links here so staff can quickly verify what customers will see publicly."
+msgstr "Fügen Sie hier Menü-, Bestell- und Kartenlinks hinzu, damit das Personal schnell prüfen kann, was Kunden öffentlich sehen."
+
+msgid "Address"
+msgstr "Adresse"
+
+msgid "Advance Booking Window"
+msgstr "Vorlaufzeit für Buchungen"
+
+msgid "All"
+msgstr "Alle"
+
+msgid "All Blocked Days"
+msgstr "Alle gesperrten Tage"
+
+msgid "All Feedback"
+msgstr "Gesamtes Feedback"
+
+msgid "All Locations"
+msgstr "Alle Standorte"
+
+msgid "All Reservations"
+msgstr "Alle Reservierungen"
+
+msgid "All Slots"
+msgstr "Alle Zeitfenster"
+
+msgid "All Time Slots"
+msgstr "Alle Zeitfenster"
+
+msgid "Are you sure you want to delete this blocked day?"
+msgstr "Möchten Sie diesen gesperrten Tag wirklich löschen?"
+
+msgid "Are you sure you want to delete this feedback?"
+msgstr "Möchten Sie dieses Feedback wirklich löschen?"
+
+msgid "Are you sure you want to delete this location?"
+msgstr "Möchten Sie diesen Standort wirklich löschen?"
+
+msgid "Are you sure you want to delete this time slot?"
+msgstr "Möchten Sie dieses Zeitfenster wirklich löschen?"
+
+msgid "Block a day when your store is fully closed or when you want to limit bookings for a specific date."
+msgstr "Sperren Sie einen Tag, wenn Ihr Geschäft vollständig geschlossen ist oder wenn Sie Buchungen für ein bestimmtes Datum einschränken möchten."
+
+msgid "Booking Days in Advance"
+msgstr "Buchungstage im Voraus"
+
+msgid "Chinese"
+msgstr "Chinesisch"
+
+msgid "Choose a date and configure how it should be restricted."
+msgstr "Wählen Sie ein Datum und legen Sie fest, wie es eingeschränkt werden soll."
+
+msgid "Click Edit on a day to modify it, or block a new date above."
+msgstr "Klicken Sie bei einem Tag auf „Bearbeiten“, um ihn zu ändern, oder sperren Sie oben ein neues Datum."
+
+msgid "Click Edit on a location to update it, or add a new one for another branch."
+msgstr "Klicken Sie bei einem Standort auf „Bearbeiten“, um ihn zu aktualisieren, oder fügen Sie einen neuen für eine andere Filiale hinzu."
+
+msgid "Click Edit on a location, or create a new one for your team."
+msgstr "Klicken Sie bei einem Standort auf „Bearbeiten“ oder erstellen Sie einen neuen für Ihr Team."
+
+msgid "Click Edit on a reservation to modify it, or create a new one manually."
+msgstr "Klicken Sie bei einer Reservierung auf „Bearbeiten“, um sie zu ändern, oder erstellen Sie manuell eine neue."
+
+msgid "Click Edit on a slot to modify it, or add a new one above."
+msgstr "Klicken Sie bei einem Zeitfenster auf „Bearbeiten“, um es zu ändern, oder fügen Sie oben ein neues hinzu."
+
+msgid "Click Edit on any reservation, or create a new one manually."
+msgstr "Klicken Sie bei einer beliebigen Reservierung auf „Bearbeiten“ oder erstellen Sie manuell eine neue."
+
+msgid "Click View on any entry to read the full message."
+msgstr "Klicken Sie bei einem Eintrag auf „Ansehen“, um die vollständige Nachricht zu lesen."
+
+msgid "Click View on any feedback entry to read the full message."
+msgstr "Klicken Sie bei einem Feedback-Eintrag auf „Ansehen“, um die vollständige Nachricht zu lesen."
+
+msgid "Closing Time"
+msgstr "Schließzeit"
+
+msgid "Continue"
+msgstr "Weiter"
+
+msgid "Control your core booking rules in one simple place for staff."
+msgstr "Verwalten Sie Ihre wichtigsten Buchungsregeln an einem einfachen Ort für das Personal."
+
+msgid "Create Location"
+msgstr "Standort erstellen"
+
+msgid "Create a location with its contact details and useful public links."
+msgstr "Erstellen Sie einen Standort mit Kontaktdaten und nützlichen öffentlichen Links."
+
+msgid "Create your first location so staff can manage addresses, contact details, maps, and menu links in one place."
+msgstr "Erstellen Sie Ihren ersten Standort, damit das Personal Adressen, Kontaktdaten, Karten und Menülinks an einem Ort verwalten kann."
+
+msgid "Create your first slot to start managing reservation windows — e.g. Lunch (12:00–14:00) or Dinner (18:00–22:00)."
+msgstr "Erstellen Sie Ihr erstes Zeitfenster, um Reservierungszeiten zu verwalten — z. B. Mittagessen (12:00–14:00) oder Abendessen (18:00–22:00)."
+
+msgid "Current Settings"
+msgstr "Aktuelle Einstellungen"
+
+msgid "Current image preview"
+msgstr "Aktuelle Bildvorschau"
+
+msgid "Customer Feedback"
+msgstr "Kundenfeedback"
+
+msgid "Customer feedback submitted via QR code."
+msgstr "Kundenfeedback, das per QR-Code eingereicht wurde."
+
+msgid "Dashboard Access"
+msgstr "Dashboard-Zugang"
+
+msgid "Days marked here are closed or have reduced availability for customers."
+msgstr "Hier markierte Tage sind geschlossen oder haben eine eingeschränkte Verfügbarkeit für Kunden."
+
+msgid "Delete"
+msgstr "Löschen"
+
+msgid "Delete this Feedback"
+msgstr "Dieses Feedback löschen"
+
+msgid "Deutsch"
+msgstr "Deutsch"
+
+msgid "Each slot is a bookable window — e.g. Lunch, Dinner."
+msgstr "Jedes Zeitfenster ist ein buchbarer Zeitraum — z. B. Mittagessen, Abendessen."
+
+msgid "Earliest reservable time for guests."
+msgstr "Früheste buchbare Uhrzeit für Gäste."
+
+msgid "Edit Blocked Day"
+msgstr "Gesperrten Tag bearbeiten"
+
+msgid "Edit Location"
+msgstr "Standort bearbeiten"
+
+msgid "Edit Reservation"
+msgstr "Reservierung bearbeiten"
+
+msgid "Edit Site Settings"
+msgstr "Seiteneinstellungen bearbeiten"
+
+msgid "Edit Time Slot"
+msgstr "Zeitfenster bearbeiten"
+
+msgid "English"
+msgstr "Englisch"
+
+msgid "Enter the guest details to create a reservation manually."
+msgstr "Geben Sie die Gästedaten ein, um manuell eine Reservierung zu erstellen."
+
+msgid "Enter the password to continue."
+msgstr "Geben Sie das Passwort ein, um fortzufahren."
+
+msgid "Example: Mon–Sun, 12:00–22:00"
+msgstr "Beispiel: Mo–So, 12:00–22:00"
+
+msgid "Example: set 3 if customers should only be able to book up to three days ahead."
+msgstr "Beispiel: Geben Sie 3 ein, wenn Kunden nur bis zu drei Tage im Voraus buchen können sollen."
+
+msgid "Feedback"
+msgstr "Feedback"
+
+msgid "Feedback Detail"
+msgstr "Feedback-Details"
+
+msgid "Fill in the details to create a new bookable window."
+msgstr "Füllen Sie die Details aus, um ein neues buchbares Zeitfenster zu erstellen."
+
+msgid "Filter by date or slot, or search by guest name, email, or phone."
+msgstr "Filtern Sie nach Datum oder Zeitfenster oder suchen Sie nach Gastname, E-Mail oder Telefonnummer."
+
+msgid "From"
+msgstr "Von"
+
+msgid "Full feedback from the customer."
+msgstr "Vollständiges Feedback vom Kunden."
+
+msgid "Getting Started"
+msgstr "Erste Schritte"
+
+msgid "Hero Image"
+msgstr "Hero-Bild"
+
+msgid "How many days ahead customers are allowed to book."
+msgstr "Wie viele Tage im Voraus Kunden buchen dürfen."
+
+msgid "Inactive"
+msgstr "Inaktiv"
+
+msgid "Keep it short, lowercase, and without spaces for clean URLs."
+msgstr "Halten Sie es kurz, klein geschrieben und ohne Leerzeichen für saubere URLs."
+
+msgid "Latest reservable time for guests."
+msgstr "Späteste buchbare Uhrzeit für Gäste."
+
+msgid "Location"
+msgstr "Standort"
+
+msgid "Location Name"
+msgstr "Standortname"
+
+msgid "Locations"
+msgstr "Standorte"
+
+msgid "Logout"
+msgstr "Abmelden"
+
+msgid "Manage branch details, customer-facing links, and contact information."
+msgstr "Verwalten Sie Filialdetails, kundenbezogene Links und Kontaktinformationen."
+
+msgid "Manage restaurant locations, contact details, and customer-facing links."
+msgstr "Verwalten Sie Restaurantstandorte, Kontaktdaten und kundenbezogene Links."
+
+msgid "Map Link"
+msgstr "Kartenlink"
+
+msgid "Menu PDF"
+msgstr "Menü-PDF"
+
+msgid "Menu PDF Link"
+msgstr "Menü-PDF-Link"
+
+msgid "New Reservation"
+msgstr "Neue Reservierung"
+
+msgid "No blocked days yet"
+msgstr "Noch keine gesperrten Tage"
+
+msgid "No feedback found"
+msgstr "Kein Feedback gefunden"
+
+msgid "No feedback matches your current filters."
+msgstr "Kein Feedback passt zu Ihren aktuellen Filtern."
+
+msgid "No locations yet"
+msgstr "Noch keine Standorte"
+
+msgid "No per-slot rules added."
+msgstr "Keine Regeln pro Zeitfenster hinzugefügt."
+
+msgid "No reservations found"
+msgstr "Keine Reservierungen gefunden"
+
+msgid "No time slots yet"
+msgstr "Noch keine Zeitfenster"
+
+msgid "Nothing open yet"
+msgstr "Noch nichts geöffnet"
+
+msgid "Nothing selected"
+msgstr "Nichts ausgewählt"
+
+msgid "Opening Hours"
+msgstr "Öffnungszeiten"
+
+msgid "Opening Hours for Reservations"
+msgstr "Öffnungszeiten für Reservierungen"
+
+msgid "Opening Time"
+msgstr "Öffnungszeit"
+
+msgid "Order"
+msgstr "Bestellen"
+
+msgid "Order Link"
+msgstr "Bestelllink"
+
+msgid "Partial restrictions"
+msgstr "Teilweise Einschränkungen"
+
+msgid "Password"
+msgstr "Passwort"
+
+msgid "Past"
+msgstr "Vergangenheit"
+
+msgid "Quick Actions"
+msgstr "Schnellaktionen"
+
+msgid "Read and manage feedback submitted by customers via QR code."
+msgstr "Lesen und verwalten Sie Feedback, das Kunden per QR-Code eingereicht haben."
+
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+msgid "Search"
+msgstr "Suchen"
+
+msgid "Search feedback, email, location…"
+msgstr "Feedback, E-Mail, Standort suchen…"
+
+msgid "Search location name, slug, address…"
+msgstr "Standortname, Slug, Adresse suchen…"
+
+msgid "Search name, email, phone…"
+msgstr "Name, E-Mail, Telefonnummer suchen…"
+
+msgid "Select Feedback"
+msgstr "Feedback auswählen"
+
+msgid "Select a slot to edit, or create a new one."
+msgstr "Wählen Sie ein Zeitfenster zum Bearbeiten aus oder erstellen Sie ein neues."
+
+msgid "Select an entry to edit, or block a new day."
+msgstr "Wählen Sie einen Eintrag zum Bearbeiten aus oder sperren Sie einen neuen Tag."
+
+msgid "Settings"
+msgstr "Einstellungen"
+
+msgid "Site Settings"
+msgstr "Seiteneinstellungen"
+
+msgid "Something went wrong."
+msgstr "Etwas ist schiefgelaufen."
+
+msgid "Submitted"
+msgstr "Eingereicht"
+
+msgid "The earliest and latest times staff allow for bookings."
+msgstr "Die frühesten und spätesten Zeiten, die das Personal für Buchungen erlaubt."
+
+msgid "These settings affect the overall reservation flow, so staff should update them carefully."
+msgstr "Diese Einstellungen beeinflussen den gesamten Reservierungsablauf, daher sollte das Personal sie sorgfältig aktualisieren."
+
+msgid "These values apply across the booking system, so small changes can affect availability for all customers."
+msgstr "Diese Werte gelten im gesamten Buchungssystem, daher können kleine Änderungen die Verfügbarkeit für alle Kunden beeinflussen."
+
+msgid "This Month"
+msgstr "Dieser Monat"
+
+msgid "This Week"
+msgstr "Diese Woche"
+
+msgid "Today"
+msgstr "Heute"
+
+msgid "Until"
+msgstr "Bis"
+
+msgid "Upcoming"
+msgstr "Bevorstehend"
+
+msgid "Update the details for this location below."
+msgstr "Aktualisieren Sie unten die Details für diesen Standort."
+
+msgid "Update the details for this slot below."
+msgstr "Aktualisieren Sie unten die Details für dieses Zeitfenster."
+
+msgid "Update the guest's reservation details below."
+msgstr "Aktualisieren Sie unten die Reservierungsdetails des Gastes."
+
+msgid "Update this day's restrictions below."
+msgstr "Aktualisieren Sie unten die Einschränkungen dieses Tages."
+
+msgid "Upload a location photo used for cards or public pages."
+msgstr "Laden Sie ein Standortfoto hoch, das für Karten oder öffentliche Seiten verwendet wird."
+
+msgid "Use clear booking rules so non-technical staff can manage reservations with confidence."
+msgstr "Verwenden Sie klare Buchungsregeln, damit auch nicht-technisches Personal Reservierungen sicher verwalten kann."
+
+msgid "Use the name staff and customers will recognize immediately."
+msgstr "Verwenden Sie einen Namen, den Personal und Kunden sofort erkennen."
+
+msgid "View"
+msgstr "Ansehen"
+
+msgid "What went wrong"
+msgstr "Was ist schiefgelaufen"
+
+msgid "Whole day closed"
+msgstr "Ganzer Tag geschlossen"
+
+msgid "closed"
+msgstr "geschlossen"
+
+msgid "days"
+msgstr "Tage"
+
+msgid "entries found"
+msgstr "Einträge gefunden"
+
+msgid "guests"
+msgstr "Gäste"
+
+msgid "guests max"
+msgstr "max. Gäste"
+
+msgid "locations found"
+msgstr "Standorte gefunden"
+
+msgid "optional"
+msgstr "optional"
+
+msgid "seats blocked"
+msgstr "Plätze gesperrt"

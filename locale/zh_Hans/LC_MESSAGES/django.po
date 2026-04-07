@@ -193,3 +193,315 @@ msgstr "备注 / 特殊要求"
 
 msgid "Create Reservation"
 msgstr "创建预订"
+
+msgid "<strong>Tip:</strong> If this slot is already used in reservations, <strong>deactivate</strong> it rather than deleting it to keep your booking history intact."
+msgstr "<strong>提示：</strong>如果此时间段已用于预订，请<strong>停用</strong>而不是删除，以保留您的预订记录。"
+
+msgid "A simple overview of the booking rules your staff is using right now."
+msgstr "当前员工正在使用的预订规则的简单概览。"
+
+msgid "Activate"
+msgstr "启用"
+
+msgid "Active"
+msgstr "启用中"
+
+msgid "Add Blocked Day"
+msgstr "添加封锁日期"
+
+msgid "Add Location"
+msgstr "添加地点"
+
+msgid "Add Time Slot"
+msgstr "添加时间段"
+
+msgid "Add Your First Slot"
+msgstr "添加您的第一个时间段"
+
+msgid "Add menu, order, and map links here so staff can quickly verify what customers will see publicly."
+msgstr "在此添加菜单、订单和地图链接，以便员工快速查看客户将看到的内容。"
+
+msgid "Address"
+msgstr "地址"
+
+msgid "Advance Booking Window"
+msgstr "提前预订时间"
+
+msgid "All"
+msgstr "全部"
+
+msgid "All Blocked Days"
+msgstr "所有封锁日期"
+
+msgid "All Feedback"
+msgstr "所有反馈"
+
+msgid "All Locations"
+msgstr "所有地点"
+
+msgid "All Reservations"
+msgstr "所有预订"
+
+msgid "All Slots"
+msgstr "所有时间段"
+
+msgid "All Time Slots"
+msgstr "所有时间段"
+
+msgid "Are you sure you want to delete this blocked day?"
+msgstr "您确定要删除此封锁日期吗？"
+
+msgid "Are you sure you want to delete this feedback?"
+msgstr "您确定要删除此反馈吗？"
+
+msgid "Are you sure you want to delete this location?"
+msgstr "您确定要删除此地点吗？"
+
+msgid "Are you sure you want to delete this time slot?"
+msgstr "您确定要删除此时间段吗？"
+
+msgid "Block a day when your store is fully closed or when you want to limit bookings for a specific date."
+msgstr "当店铺完全关闭或需要限制某一天的预订时，可封锁该日期。"
+
+msgid "Booking Days in Advance"
+msgstr "可提前预订天数"
+
+msgid "Chinese"
+msgstr "中文"
+
+msgid "Choose a date and configure how it should be restricted."
+msgstr "选择一个日期并设置限制方式。"
+
+msgid "Click Edit on a day to modify it, or block a new date above."
+msgstr "点击某一天的“编辑”进行修改，或在上方封锁新日期。"
+
+msgid "Click Edit on a location to update it, or add a new one for another branch."
+msgstr "点击地点的“编辑”进行更新，或为其他分店添加新地点。"
+
+msgid "Click Edit on a location, or create a new one for your team."
+msgstr "点击地点的“编辑”，或为团队创建新地点。"
+
+msgid "Click Edit on a reservation to modify it, or create a new one manually."
+msgstr "点击预订的“编辑”进行修改，或手动创建新预订。"
+
+msgid "Click Edit on a slot to modify it, or add a new one above."
+msgstr "点击时间段的“编辑”进行修改，或在上方添加新时间段。"
+
+msgid "Click Edit on any reservation, or create a new one manually."
+msgstr "点击任意预订的“编辑”，或手动创建新预订。"
+
+msgid "Click View on any entry to read the full message."
+msgstr "点击任意条目的“查看”以阅读完整信息。"
+
+msgid "Click View on any feedback entry to read the full message."
+msgstr "点击任意反馈条目的“查看”以阅读完整信息。"
+
+msgid "Closing Time"
+msgstr "结束时间"
+
+msgid "Continue"
+msgstr "继续"
+
+msgid "Control your core booking rules in one simple place for staff."
+msgstr "在一个简单的界面中管理核心预订规则。"
+
+msgid "Create Location"
+msgstr "创建地点"
+
+msgid "Create a location with its contact details and useful public links."
+msgstr "创建一个包含联系方式和公共链接的地点。"
+
+msgid "Create your first location so staff can manage addresses, contact details, maps, and menu links in one place."
+msgstr "创建您的第一个地点，让员工可以在一个地方管理地址、联系方式、地图和菜单链接。"
+
+msgid "Create your first slot to start managing reservation windows — e.g. Lunch (12:00–14:00) or Dinner (18:00–22:00)."
+msgstr "创建您的第一个时间段以开始管理预订时间，例如午餐（12:00–14:00）或晚餐（18:00–22:00）。"
+
+msgid "Current Settings"
+msgstr "当前设置"
+
+msgid "Current image preview"
+msgstr "当前图片预览"
+
+msgid "Customer Feedback"
+msgstr "客户反馈"
+
+msgid "Customer feedback submitted via QR code."
+msgstr "通过二维码提交的客户反馈。"
+
+msgid "Dashboard Access"
+msgstr "后台访问"
+
+msgid "Days marked here are closed or have reduced availability for customers."
+msgstr "此处标记的日期为关闭或可用性受限。"
+
+msgid "Delete"
+msgstr "删除"
+
+msgid "Delete this Feedback"
+msgstr "删除此反馈"
+
+msgid "Deutsch"
+msgstr "德语"
+
+msgid "Each slot is a bookable window — e.g. Lunch, Dinner."
+msgstr "每个时间段都是一个可预订的时间窗口，例如午餐或晚餐。"
+
+msgid "Earliest reservable time for guests."
+msgstr "客人最早可预订时间。"
+
+msgid "Edit Blocked Day"
+msgstr "编辑封锁日期"
+
+msgid "Edit Location"
+msgstr "编辑地点"
+
+msgid "Edit Reservation"
+msgstr "编辑预订"
+
+msgid "Edit Site Settings"
+msgstr "编辑站点设置"
+
+msgid "Edit Time Slot"
+msgstr "编辑时间段"
+
+msgid "English"
+msgstr "英语"
+
+msgid "Enter the guest details to create a reservation manually."
+msgstr "输入客人信息以手动创建预订。"
+
+msgid "Enter the password to continue."
+msgstr "输入密码以继续。"
+
+msgid "Example: Mon–Sun, 12:00–22:00"
+msgstr "例如：周一至周日 12:00–22:00"
+
+msgid "Example: set 3 if customers should only be able to book up to three days ahead."
+msgstr "例如：设置为3表示客户最多可提前三天预订。"
+
+msgid "Feedback"
+msgstr "反馈"
+
+msgid "Feedback Detail"
+msgstr "反馈详情"
+
+msgid "Fill in the details to create a new bookable window."
+msgstr "填写信息以创建新的可预订时间段。"
+
+msgid "Filter by date or slot, or search by guest name, email, or phone."
+msgstr "按日期或时间段筛选，或通过姓名、邮箱或电话搜索。"
+
+msgid "From"
+msgstr "从"
+
+msgid "Full feedback from the customer."
+msgstr "客户的完整反馈。"
+
+msgid "Getting Started"
+msgstr "开始使用"
+
+msgid "Hero Image"
+msgstr "主图"
+
+msgid "How many days ahead customers are allowed to book."
+msgstr "客户可提前预订的天数。"
+
+msgid "Inactive"
+msgstr "未启用"
+
+msgid "Keep it short, lowercase, and without spaces for clean URLs."
+msgstr "保持简短、小写且无空格，以生成清晰的URL。"
+
+msgid "Latest reservable time for guests."
+msgstr "客人最晚可预订时间。"
+
+msgid "Location"
+msgstr "地点"
+
+msgid "Location Name"
+msgstr "地点名称"
+
+msgid "Locations"
+msgstr "地点"
+
+msgid "Logout"
+msgstr "退出登录"
+
+msgid "Map Link"
+msgstr "地图链接"
+
+msgid "Menu PDF"
+msgstr "菜单PDF"
+
+msgid "Menu PDF Link"
+msgstr "菜单PDF链接"
+
+msgid "New Reservation"
+msgstr "新建预订"
+
+msgid "No blocked days yet"
+msgstr "尚无封锁日期"
+
+msgid "No feedback found"
+msgstr "未找到反馈"
+
+msgid "No reservations found"
+msgstr "未找到预订"
+
+msgid "No time slots yet"
+msgstr "尚无时间段"
+
+msgid "Opening Time"
+msgstr "开始时间"
+
+msgid "Order Link"
+msgstr "订购链接"
+
+msgid "Password"
+msgstr "密码"
+
+msgid "Quick Actions"
+msgstr "快捷操作"
+
+msgid "Save Settings"
+msgstr "保存设置"
+
+msgid "Search"
+msgstr "搜索"
+
+msgid "Settings"
+msgstr "设置"
+
+msgid "Site Settings"
+msgstr "站点设置"
+
+msgid "Something went wrong."
+msgstr "出现错误。"
+
+msgid "Submitted"
+msgstr "已提交"
+
+msgid "Today"
+msgstr "今天"
+
+msgid "Upcoming"
+msgstr "即将到来"
+
+msgid "View"
+msgstr "查看"
+
+msgid "Whole day closed"
+msgstr "全天关闭"
+
+msgid "closed"
+msgstr "关闭"
+
+msgid "days"
+msgstr "天"
+
+msgid "guests"
+msgstr "客人"
+
+msgid "optional"
+msgstr "可选"
