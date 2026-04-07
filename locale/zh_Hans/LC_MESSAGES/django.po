@@ -505,3 +505,6 @@ msgstr "客人"
 
 msgid "optional"
 msgstr "可选"
+
+msgid "Select a slot to edit, or create a new one."
+msgstr "选择一个时间段进行编辑，或创建一个新的。"
