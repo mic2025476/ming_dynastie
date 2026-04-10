@@ -173,3 +173,50 @@ def send_feedback_notification_via_gas(
     data = r.json()
     if not data.get("ok"):
         raise RuntimeError(f"GAS failed: {data}")
+    
+import requests
+from django.conf import settings
+
+
+def send_reservation_update_via_gas(
+    to_email,
+    restaurant_name,
+    reservation_date,
+    reservation_time,
+    party_size,
+    customer_name,
+    changes_text,
+):
+    subject = "Ihre Reservierung wurde aktualisiert"
+
+    body = f"""
+Hallo {customer_name},
+
+Ihre Reservierung wurde von unserem Team aktualisiert.
+
+Neue Reservierungsdaten:
+Datum: {reservation_date}
+Uhrzeit: {reservation_time}
+Personenzahl: {party_size}
+
+Geänderte Felder:
+{changes_text}
+
+Viele Grüße
+{restaurant_name}
+""".strip()
+
+    payload = {
+        "secret": settings.GOOGLE_APPS_SCRIPT_EMAIL_WEBHOOK_SECRET,
+        "to": to_email,
+        "subject": subject,
+        "body": body,
+        "name": restaurant_name,
+    }
+    print(f'payloadpayload {payload}')
+    response = requests.post(
+        settings.GOOGLE_APPS_SCRIPT_EMAIL_WEBHOOK_URL,
+        json=payload,
+        timeout=10,
+    )
+    response.raise_for_status()

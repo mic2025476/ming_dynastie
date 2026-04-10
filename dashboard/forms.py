@@ -132,6 +132,7 @@ class ReservationForm(forms.ModelForm):
         self.fields["date"].input_formats = ["%Y-%m-%d"]
 
         today = date.today()
+        dashboard_overview = None
 
         if self.instance and self.instance.pk and self.instance.date and self.instance.date < today:
             self.fields["date"].widget.attrs["min"] = self.instance.date.strftime("%Y-%m-%d")

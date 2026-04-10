@@ -4,7 +4,11 @@ from django.conf import settings
 from django.contrib.auth.hashers import check_password, make_password
 from core_settings.models import SiteSettings
 from django.contrib import messages
+from datetime import date, timedelta, datetime
 from django.db.models import Q
+from django.db import transaction
+from reservations.email_sender import send_reservation_update_via_gas
+from django.utils.translation import gettext as _
 from django.db.models.deletion import ProtectedError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -47,7 +51,34 @@ def dashboard_home(request):
     slots_json          = "[]"
     site_settings       = None
     today               = date.today()
+    now_time = datetime.now().time()
 
+    today_reservations = (
+        ReservationModel.objects.select_related("slot")
+        .filter(date=today)
+        .order_by("time")
+    )
+
+    total_today_reservations = today_reservations.count()
+    total_today_guests = sum((r.party_size or 0) for r in today_reservations)
+
+    next_reservation = (
+        ReservationModel.objects.select_related("slot")
+        .filter(
+            Q(date__gt=today) |
+            Q(date=today, time__gte=now_time)
+        )
+        .order_by("date", "time")
+        .first()
+    )
+    active_slots_today = TimeSlotModel.objects.filter(is_active=True).count()
+
+    dashboard_overview = {
+        "total_today_reservations": total_today_reservations,
+        "total_today_guests": total_today_guests,
+        "next_reservation": next_reservation,
+        "active_slots_today": active_slots_today,
+    }
     # ── Time Slots ──────────────────────────────────────────
     if section == "timeslots":
         if mode == "create":
@@ -81,12 +112,12 @@ def dashboard_home(request):
 
         form = SiteSettingsForm(instance=site_settings)
         mode = "edit"
-
     # ── Reservations ─────────────────────────────────────────
     elif section == "reservations":
         date_filter = request.GET.get("date_filter", "upcoming")
         slot_filter = request.GET.get("slot_filter", "")
         search      = request.GET.get("search", "")
+        reservation_id = request.GET.get("reservation_id", "")
 
         reservations = ReservationModel.objects.select_related("slot").order_by("-date", "-time")
 
@@ -106,7 +137,8 @@ def dashboard_home(request):
                 | Q(email__icontains=search)
                 | Q(phone__icontains=search)
             )
-
+        if reservation_id:
+            reservations = reservations.filter(id=reservation_id)
         slots_data = list(
             TimeSlotModel.objects.filter(is_active=True)
             .values("id", "start_time", "end_time")
@@ -192,6 +224,7 @@ def dashboard_home(request):
         return render(request, "dashboard/index.html", {
             "section":          section,
             "mode":             mode,
+            "dashboard_overview": dashboard_overview,
             "slots":            slots,
             "blocked_days":     blocked_days,
             "form":             None,
@@ -215,6 +248,7 @@ def dashboard_home(request):
     return render(request, "dashboard/index.html", {
         "section":           section,
         "mode":              mode,
+        "dashboard_overview": dashboard_overview,
         "slots":             slots,
         "blocked_days":      blocked_days,
         "form":              form,
@@ -446,7 +480,6 @@ def blocked_day_delete(request, pk):
 # ─────────────────────────────────────────────
 #  RESERVATION VIEWS
 # ─────────────────────────────────────────────
-@dashboard_password_required
 def _reservation_list_url(extra=""):
     base = f"{reverse('dashboard:home')}?section=reservations"
     return f"{base}{extra}"
@@ -490,6 +523,44 @@ def reservation_create(request):
         "slots_json": slots_json, "today": date.today(),
     })
 
+def _get_reservation_changes(old_reservation, new_reservation):
+    changed_fields = []
+
+    field_labels = {
+        "date": "Datum",
+        "time": "Uhrzeit",
+        "party_size": "Personenzahl",
+        "name": "Name",
+        "email": "E-Mail",
+        "phone": "Telefon",
+        "slot": "Zeitfenster",
+        "notes": "Notizen",
+    }
+
+    for field in ["date", "time", "party_size", "name", "email", "phone", "notes"]:
+        old_value = getattr(old_reservation, field, None)
+        new_value = getattr(new_reservation, field, None)
+
+        if old_value != new_value:
+            changed_fields.append({
+                "field": field,
+                "label": field_labels.get(field, field),
+                "old": old_value,
+                "new": new_value,
+            })
+
+    old_slot_id = getattr(old_reservation, "slot_id", None)
+    new_slot_id = getattr(new_reservation, "slot_id", None)
+    if old_slot_id != new_slot_id:
+        changed_fields.append({
+            "field": "slot",
+            "label": field_labels["slot"],
+            "old": old_reservation.slot.label if old_reservation.slot else "",
+            "new": new_reservation.slot.label if new_reservation.slot else "",
+        })
+    print(f'changed_fields {changed_fields}')
+    return changed_fields
+
 @dashboard_password_required
 def reservation_update(request, pk):
     reservation = get_object_or_404(ReservationModel, pk=pk)
@@ -497,13 +568,43 @@ def reservation_update(request, pk):
     if request.method != "POST":
         return redirect(_reservation_list_url())
 
+    old_snapshot = ReservationModel.objects.select_related("slot").get(pk=reservation.pk)
     form = ReservationForm(request.POST, instance=reservation)
-    if form.is_valid():
-        form.save()
-        messages.success(request, f'Reservation for "{reservation.name}" updated successfully.')
-        return redirect(_reservation_list_url())
 
-    slots        = TimeSlotModel.objects.all().order_by("sort_order", "start_time")
+    if form.is_valid():
+        updated_reservation = form.save()
+        changed_fields = _get_reservation_changes(old_snapshot, updated_reservation)
+        print("changed_fields", changed_fields)
+
+        relevant_fields = {"date", "time", "party_size", "name", "email", "phone", "slot"}
+        relevant_changes = [c for c in changed_fields if c["field"] in relevant_fields]
+        print(f'relevant_changesrelevant_changes {relevant_changes}')
+        print(f'updated_reservation.email {updated_reservation.email}')
+        if relevant_changes and updated_reservation.email:
+            change_lines = "\n".join(
+                f'- {c["label"]}: "{c["old"]}" → "{c["new"]}"'
+                for c in relevant_changes
+            )
+
+            def send_update_email():
+                try:
+                    send_reservation_update_via_gas(
+                        to_email=updated_reservation.email.strip().lower(),
+                        restaurant_name="Ming Dynastie",
+                        reservation_date=updated_reservation.date.strftime("%d.%m.%Y"),
+                        reservation_time=updated_reservation.time.strftime("%H:%M"),
+                        party_size=updated_reservation.party_size,
+                        customer_name=updated_reservation.name,
+                        changes_text=change_lines,
+                    )
+                except Exception as e:
+                    print("email failed:", e)
+
+            transaction.on_commit(send_update_email)
+
+        messages.success(request, f'Reservation for "{updated_reservation.name}" updated successfully.')
+        return redirect(_reservation_list_url())
+    slots = TimeSlotModel.objects.all().order_by("sort_order", "start_time")
     blocked_days = BlockedDayModel.objects.prefetch_related("slot_blocks__slot").order_by("-date")
     reservations = ReservationModel.objects.select_related("slot").filter(
         date__gte=date.today()
@@ -516,19 +617,31 @@ def reservation_update(request, pk):
         .order_by("sort_order", "start_time")
     )
     slots_json = json.dumps({
-        str(s["id"]): {"start": s["start_time"].strftime("%H:%M"), "end": s["end_time"].strftime("%H:%M")}
+        str(s["id"]): {
+            "start": s["start_time"].strftime("%H:%M"),
+            "end": s["end_time"].strftime("%H:%M"),
+        }
         for s in slots_data
     })
 
     return render(request, "dashboard/index.html", {
-        "section": "reservations", "mode": "edit",
-        "slots": slots, "blocked_days": blocked_days,
-        "form": form, "slot_block_formset": None,
-        "selected_slot": None, "selected_blocked_day": None,
-        "reservations": reservations, "selected_reservation": reservation,
-        "feedback_list": None, "selected_feedback": None,
-        "date_filter": "upcoming", "slot_filter": "", "search": "",
-        "slots_json": slots_json, "today": date.today(),
+        "section": "reservations",
+        "mode": "edit",
+        "slots": slots,
+        "blocked_days": blocked_days,
+        "form": form,
+        "slot_block_formset": None,
+        "selected_slot": None,
+        "selected_blocked_day": None,
+        "reservations": reservations,
+        "selected_reservation": reservation,
+        "feedback_list": None,
+        "selected_feedback": None,
+        "date_filter": "upcoming",
+        "slot_filter": "",
+        "search": "",
+        "slots_json": slots_json,
+        "today": date.today(),
     })
 
 @dashboard_password_required

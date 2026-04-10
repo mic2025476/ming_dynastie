@@ -1,8 +1,8 @@
 {% load i18n %}
 {% if selected_reservation %}
-  <form method="post" action="{% url 'dashboard:reservation_update' selected_reservation.id %}">
+  <form id="reservationForm" method="post" action="{% url 'dashboard:reservation_update' selected_reservation.id %}">
 {% else %}
-  <form method="post" action="{% url 'dashboard:reservation_create' %}">
+  <form id="reservationForm" method="post" action="{% url 'dashboard:reservation_create' %}">
 {% endif %}
   {% csrf_token %}
 
@@ -73,8 +73,13 @@
   {% endif %}
 
   <div class="form-actions">
-    <button type="submit" class="btn btn-primary btn-full btn-lg">
-      {% if selected_reservation %}💾 {% trans "Save Changes" %}{% else %}✅ {% trans "Create Reservation" %}{% endif %}
+    <button type="submit" id="reservationSubmitBtn" class="btn btn-primary btn-full btn-lg">
+      <span id="submitBtnDefault">
+        {% if selected_reservation %}💾 {% trans "Save Changes" %}{% else %}✅ {% trans "Create Reservation" %}{% endif %}
+      </span>
+      <span id="submitBtnLoading" style="display:none;">
+        ⏳ {% trans "Saving..." %}
+      </span>
     </button>
     <a href="{% url 'dashboard:home' %}?section=reservations" class="btn btn-secondary btn-full">
       ← {% trans "Back to List" %}
@@ -140,5 +145,24 @@
     });
 
     applySlotTime();
+  })();
+</script>
+<script>
+  (function () {
+    const form = document.getElementById("reservationForm");
+    const submitBtn = document.getElementById("reservationSubmitBtn");
+    const defaultText = document.getElementById("submitBtnDefault");
+    const loadingText = document.getElementById("submitBtnLoading");
+
+    if (!form || !submitBtn) return;
+
+    form.addEventListener("submit", function () {
+      submitBtn.disabled = true;
+      submitBtn.style.opacity = "0.7";
+      submitBtn.style.cursor = "not-allowed";
+
+      if (defaultText) defaultText.style.display = "none";
+      if (loadingText) loadingText.style.display = "inline";
+    });
   })();
 </script>

@@ -468,6 +468,53 @@
       .filter-tab   { flex: 1; text-align: center; }
       .feedback-meta-grid { grid-template-columns: 1fr; }
     }
+      .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .overview-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      padding: 18px 20px;
+    }
+
+    .overview-label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .overview-value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      line-height: 1.1;
+      color: var(--text);
+    }
+
+    .overview-subtext {
+      margin-top: 6px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 980px) {
+      .overview-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .overview-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -497,7 +544,61 @@
   </header>
 
   <div class="container">
+{% if dashboard_overview %}
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px;">
+    
+    <div style="background:white;border:1px solid var(--border);border-radius:12px;padding:16px;">
+      <div style="font-size:0.85rem;color:var(--muted);margin-bottom:6px;">
+        {% trans "Reservations today" %}
+      </div>
+      <div style="font-size:1.6rem;font-weight:800;">
+        {{ dashboard_overview.total_today_reservations }}
+      </div>
+    </div>
 
+    <div style="background:white;border:1px solid var(--border);border-radius:12px;padding:16px;">
+      <div style="font-size:0.85rem;color:var(--muted);margin-bottom:6px;">
+        {% trans "Guests today" %}
+      </div>
+      <div style="font-size:1.6rem;font-weight:800;">
+        {{ dashboard_overview.total_today_guests }}
+      </div>
+    </div>
+
+<div class="overview-card">
+  <div class="overview-label">{% trans "Next reservation" %}</div>
+
+  {% if dashboard_overview.next_reservation %}
+    <a
+      href="{% url 'dashboard:home' %}?section=reservations&reservation_id={{ dashboard_overview.next_reservation.id }}"
+      style="text-decoration:none;color:inherit;display:block;"
+    >
+<div class="overview-value" style="font-size:1.2rem;">
+  {{ dashboard_overview.next_reservation.time|time:"H:i" }}
+  <span style="font-size:0.8rem;color:var(--muted);margin-left:4px;">
+    · {{ dashboard_overview.next_reservation.date|date:"d.m" }}
+  </span>
+</div>
+      <div class="overview-subtext">
+        {{ dashboard_overview.next_reservation.name }}
+      </div>
+    </a>
+  {% else %}
+    <div class="overview-value">—</div>
+  {% endif %}
+</div>
+
+    <div style="background:white;border:1px solid var(--border);border-radius:12px;padding:16px;">
+      <div style="font-size:0.85rem;color:var(--muted);margin-bottom:6px;">
+        {% trans "Active time slots" %}
+      </div>
+      <div style="font-size:1.6rem;font-weight:800;">
+        {{ dashboard_overview.active_slots_today }}
+      </div>
+    </div>
+
+  </div>
+{% endif %}
     <!-- PAGE HEADER -->
     <div class="page-header">
       <div>
@@ -551,7 +652,6 @@
         {% endif %}
       </div>
     </div>
-
     <!-- NAV TABS -->
     <nav class="top-nav">
       <a href="{% url 'dashboard:home' %}?section=timeslots"    class="{% if section == 'timeslots' %}active{% endif %}">⏰ {% trans "Time Slots" %}</a>
@@ -573,7 +673,6 @@
         {% endfor %}
       </div>
     {% endif %}
-
     <!-- MAIN GRID -->
     <div class="grid
       {% if section == 'reservations' %}reservations-grid
@@ -581,7 +680,6 @@
       {% elif section == 'locations' %}locations-grid
       {% endif %}
       {% if mode == 'edit' or mode == 'create' or mode == 'view' %}has-active-form{% endif %}">
-
       <!-- ═══════════════════════════════
            LEFT PANEL — List
       ════════════════════════════════ -->
