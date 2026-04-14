@@ -622,3 +622,15 @@ msgstr "optional"
 
 msgid "seats blocked"
 msgstr "Plätze gesperrt"
+
+msgid "Reservations today"
+msgstr "Reservierungen heute"
+
+msgid "Guests today"
+msgstr "Gäste heute"
+
+msgid "Next reservation"
+msgstr "Nächste Reservierung"
+
+msgid "Active time slots"
+msgstr "Aktive Zeitfenster"

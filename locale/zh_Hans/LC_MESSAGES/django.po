@@ -53,6 +53,9 @@ msgstr "结束时间"
 msgid "Max. Guests"
 msgstr "最多客人数"
 
+msgid "guests max"
+msgstr "最多客人"
+
 msgid "Maximum number of guests that can book this slot."
 msgstr "可以预订此时间段的最大客人数。"
 
@@ -508,3 +511,72 @@ msgstr "可选"
 
 msgid "Select a slot to edit, or create a new one."
 msgstr "选择一个时间段进行编辑，或创建一个新的。"
+
+msgid "Reservations today"
+msgstr "今日预订"
+
+msgid "Guests today"
+msgstr "今日客人"
+
+msgid "Next reservation"
+msgstr "下一条预订"
+
+msgid "Active time slots"
+msgstr "可用时间段"
+
+msgid "Edit"
+msgstr "编辑"
+
+msgid "Deactivate"
+msgstr "停用"
+
+msgid "Select an entry to edit, or block a new day."
+msgstr "请选择一个条目进行编辑，或新增一个封锁日期"
+
+msgid "Partial restrictions"
+msgstr "部分限制"
+
+msgid "seats blocked"
+msgstr "已封锁座位"
+
+msgid "Past"
+msgstr "过去"
+
+msgid "Search name, email, phone…"
+msgstr "搜索姓名、邮箱、电话…"
+
+msgid "Opening Hours for Reservations"
+msgstr "预订开放时间"
+
+msgid "The earliest and latest times staff allow for bookings."
+msgstr "员工允许预订的最早和最晚时间"
+
+msgid "These settings affect the overall reservation flow, so staff should update them carefully."
+msgstr "这些设置会影响整体预订流程，请谨慎修改"
+
+msgid "These values apply across the booking system, so small changes can affect availability for all customers."
+msgstr "这些设置适用于整个预订系统，任何小的更改都可能影响所有顾客的可预订情况"
+
+msgid "Use clear booking rules so non-technical staff can manage reservations with confidence."
+msgstr "请使用清晰的预订规则，让非技术人员也能轻松管理预订"
+
+msgid "entries found"
+msgstr "找到条记录"
+
+msgid "This Month"
+msgstr "本月"
+
+msgid "This Week"
+msgstr "本周"
+
+msgid "Search feedback, email, location…"
+msgstr "搜索反馈、邮箱、位置…"
+
+msgid "Select Feedback"
+msgstr "选择反馈"
+
+msgid "Nothing selected"
+msgstr "未选择任何内容"
+
+msgid "Read and manage feedback submitted by customers via QR code."
+msgstr "查看并管理客户通过二维码提交的反馈"
