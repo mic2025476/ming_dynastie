@@ -580,3 +580,15 @@ msgstr "未选择任何内容"
 
 msgid "Read and manage feedback submitted by customers via QR code."
 msgstr "查看并管理客户通过二维码提交的反馈"
+
+msgid "Arrived"
+msgstr "已到店"
+
+msgid "Mark Arrived"
+msgstr "标记为已到店"
+
+msgid "No-Show"
+msgstr "未到店"
+
+msgid "No-Shows today"
+msgstr "今日未到店"

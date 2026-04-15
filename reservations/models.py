@@ -77,7 +77,8 @@ class ReservationModel(models.Model):
     time = models.TimeField(default=default_time)
     party_size = models.PositiveIntegerField(validators=[MinValueValidator(1)])
     message = models.TextField(blank=True)
-
+    is_arrived = models.BooleanField(default=False)
+    arrival_marked_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

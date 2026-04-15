@@ -634,3 +634,15 @@ msgstr "Nächste Reservierung"
 
 msgid "Active time slots"
 msgstr "Aktive Zeitfenster"
+
+msgid "Arrived"
+msgstr "Erschienen"
+
+msgid "Mark Arrived"
+msgstr "Als erschienen markieren"
+
+msgid "No-Show"
+msgstr "Nicht erschienen"
+
+msgid "No-Shows today"
+msgstr "No-Shows heute"

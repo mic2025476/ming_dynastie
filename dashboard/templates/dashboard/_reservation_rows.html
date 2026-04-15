@@ -4,10 +4,16 @@
     {% if res.date == today %}is-today
     {% elif res.date > today %}is-upcoming
     {% else %}is-past{% endif %}">
+
     <div class="slot-main">
+
       <div class="res-name-row">
         <span class="res-name">{{ res.name }}</span>
-        <span class="meta-tag highlight">👥 {{ res.party_size }} {% trans "guests" %}</span>
+
+        <span class="meta-tag highlight">
+          👥 {{ res.party_size }} {% trans "guests" %}
+        </span>
+
         {% if res.date == today %}
           <span class="badge today">{% trans "Today" %}</span>
         {% elif res.date > today %}
@@ -15,55 +21,95 @@
         {% else %}
           <span class="badge past">{% trans "Past" %}</span>
         {% endif %}
+
+        {% if res.date == today and res.time < now_time and not res.is_arrived %}
+          <span class="badge inactive">❌ {% trans "No-Show" %}</span>
+        {% endif %}
       </div>
+
       <div class="slot-meta">
         <span class="meta-tag">📅 {{ res.date|date:"d.m.Y" }}</span>
         <span class="meta-tag">🕐 {{ res.time|time:"H:i" }}</span>
         <span class="meta-tag">⏰ {{ res.slot.label }}</span>
-          {% if res.phone %}
-            <a class="meta-tag contact-link"
-              href="tel:{{ res.phone|cut:' '|cut:'-'|cut:'(' |cut:')' }}"
-              title="{% trans 'Call guest' %}">
-              📞 {{ res.phone }}
-            </a>
-          {% endif %}
 
-          {% if res.email %}
-            <a class="meta-tag contact-link"
-              href="mailto:{{ res.email }}"
-              title="{% trans 'Send email to guest' %}">
-              ✉️ {{ res.email }}
-            </a>
-          {% endif %}
+        {% if res.phone %}
+          <a class="meta-tag contact-link"
+             href="tel:{{ res.phone|cut:' '|cut:'-'|cut:'(' |cut:')' }}"
+             title="{% trans 'Call guest' %}">
+            📞 {{ res.phone }}
+          </a>
+        {% endif %}
+
+        {% if res.email %}
+          <a class="meta-tag contact-link"
+             href="mailto:{{ res.email }}"
+             title="{% trans 'Send email to guest' %}">
+            ✉️ {{ res.email }}
+          </a>
+        {% endif %}
       </div>
+
       {% if res.message %}
-        <div class="help" style="margin-top: 7px;">💬 {{ res.message }}</div>
+        <div class="help" style="margin-top: 7px;">
+          💬 {{ res.message }}
+        </div>
       {% endif %}
+
     </div>
+
     <div class="actions">
-            {% if res.date >= today %}
-              <a class="btn btn-secondary"
-                href="{% url 'dashboard:home' %}?section=reservations&mode=edit&id={{ res.id }}">
-                ✏️ {% trans "Edit" %}
-              </a>
-            {% else %}
-              <button class="btn btn-secondary" disabled title="{% trans 'Past reservations cannot be edited' %}">
-                ✏️ {% trans "Edit" %}
-              </button>
-            {% endif %}
-        <form action="{% url 'dashboard:reservation_delete' res.id %}"
-              method="post"
-              class="reservation-delete-form"
-              data-confirm="{% trans 'Are you sure you want to delete this reservation?' %}">
+
+      {% if res.date >= today %}
+        <form
+          action="{% url 'dashboard:reservation_mark_arrived' res.id %}"
+          method="post"
+          class="reservation-arrived-form">
           {% csrf_token %}
-          <button type="submit" class="btn btn-danger">🗑 {% trans "Delete" %}</button>
+
+          <button
+            type="submit"
+            class="btn {% if res.is_arrived %}btn-success{% else %}btn-secondary{% endif %}">
+            {% if res.is_arrived %}
+              ✅ {% trans "Arrived" %}
+            {% else %}
+              ⏳ {% trans "Mark Arrived" %}
+            {% endif %}
+          </button>
         </form>
+      {% endif %}
+
+      {% if res.date >= today %}
+        <a class="btn btn-secondary"
+           href="{% url 'dashboard:home' %}?section=reservations&mode=edit&id={{ res.id }}">
+          ✏️ {% trans "Edit" %}
+        </a>
+      {% else %}
+        <button class="btn btn-secondary"
+                disabled
+                title="{% trans 'Past reservations cannot be edited' %}">
+          ✏️ {% trans "Edit" %}
+        </button>
+      {% endif %}
+
+      <form action="{% url 'dashboard:reservation_delete' res.id %}"
+            method="post"
+            class="reservation-delete-form"
+            data-confirm="{% trans 'Are you sure you want to delete this reservation?' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">
+          🗑 {% trans "Delete" %}
+        </button>
+      </form>
+
     </div>
   </div>
+
 {% empty %}
   <div class="empty-state">
     <span class="empty-icon">📋</span>
     <div class="empty-title">{% trans "No reservations found" %}</div>
-    <p class="empty-text">{% trans "No reservations match your current filters. Try \"All\" to see everything." %}</p>
+    <p class="empty-text">
+      {% trans "No reservations match your current filters. Try \"All\" to see everything." %}
+    </p>
   </div>
 {% endfor %}
