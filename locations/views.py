@@ -22,7 +22,7 @@ from .forms import TimeSlotForm, BlockedDayForm, BlockedDaySlotBlockFormSet, Res
 # ─────────────────────────────────────────────
 
 def dashboard_home(request):
-    section = request.GET.get("section", "timeslots")
+    section = request.GET.get("section", "reservations")
     mode    = request.GET.get("mode", "list")
     edit_id = request.GET.get("id")
 

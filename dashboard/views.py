@@ -21,17 +21,83 @@ from reservations.models import TimeSlotModel, BlockedDayModel, ReservationModel
 from qrflow.models import Feedback  # adjust import path if different in your project
 from core_settings.models import SiteSettings
 from .forms import TimeSlotForm, BlockedDayForm, BlockedDaySlotBlockFormSet, ReservationForm, SiteSettingsForm
-
+from django.utils import timezone
 
 # ─────────────────────────────────────────────
 #  MAIN DASHBOARD HOME (handles all sections)
 # ─────────────────────────────────────────────
 
 @dashboard_password_required
+def reservation_mark_arrived(request, pk):
+    if request.method != "POST":
+        return redirect(_reservation_list_url())
+
+    reservation = get_object_or_404(ReservationModel, pk=pk)
+
+    reservation.is_arrived = not reservation.is_arrived
+
+    if reservation.is_arrived:
+        reservation.arrival_marked_at = timezone.now()
+    else:
+        reservation.arrival_marked_at = None
+
+    reservation.save(update_fields=["is_arrived", "arrival_marked_at"])
+    reservation.save(update_fields=["is_arrived", "arrival_marked_at"])
+
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        today = date.today()
+        now_time = datetime.now().time()
+        date_filter = request.GET.get("date_filter", "upcoming")
+        slot_filter = request.GET.get("slot_filter", "")
+        search = request.GET.get("search", "").strip()
+
+        reservations = ReservationModel.objects.select_related("slot")
+
+        if date_filter == "today":
+            reservations = reservations.filter(date=today)
+        elif date_filter == "upcoming":
+            reservations = reservations.filter(date__gte=today)
+        elif date_filter == "past":
+            reservations = reservations.filter(date__lt=today)
+
+        if slot_filter:
+            reservations = reservations.filter(slot_id=slot_filter)
+
+        if search:
+            reservations = reservations.filter(
+                Q(name__icontains=search)
+                | Q(email__icontains=search)
+                | Q(phone__icontains=search)
+            )
+
+        reservations = reservations.order_by("date", "time")
+
+        html = render_to_string(
+            "dashboard/_reservation_rows.html",
+            {
+                "reservations": reservations,
+                "today": today,
+                "now_time": now_time,
+            },
+            request=request,
+        )
+        return JsonResponse({
+            "success": True,
+            "message": f'"{reservation.name}" marked as arrived.',
+            "html": html,
+            "now_time": now_time,
+            "count": reservations.count(),
+        })
+
+    messages.success(request, f'"{reservation.name}" marked as arrived.')
+    return redirect(_reservation_list_url())
+
+@dashboard_password_required
 def dashboard_home(request):
-    section = request.GET.get("section", "timeslots")
+    section = request.GET.get("section", "reservations")
     mode    = request.GET.get("mode", "list")
     edit_id = request.GET.get("id")
+    filter_type = request.GET.get("filter")
 
     slots        = TimeSlotModel.objects.all().order_by("sort_order", "start_time")
     blocked_days = BlockedDayModel.objects.prefetch_related("slot_blocks__slot").order_by("-date")
@@ -58,7 +124,14 @@ def dashboard_home(request):
         .filter(date=today)
         .order_by("time")
     )
-
+    print(f'today {today}')
+    print(f'now_time {now_time}')
+    no_shows_today = ReservationModel.objects.filter(
+        date=today,
+        time__lt=now_time,
+        is_arrived=False,
+    ).count()
+    print(f'no_shows_today {no_shows_today}')
     total_today_reservations = today_reservations.count()
     total_today_guests = sum((r.party_size or 0) for r in today_reservations)
 
@@ -78,6 +151,7 @@ def dashboard_home(request):
         "total_today_guests": total_today_guests,
         "next_reservation": next_reservation,
         "active_slots_today": active_slots_today,
+        "no_shows_today": no_shows_today,
     }
     # ── Time Slots ──────────────────────────────────────────
     if section == "timeslots":
@@ -118,16 +192,29 @@ def dashboard_home(request):
         slot_filter = request.GET.get("slot_filter", "")
         search      = request.GET.get("search", "")
         reservation_id = request.GET.get("reservation_id", "")
+        selected_date = request.GET.get("selected_date", "").strip()
 
         reservations = ReservationModel.objects.select_related("slot").order_by("-date", "-time")
-
-        if date_filter == "today":
-            reservations = reservations.filter(date=today)
-        elif date_filter == "upcoming":
-            reservations = reservations.filter(date__gte=today)
-        elif date_filter == "past":
-            reservations = reservations.filter(date__lt=today)
-
+        if selected_date:
+            try:
+                parsed_selected_date = datetime.strptime(selected_date, "%Y-%m-%d").date()
+                reservations = reservations.filter(date=parsed_selected_date)
+                date_filter = "custom"
+            except ValueError:
+                selected_date = ""
+        if filter_type == "no_show_today":
+            reservations = reservations.filter(
+                date=today,
+                time__lt=now_time,
+                is_arrived=False,
+            )
+        if not selected_date:
+            if date_filter == "today":
+                reservations = reservations.filter(date=today)
+            elif date_filter == "upcoming":
+                reservations = reservations.filter(date__gte=today)
+            elif date_filter == "past":
+                reservations = reservations.filter(date__lt=today)
         if slot_filter:
             reservations = reservations.filter(slot_id=slot_filter)
 
@@ -151,6 +238,7 @@ def dashboard_home(request):
             }
             for s in slots_data
         })
+        reservations = reservations.order_by("date", "time")
 
         if mode == "create":
             form = ReservationForm()
@@ -163,7 +251,11 @@ def dashboard_home(request):
         if request.headers.get("X-Requested-With") == "XMLHttpRequest":
             html = render_to_string(
                 "dashboard/_reservation_rows.html",
-                {"reservations": reservations, "today": today},
+                {
+                    "reservations": reservations,
+                    "today": today,
+                    "now_time": now_time,
+                },
                 request=request,
             )
             return JsonResponse({"html": html, "count": reservations.count()})
@@ -205,8 +297,12 @@ def dashboard_home(request):
         # AJAX live search
         if request.headers.get("X-Requested-With") == "XMLHttpRequest":
             html = render_to_string(
-                "dashboard/_feedback_rows.html",
-                {"feedback_list": feedback_list, "selected_feedback": selected_feedback},
+                "dashboard/_reservation_rows.html",
+                {
+                    "reservations": reservations,
+                    "today": today,
+                    "now_time": now_time,
+                },
                 request=request,
             )
             return JsonResponse({"html": html, "count": feedback_list.count()})
@@ -682,7 +778,11 @@ def reservation_delete(request, pk):
 
         html = render_to_string(
             "dashboard/_reservation_rows.html",
-            {"reservations": reservations, "today": today},
+            {
+                "reservations": reservations,
+                "today": today,
+                "now_time": datetime.now().time(),
+            },
             request=request,
         )
         return JsonResponse({

@@ -677,9 +677,9 @@
     </div>
     <!-- NAV TABS -->
     <nav class="top-nav">
+      <a href="{% url 'dashboard:home' %}?section=reservations" class="{% if section == 'reservations' %}active{% endif %}">📋 {% trans "Reservations" %}</a>
       <a href="{% url 'dashboard:home' %}?section=timeslots"    class="{% if section == 'timeslots' %}active{% endif %}">⏰ {% trans "Time Slots" %}</a>
       <a href="{% url 'dashboard:home' %}?section=blocked-days" class="{% if section == 'blocked-days' %}active{% endif %}">📅 {% trans "Blocked Days" %}</a>
-      <a href="{% url 'dashboard:home' %}?section=reservations" class="{% if section == 'reservations' %}active{% endif %}">📋 {% trans "Reservations" %}</a>
       <a href="{% url 'dashboard:home' %}?section=locations"    class="{% if section == 'locations' %}active{% endif %}">📍 {% trans "Locations" %}</a>
       <a href="{% url 'dashboard:home' %}?section=settings"     class="{% if section == 'settings' %}active{% endif %}">⚙️ {% trans "Settings" %}</a>
       <a href="{% url 'dashboard:home' %}?section=feedback"     class="{% if section == 'feedback' %}active{% endif %}">💬 {% trans "Feedback" %}</a>
@@ -982,7 +982,14 @@
                     {% trans "All" %}
                   </button>
                 </div>
-
+                <input
+                  type="date"
+                  name="selected_date"
+                  id="selected-date"
+                  value="{{ selected_date }}"
+                  class="filter-select"
+                  title="{% trans "Pick a date" %}"
+                >
                 <select name="slot_filter" class="filter-select" id="slot-filter">
                   <option value="">{% trans "All Slots" %}</option>
                   {% for slot in slots %}
@@ -1175,6 +1182,8 @@
     const slotFilter  = document.getElementById('slot-filter');
     const listEl      = document.getElementById('reservations-list');
     const countEl     = document.getElementById('results-count');
+    const selectedDate = document.getElementById('selected-date');
+    console.log('selectedDate',selectedDate);
 
     if (!form || !searchInput || !listEl || !countEl) return;
 
@@ -1182,9 +1191,8 @@
     let controller = null;
     let currentDateFilter = "{{ date_filter|default:'upcoming' }}";
 
-    function updateUrl(search, slot) {
+    function updateUrl(search, slot, date) {
       const params = new URLSearchParams();
-// ✅ ADD HERE ALSO
 const urlParams = new URLSearchParams(window.location.search);
 const currentFilter = urlParams.get('filter');
 if (currentFilter) {
@@ -1204,7 +1212,7 @@ if (currentFilter) {
     function fetchResults() {
       const search = searchInput.value;
       const slot   = slotFilter ? slotFilter.value : '';
-
+      const date = selectedDate ? selectedDate.value : '';
       if (controller) controller.abort();
       controller = new AbortController();
 
@@ -1212,6 +1220,7 @@ if (currentFilter) {
       const cursorEnd   = searchInput.selectionEnd;
 
       const params = new URLSearchParams();
+      if (date) params.set('selected_date', date);
 // ✅ ADD HERE ALSO
 const urlParams = new URLSearchParams(window.location.search);
 const currentFilter = urlParams.get('filter');
@@ -1232,7 +1241,7 @@ if (currentFilter) {
         .then(data => {
           listEl.innerHTML = data.html;
           updateCount(data.count);
-          updateUrl(search, slot);
+          updateUrl(search, slot, date);
           searchInput.focus();
           searchInput.setSelectionRange(cursorStart, cursorEnd);
         })
@@ -1251,7 +1260,14 @@ if (currentFilter) {
     if (slotFilter) {
       slotFilter.addEventListener('change', function () { clearTimeout(timer); fetchResults(); });
     }
-
+    if (selectedDate) {
+      selectedDate.addEventListener('change', function () {
+        currentDateFilter = 'custom';
+        document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+        clearTimeout(timer);
+        fetchResults();
+      });
+    }
     document.querySelectorAll('.filter-tab').forEach(btn => {
       btn.addEventListener('click', function (e) {
         e.preventDefault();

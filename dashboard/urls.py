@@ -30,4 +30,6 @@ urlpatterns = [
     path("access/", views.dashboard_password_login, name="password_login"),
     path("logout/", views.dashboard_password_logout, name="password_logout"),
 
+    path("reservations/<int:pk>/arrived/", views.reservation_mark_arrived, name="reservation_mark_arrived"),
+
 ]
