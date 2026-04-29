@@ -2484,6 +2484,16 @@ select option:disabled{
   }
 }
 
+/* ===== FIX: Social icons must not block Speisekarte iframe on mobile ===== */
+@media (max-width: 900px) {
+  body.is-viewing-menu .social-bar {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transform: translateY(-50%) translateX(80px) !important;
+  }
+}
+
   </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -3556,4 +3566,28 @@ if (callPopup){
   }
 }());
   </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const menuSection = document.getElementById("speisekarte");
+
+  if (!menuSection) return;
+
+  const observer = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting && window.innerWidth <= 900) {
+          document.body.classList.add("is-viewing-menu");
+        } else {
+          document.body.classList.remove("is-viewing-menu");
+        }
+      });
+    },
+    {
+      threshold: 0.2
+    }
+  );
+
+  observer.observe(menuSection);
+});
+</script>
 {% endblock %}
