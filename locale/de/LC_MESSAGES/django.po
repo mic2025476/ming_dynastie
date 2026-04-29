@@ -646,3 +646,28 @@ msgstr "Nicht erschienen"
 
 msgid "No-Shows today"
 msgstr "No-Shows heute"
+
+msgid "Prev"
+msgstr "Vorherige"
+
+msgid "Next"
+msgstr "Nächste"
+
+msgid "This Week"
+msgstr "Diese Woche"
+
+msgid "Next 7 Days"
+msgstr "Nächste 7 Tage"
+
+msgid "Total"
+msgstr "Gesamt"
+
+msgid "Confirmed"
+msgstr "Bestätigt gesamt"
+
+msgid "No-Show"
+msgstr "Nicht erschienen"
+
+
+
+

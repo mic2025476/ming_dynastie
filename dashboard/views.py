@@ -240,6 +240,21 @@ def dashboard_home(request):
         })
         reservations = reservations.order_by("date", "time")
 
+        # ── Calendar JSON for the weekly calendar view ──
+        reservations_json = json.dumps([
+            {
+                "id":     r.id,
+                "date":   r.date.strftime("%Y-%m-%d"),
+                "time":   r.slot.start_time.strftime("%H:%M") if r.slot else "",
+                "name":   r.name,
+                "guests": r.party_size or 0,
+                "status": "arrived" if r.is_arrived else "confirmed",
+                "phone":  r.phone or "",
+                "email":  r.email or "",
+            }
+            for r in reservations
+        ], default=str)
+
         if mode == "create":
             form = ReservationForm()
         elif mode == "edit" and edit_id:
@@ -362,8 +377,9 @@ def dashboard_home(request):
         "search":            search,
         "slot_filter":       slot_filter,
         "slots_json":        slots_json,
+        "reservations_json": reservations_json if section == "reservations" else "[]",
         "today":             today,
-    })
+            })
 
 @dashboard_password_required
 def site_settings_save(request):

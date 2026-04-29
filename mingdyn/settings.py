@@ -29,6 +29,7 @@ ALLOWED_HOSTS = [
     "ec2-51-21-253-51.eu-north-1.compute.amazonaws.com",
     "localhost",
     "127.0.0.1",
+    "13.62.248.26",
 ]
 
 CSRF_TRUSTED_ORIGINS = [

@@ -592,3 +592,27 @@ msgstr "未到店"
 
 msgid "No-Shows today"
 msgstr "今日未到店"
+
+msgid "Prev"
+msgstr "上一步"
+
+msgid "Next"
+msgstr "下一步"
+
+msgid "This Week"
+msgstr "本周"
+
+msgid "Next Week"
+msgstr "下周"
+
+msgid "Next 7 Days"
+msgstr "未来7天"
+
+msgid "Total"
+msgstr "已确认总数"
+
+msgid "Confirmed"
+msgstr "确认总数"
+
+msgid "No-Show"
+msgstr "未到场"

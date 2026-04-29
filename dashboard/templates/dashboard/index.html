@@ -2,6 +2,8 @@
 <!DOCTYPE html>
 {% get_current_language as CURRENT_LANGUAGE %}
 <html lang="{{ CURRENT_LANGUAGE }}">
+{% load i18n %}
+<script src="{% url 'javascript-catalog' %}"></script>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -177,6 +179,7 @@
     /* ── GRID ── */
     .grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; align-items: start; }
     .grid.reservations-grid { grid-template-columns: 1.6fr 1fr; }
+    .grid.reservations-calendar { grid-template-columns: 1fr; }
     .grid.feedback-grid     { grid-template-columns: 1.5fr 1fr; }
     .grid.locations-grid    { grid-template-columns: 1.55fr 1fr; }
 
@@ -532,9 +535,224 @@
     }
 
     @media (max-width: 640px) {
+    .grid.reservations-calendar > section:last-child { display: none; }
       .overview-grid {
         grid-template-columns: 1fr;
       }
+    }
+/* ── CALENDAR STATS ── */
+    .cal-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .cal-stat {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+    }
+    .cal-stat.s-total     { border-top: 3px solid #D1D5DB; }
+    .cal-stat.s-confirmed { border-top: 3px solid #BFDBFE; }
+    .cal-stat.s-arrived   { border-top: 3px solid #A7F3D0; }
+    .cal-stat.s-noshow    { border-top: 3px solid #FECACA; }
+    .cal-stat-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .cal-stat.s-total     .cal-stat-num { color: var(--text); }
+    .cal-stat.s-confirmed .cal-stat-num { color: #1D4ED8; }
+    .cal-stat.s-arrived   .cal-stat-num { color: var(--success); }
+    .cal-stat.s-noshow    .cal-stat-num { color: var(--danger); }
+    .cal-stat-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .cal-quick-pills {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .cal-qpill {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      background: #F3F4F6;
+      border: none;
+      border-radius: 20px;
+      padding: 6px 13px;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .cal-qpill:hover  { background: var(--primary-light); color: var(--primary); }
+    .cal-qpill.active { background: var(--primary); color: white; }
+    @media (max-width: 640px) {
+      .cal-stats { grid-template-columns: repeat(2, 1fr); }
+      .cal-quick-pills { gap: 4px; }
+      .cal-qpill { font-size: 11px; padding: 5px 10px; }
+    }
+    /* ── CALENDAR VIEW ── */
+    .cal-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .cal-view-tabs {
+      display: flex;
+      background: #F3F4F6;
+      border-radius: var(--radius-sm);
+      padding: 4px;
+      gap: 2px;
+    }
+    .cal-view-tab {
+      padding: 7px 16px;
+      border-radius: 7px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--muted);
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.15s;
+    }
+    .cal-view-tab.active { background: white; color: var(--primary); box-shadow: var(--shadow-sm); }
+    .cal-view-tab:hover  { background: white; color: var(--text); }
+    .cal-nav {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .cal-nav-btn {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      background: white;
+      border: 1.5px solid var(--border);
+      color: var(--muted);
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.15s;
+    }
+    .cal-nav-btn:hover { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
+    .cal-range-label {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+      min-width: 180px;
+      text-align: center;
+    }
+    .cal-grid {
+      display: grid;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: white;
+    }
+    .cal-grid-7  { grid-template-columns: 64px repeat(7, minmax(0,1fr)); }
+    .cal-grid-3  { grid-template-columns: 64px repeat(3, minmax(0,1fr)); }
+    .cal-grid-1  { grid-template-columns: 64px 1fr; }
+    .cal-head-time {
+      background: #F9FAFB;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 6px;
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+      font-weight: 600;
+    }
+    .cal-head-day {
+      background: #F9FAFB;
+      border-bottom: 1px solid var(--border);
+      border-left: 1px solid var(--border);
+      padding: 8px 6px;
+      text-align: center;
+    }
+    .cal-head-day.is-today { background: var(--primary-light); }
+    .cal-head-day-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .cal-head-day.is-today .cal-head-day-name { color: var(--primary); }
+    .cal-head-day-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.2;
+    }
+    .cal-head-day.is-today .cal-head-day-num { color: var(--primary); }
+    .cal-time-cell {
+      background: #FAFAFA;
+      border-bottom: 1px solid var(--border);
+      padding: 6px 8px 6px 4px;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 600;
+      text-align: right;
+      vertical-align: top;
+      min-height: 56px;
+    }
+    .cal-day-cell {
+      border-left: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 4px;
+      min-height: 56px;
+      vertical-align: top;
+    }
+    .cal-day-cell.is-today-col { background: #FAFFFE; }
+    .cal-chip {
+      display: block;
+      border-radius: 6px;
+      padding: 4px 7px;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.4;
+      margin-bottom: 3px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .cal-chip:hover { opacity: 0.85; }
+    .cal-chip.confirmed  { background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; }
+    .cal-chip.arrived    { background: var(--success-light); color: #065F46; border: 1px solid #A7F3D0; }
+    .cal-chip.no-show    { background: var(--danger-light); color: #991B1B; border: 1px solid #FECACA; }
+    .cal-chip.cancelled  { background: #F9FAFB; color: #6B7280; border: 1px solid #D1D5DB; }
+    .cal-legend {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .cal-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .cal-legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
     }
   </style>
 </head>
@@ -698,11 +916,12 @@
     {% endif %}
     <!-- MAIN GRID -->
     <div class="grid
-      {% if section == 'reservations' %}reservations-grid
-      {% elif section == 'feedback' %}feedback-grid
-      {% elif section == 'locations' %}locations-grid
-      {% endif %}
-      {% if mode == 'edit' or mode == 'create' or mode == 'view' %}has-active-form{% endif %}">
+          {% if section == 'reservations' and mode == 'list' %}reservations-calendar
+          {% elif section == 'reservations' %}reservations-grid
+          {% elif section == 'feedback' %}feedback-grid
+          {% elif section == 'locations' %}locations-grid
+          {% endif %}
+          {% if mode == 'edit' or mode == 'create' or mode == 'view' %}has-active-form{% endif %}">
       <!-- ═══════════════════════════════
            LEFT PANEL — List
       ════════════════════════════════ -->
@@ -959,58 +1178,330 @@
               {% endfor %}
             </div>
 
-          {# ── RESERVATIONS LIST ── #}
+{# ── RESERVATIONS CALENDAR ── #}
           {% else %}
-            <form method="get" action="{% url 'dashboard:home' %}" id="filter-form">
-              <input type="hidden" name="section" value="reservations">
-              <div class="filter-bar">
-                <div class="filter-tabs">
-                  <button type="submit" name="date_filter" value="today"
-                    class="filter-tab {% if date_filter == 'today' %}active{% endif %}">
-                    {% trans "Today" %}
-                  </button>
-                  <button type="submit" name="date_filter" value="upcoming"
-                    class="filter-tab {% if date_filter == 'upcoming' or not date_filter %}active{% endif %}">
-                    {% trans "Upcoming" %}
-                  </button>
-                  <button type="submit" name="date_filter" value="past"
-                    class="filter-tab {% if date_filter == 'past' %}active{% endif %}">
-                    {% trans "Past" %}
-                  </button>
-                  <button type="submit" name="date_filter" value="all"
-                    class="filter-tab {% if date_filter == 'all' %}active{% endif %}">
-                    {% trans "All" %}
-                  </button>
-                </div>
-                <input
-                  type="date"
-                  name="selected_date"
-                  id="selected-date"
-                  value="{{ selected_date }}"
-                  class="filter-select"
-                  title="{% trans "Pick a date" %}"
-                >
-                <select name="slot_filter" class="filter-select" id="slot-filter">
-                  <option value="">{% trans "All Slots" %}</option>
-                  {% for slot in slots %}
-                    <option value="{{ slot.id }}" {% if slot_filter == slot.id|stringformat:"s" %}selected{% endif %}>
-                      {{ slot.label }}
-                    </option>
-                  {% endfor %}
-                </select>
 
-                <input type="search" name="search" id="search-input" value="{{ search }}"
-                  class="search-input"
-                  placeholder="{% trans "Search name, email, phone…" %}"
-                  autocomplete="off" spellcheck="false" enterkeyhint="search">
+{# ── TOOLBAR ── #}
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+              <button class="cal-nav-btn" id="cal-prev">← {% trans "Prev" %}</button>
+              <span id="cal-range-label" style="font-size:0.9rem;font-weight:600;color:var(--text);padding:0 4px;white-space:nowrap;">—</span>
+              <button class="cal-nav-btn" id="cal-next">{% trans "Next" %} →</button>
+              <div style="width:1px;height:24px;background:var(--border);margin:0 2px;"></div>
+              <div class="cal-quick-pills">
+                <button class="cal-qpill" id="qp-today"    onclick="applyQuickFilter('today')">{% trans "Today" %}</button>
+                <button class="cal-qpill active" id="qp-week" onclick="applyQuickFilter('week')">{% trans "This week" %}</button>
+                <button class="cal-qpill" id="qp-next7"   onclick="applyQuickFilter('next7')">{% trans "Next 7 days" %}</button>
+                <button class="cal-qpill" id="qp-past"    onclick="applyQuickFilter('past')">{% trans "Past" %}</button>
               </div>
-            </form>
-
-            <div class="results-count" id="results-count"></div>
-
-            <div class="slot-list" id="reservations-list">
-              {% include "dashboard/_reservation_rows.html" %}
+              <div style="width:1px;height:24px;background:var(--border);margin:0 2px;"></div>
+              <input type="date" id="cal-date-jump" class="filter-select" title="{% trans 'Jump to date' %}" style="width:auto;">
             </div>
+
+            {# ── STATS BAR ── #}
+            <div class="cal-stats" id="cal-stats-bar">
+              <div class="cal-stat s-total">
+                <div class="cal-stat-num" id="stat-total">0</div>
+                <div class="cal-stat-label">{% trans "Total" %}</div>
+              </div>
+              <div class="cal-stat s-confirmed">
+                <div class="cal-stat-num" id="stat-confirmed">0</div>
+                <div class="cal-stat-label">{% trans "Confirmed" %}</div>
+              </div>
+              <div class="cal-stat s-arrived">
+                <div class="cal-stat-num" id="stat-arrived">0</div>
+                <div class="cal-stat-label">{% trans "Arrived" %}</div>
+              </div>
+              <div class="cal-stat s-noshow">
+                <div class="cal-stat-num" id="stat-noshow">0</div>
+                <div class="cal-stat-label">{% trans "No-show" %}</div>
+              </div>
+            </div>
+
+            {# ── CALENDAR GRID ── #}
+            <div id="cal-grid-container"></div>
+
+            {# ── LEGEND ── #}
+            <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;">
+              <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);font-weight:500;"><div style="width:10px;height:10px;border-radius:3px;background:#BFDBFE;border:1px solid #93C5FD;"></div>{% trans "Confirmed" %}</div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);font-weight:500;"><div style="width:10px;height:10px;border-radius:3px;background:#A7F3D0;border:1px solid #6EE7B7;"></div>{% trans "Arrived" %}</div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);font-weight:500;"><div style="width:10px;height:10px;border-radius:3px;background:#FECACA;border:1px solid #FCA5A5;"></div>{% trans "No-show" %}</div>
+            </div>
+
+            {# ── Data from Django ── #}
+            <script id="cal-data" type="application/json">{{ reservations_json|safe }}</script>
+
+<script>
+            (function() {
+              var rawData = [];
+              try { rawData = JSON.parse(document.getElementById('cal-data').textContent || '[]'); } catch(e) {}
+
+              var DAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+              var today = new Date(); today.setHours(0,0,0,0);
+              var anchorDate = new Date(today);
+              var dow = anchorDate.getDay();
+              anchorDate.setDate(anchorDate.getDate() - (dow === 0 ? 6 : dow - 1));
+              var selectedDayIndex = 0;
+              var activeFilter = 'week';
+              // filtered slice of rawData for current view
+              var viewData = rawData.slice();
+              var isMobile = window.innerWidth < 700;
+
+              function fmt(d) {
+                return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+              }
+              function isToday(d) { return fmt(d) === fmt(today); }
+
+              function getDays() {
+                var days = [];
+                for (var i = 0; i < 7; i++) {
+                  var d = new Date(anchorDate); d.setDate(anchorDate.getDate() + i); days.push(d);
+                }
+                return days;
+              }
+
+              // ── Stats bar ──
+              function updateStats(days) {
+                var dateSet = {};
+                days.forEach(function(d){ dateSet[fmt(d)] = true; });
+                var slice = rawData.filter(function(r){ return dateSet[r.date]; });
+                viewData = slice;
+                var total     = slice.length;
+                var arrived   = slice.filter(function(r){ return r.status === 'arrived'; }).length;
+                var noshow    = slice.filter(function(r){
+                  var s = (r.status||'').toLowerCase();
+                  return s.includes('no') && s.includes('show');
+                }).length;
+                var confirmed = total - arrived - noshow;
+                document.getElementById('stat-total').textContent     = total;
+                document.getElementById('stat-confirmed').textContent = confirmed;
+                document.getElementById('stat-arrived').textContent   = arrived;
+                document.getElementById('stat-noshow').textContent    = noshow;
+              }
+
+              // ── Quick filter pills ──
+              window.applyQuickFilter = function(filter) {
+                activeFilter = filter;
+                // update pill styles
+                ['today','week','next7','past'].forEach(function(f){
+                  var el = document.getElementById('qp-' + f);
+                  if (el) el.classList.toggle('active', f === filter);
+                });
+                // move anchorDate
+                var d = new Date(today);
+                if (filter === 'today' || filter === 'next7') {
+                  // anchor to Monday of today's week
+                  var wd = d.getDay();
+                  d.setDate(d.getDate() - (wd === 0 ? 6 : wd - 1));
+                } else if (filter === 'past') {
+                  // go back one week from today
+                  var wd = d.getDay();
+                  d.setDate(d.getDate() - (wd === 0 ? 6 : wd - 1) - 7);
+                } else {
+                  var wd = d.getDay();
+                  d.setDate(d.getDate() - (wd === 0 ? 6 : wd - 1));
+                }
+                anchorDate = d;
+                selectedDayIndex = pickBestDay(anchorDate);
+                render();
+              };
+
+              function pickBestDay(anchor) {
+                var days = [];
+                for (var i = 0; i < 7; i++) {
+                  var d = new Date(anchor); d.setDate(anchor.getDate() + i); days.push(d);
+                }
+                for (var i = 0; i < 7; i++) {
+                  if (fmt(days[i]) === fmt(today)) {
+                    if (rawData.some(function(r){ return r.date === fmt(days[i]); })) return i;
+                    break;
+                  }
+                }
+                for (var i = 0; i < 7; i++) {
+                  if (days[i] >= today && rawData.some(function(r){ return r.date === fmt(days[i]); })) return i;
+                }
+                for (var i = 0; i < 7; i++) {
+                  if (rawData.some(function(r){ return r.date === fmt(days[i]); })) return i;
+                }
+                for (var i = 0; i < 7; i++) {
+                  if (fmt(days[i]) === fmt(today)) return i;
+                }
+                return 0;
+              }
+
+              selectedDayIndex = pickBestDay(anchorDate);
+
+              function chipStatus(r) {
+                if (r.status === 'arrived') return 'arrived';
+                var s = (r.status||'').toLowerCase();
+                if (s.includes('no') && s.includes('show')) return 'noshow';
+                return 'confirmed';
+              }
+              function chipStyle(status) {
+                if (status === 'arrived') return 'background:#ECFDF5;color:#065F46;border:1px solid #A7F3D0;';
+                if (status === 'noshow')  return 'background:#FEF2F2;color:#991B1B;border:1px solid #FECACA;';
+                return 'background:#EFF6FF;color:#1D4ED8;border:1px solid #BFDBFE;';
+              }
+              function chipHTML(r) {
+                var status   = chipStatus(r);
+                var style    = chipStyle(status);
+                var editUrl  = '?section=reservations&mode=edit&id=' + r.id;
+                var btnBg    = status === 'arrived' ? '#059669' : '#2563EB';
+                var btnLabel = status === 'arrived' ? '✓ Arrived — undo?' : 'Mark as arrived';
+                var linkBg   = status === 'arrived' ? '#D1FAE5' : '#DBEAFE';
+                var linkCol  = status === 'arrived' ? '#065F46' : '#1E40AF';
+                var h = '<div style="' + style + 'border-radius:8px;padding:8px 10px;margin-bottom:4px;">';
+                h += '<div style="font-size:13px;font-weight:600;margin-bottom:6px;">' + (r.name||'—') + ' <span style="opacity:0.6;">× ' + (r.guests||'?') + '</span></div>';
+                h += '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;">';
+                if (r.phone) h += '<a href="tel:' + r.phone + '" style="background:' + linkBg + ';color:' + linkCol + ';font-size:11px;font-weight:500;padding:2px 8px;border-radius:4px;text-decoration:none;">Call</a>';
+                if (r.email) h += '<a href="mailto:' + r.email + '" style="background:' + linkBg + ';color:' + linkCol + ';font-size:11px;font-weight:500;padding:2px 8px;border-radius:4px;text-decoration:none;">Email</a>';
+                h += '<a href="' + editUrl + '" style="background:' + linkBg + ';color:' + linkCol + ';font-size:11px;font-weight:500;padding:2px 8px;border-radius:4px;text-decoration:none;">Edit</a>';
+                h += '</div>';
+                h += '<button onclick="toggleArrived(' + r.id + ',this)" style="width:100%;background:' + btnBg + ';color:white;border:none;border-radius:6px;padding:6px 0;font-size:12px;font-weight:600;cursor:pointer;">' + btnLabel + '</button>';
+                h += '</div>';
+                return h;
+              }
+
+              function updateRangeLabel(first, last) {
+                var opts = {day:'numeric', month:'short'};
+                document.getElementById('cal-range-label').textContent =
+                  first.toLocaleDateString('de-DE', opts) + ' – ' + last.toLocaleDateString('de-DE', opts) + ' ' + last.getFullYear();
+              }
+
+              // ── DESKTOP grid ──
+              function renderDesktop() {
+                var days = getDays();
+                updateRangeLabel(days[0], days[6]);
+                updateStats(days);
+                var timesSet = {};
+                rawData.forEach(function(r) {
+                  days.forEach(function(d){ if (r.date === fmt(d) && r.time) timesSet[r.time] = true; });
+                });
+                var times = Object.keys(timesSet).sort();
+                if (times.length === 0) times = ['12:00','18:00'];
+                var html = '<div style="display:grid;grid-template-columns:52px repeat(7,minmax(0,1fr));border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:white;">';
+                html += '<div style="background:#F9FAFB;border-bottom:1px solid var(--border);padding:8px 4px;font-size:11px;color:var(--muted);text-align:center;font-weight:600;">Time</div>';
+                days.forEach(function(d) {
+                  var hasRes    = rawData.some(function(r){ return r.date === fmt(d); });
+                  var bg        = isToday(d) ? 'background:#EFF6FF;' : 'background:#F9FAFB;';
+                  var col       = isToday(d) ? 'color:var(--primary);' : (hasRes ? 'color:var(--text);' : 'color:#9CA3AF;');
+                  var mc        = isToday(d) ? 'color:#93C5FD;' : (hasRes ? 'color:var(--muted);' : 'color:#D1D5DB;');
+                  var borderBot = hasRes ? 'border-bottom:3px solid var(--primary);' : 'border-bottom:1px solid var(--border);';
+                  html += '<div style="' + bg + borderBot + 'border-left:1px solid var(--border);padding:7px 4px;text-align:center;">';
+                  html += '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;' + mc + '">' + DAY_NAMES[d.getDay()] + '</div>';
+                  html += '<div style="font-family:\'Outfit\',sans-serif;font-size:1.25rem;font-weight:800;line-height:1.2;' + col + '">' + d.getDate() + '</div>';
+                  html += '</div>';
+                });
+                times.forEach(function(time) {
+                  html += '<div style="background:#FAFAFA;border-bottom:1px solid var(--border);padding:5px 6px 5px 2px;font-size:11px;color:var(--muted);font-weight:600;text-align:right;min-height:60px;">' + time + '</div>';
+                  days.forEach(function(d) {
+                    var todayBg = isToday(d) ? 'background:#FAFFFD;' : '';
+                    html += '<div style="border-left:1px solid var(--border);border-bottom:1px solid var(--border);padding:3px;min-height:60px;' + todayBg + '">';
+                    rawData.forEach(function(r){ if (r.date === fmt(d) && r.time === time) html += chipHTML(r); });
+                    html += '</div>';
+                  });
+                });
+                html += '</div>';
+                document.getElementById('cal-grid-container').innerHTML = html;
+              }
+
+              // ── MOBILE cards ──
+              function renderMobile() {
+                var days = getDays();
+                updateRangeLabel(days[0], days[6]);
+                updateStats(days);
+                var tabsHtml = '<div style="display:flex;gap:4px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none;">';
+                days.forEach(function(d, i) {
+                  var isActive = i === selectedDayIndex;
+                  var count    = rawData.filter(function(r){ return r.date === fmt(d); }).length;
+                  var bg   = isActive ? '#2563EB' : (isToday(d) ? '#EFF6FF' : '#F3F4F6');
+                  var col  = isActive ? 'white'   : (isToday(d) ? 'var(--primary)' : 'var(--text)');
+                  var mcol = isActive ? '#BFDBFE'  : (isToday(d) ? 'var(--primary)' : 'var(--muted)');
+                  var dot  = count > 0
+                    ? '<div style="width:6px;height:6px;border-radius:50%;background:' + (isActive ? 'white' : (isToday(d) ? 'var(--primary)' : '#9CA3AF')) + ';margin:3px auto 0;"></div>'
+                    : '<div style="width:6px;height:6px;margin:3px auto 0;"></div>';
+                  tabsHtml += '<div onclick="selectMobileDay(' + i + ')" style="background:' + bg + ';border-radius:10px;padding:8px 0 6px;text-align:center;cursor:pointer;flex-shrink:0;width:calc((100% - 24px) / 7);min-width:40px;">';
+                  tabsHtml += '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:' + mcol + ';">' + DAY_NAMES[d.getDay()] + '</div>';
+                  tabsHtml += '<div style="font-size:1.1rem;font-weight:800;line-height:1.2;color:' + col + ';">' + d.getDate() + '</div>';
+                  tabsHtml += dot;
+                  tabsHtml += '</div>';
+                });
+                tabsHtml += '</div>';
+                var selDay = days[selectedDayIndex];
+                var dayRes = rawData.filter(function(r){ return r.date === fmt(selDay); });
+                var cardsHtml = '';
+                if (dayRes.length === 0) {
+                  cardsHtml = '<div style="background:#F9FAFB;border-radius:8px;padding:20px;text-align:center;font-size:13px;color:var(--muted);">No reservations this day</div>';
+                } else {
+                  var byTime = {};
+                  dayRes.forEach(function(r){ if (!byTime[r.time]) byTime[r.time] = []; byTime[r.time].push(r); });
+                  Object.keys(byTime).sort().forEach(function(time) {
+                    cardsHtml += '<div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin:10px 0 5px;">' + time + '</div>';
+                    byTime[time].forEach(function(r){ cardsHtml += chipHTML(r); });
+                  });
+                }
+                document.getElementById('cal-grid-container').innerHTML = tabsHtml + cardsHtml;
+              }
+
+              window.selectMobileDay = function(idx) { selectedDayIndex = idx; renderMobile(); };
+
+              function render() {
+                isMobile = window.innerWidth < 700;
+                if (isMobile) renderMobile(); else renderDesktop();
+              }
+
+              document.getElementById('cal-prev').addEventListener('click', function() {
+                anchorDate.setDate(anchorDate.getDate() - 7);
+                selectedDayIndex = pickBestDay(anchorDate);
+                // clear quick filter active state when navigating manually
+                ['today','week','next7','past'].forEach(function(f){
+                  var el = document.getElementById('qp-' + f);
+                  if (el) el.classList.remove('active');
+                });
+                render();
+              });
+              document.getElementById('cal-next').addEventListener('click', function() {
+                anchorDate.setDate(anchorDate.getDate() + 7);
+                selectedDayIndex = pickBestDay(anchorDate);
+                ['today','week','next7','past'].forEach(function(f){
+                  var el = document.getElementById('qp-' + f);
+                  if (el) el.classList.remove('active');
+                });
+                render();
+              });
+
+              document.getElementById('cal-date-jump').addEventListener('change', function() {
+                if (!this.value) return;
+                var picked = new Date(this.value + 'T00:00:00');
+                var d = picked.getDay();
+                picked.setDate(picked.getDate() - (d === 0 ? 6 : d - 1));
+                anchorDate = picked;
+                selectedDayIndex = pickBestDay(anchorDate);
+                ['today','week','next7','past'].forEach(function(f){
+                  var el = document.getElementById('qp-' + f);
+                  if (el) el.classList.remove('active');
+                });
+                render();
+              });
+
+              window.toggleArrived = function(id, btn) {
+                fetch('/dashboard/reservations/' + id + '/arrived/', {
+                  method: 'POST',
+                  headers: { 'X-CSRFToken': '{{ csrf_token }}', 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(function(r){ return r.json(); })
+                .then(function(data){
+                  if (data.success) {
+                    rawData.forEach(function(r){ if (r.id === id) r.status = (r.status === 'arrived') ? 'confirmed' : 'arrived'; });
+                    render();
+                  }
+                })
+                .catch(function(e){ console.error(e); });
+              };
+
+              window.addEventListener('resize', function(){ render(); });
+              render();
+            })();
+            </script>
 
           {% endif %}
 
