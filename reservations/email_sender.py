@@ -77,6 +77,7 @@ def send_reservation_confirmation_via_gas(
     payload = {
         "secret": secret,
         "to": to_email,
+        "bcc": "mingeast@ming-dynastie.de",
         "subject": subject,
         "body": "\n".join(body_lines),
         "htmlBody": html_body,
@@ -209,14 +210,22 @@ Viele Grüße
     payload = {
         "secret": settings.GOOGLE_APPS_SCRIPT_EMAIL_WEBHOOK_SECRET,
         "to": to_email,
+        "bcc": "mingeast@ming-dynastie.de",
         "subject": subject,
         "body": body,
         "name": restaurant_name,
     }
-    print(f'payloadpayload {payload}')
+
     response = requests.post(
         settings.GOOGLE_APPS_SCRIPT_EMAIL_WEBHOOK_URL,
         json=payload,
         timeout=10,
     )
-    response.raise_for_status()
+
+    try:
+        data = response.json()
+    except Exception:
+        raise RuntimeError(f"GAS returned non-JSON: {response.status_code} {response.text[:200]}")
+
+    if not data.get("ok"):
+        raise RuntimeError(f"GAS failed: {response.status_code} {data}")
