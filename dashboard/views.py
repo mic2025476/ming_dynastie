@@ -245,7 +245,7 @@ def dashboard_home(request):
             {
                 "id":     r.id,
                 "date":   r.date.strftime("%Y-%m-%d"),
-                "time":   r.slot.start_time.strftime("%H:%M") if r.slot else "",
+                "time":   r.time.strftime("%H:%M") if r.time else (r.slot.start_time.strftime("%H:%M") if r.slot else ""),
                 "name":   r.name,
                 "guests": r.party_size or 0,
                 "status": "arrived" if r.is_arrived else "confirmed",

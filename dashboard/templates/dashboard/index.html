@@ -1350,7 +1350,24 @@
                 var linkBg   = status === 'arrived' ? '#D1FAE5' : '#DBEAFE';
                 var linkCol  = status === 'arrived' ? '#065F46' : '#1E40AF';
                 var h = '<div style="' + style + 'border-radius:8px;padding:8px 10px;margin-bottom:4px;">';
-                h += '<div style="font-size:13px;font-weight:600;margin-bottom:6px;">' + (r.name||'—') + ' <span style="opacity:0.6;">× ' + (r.guests||'?') + '</span></div>';
+                h += '<div style="margin-bottom:6px;">';
+
+                h += '<div style="font-size:13px;font-weight:700;line-height:1.35;word-break:break-word;">'
+                  + (r.name || '—')
+                  + '</div>';
+
+                h += '<div style="display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:nowrap;">';
+
+                h += '<span style="background:rgba(255,255,255,0.75);border:1px solid rgba(0,0,0,0.08);border-radius:999px;padding:3px 8px;font-size:11px;font-weight:700;white-space:nowrap;">👥 '
+                  + (r.guests || '?')
+                  + ' </span>';
+
+                h += '<span style="background:rgba(255,255,255,0.75);border:1px solid rgba(0,0,0,0.08);border-radius:999px;padding:3px 8px;font-size:11px;font-weight:700;white-space:nowrap;">🕐 '
+                  + (r.time || '—')
+                  + '</span>';
+
+                h += '</div>';
+                h += '</div>';
                 h += '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;">';
                 if (r.phone) h += '<a href="tel:' + r.phone + '" style="background:' + linkBg + ';color:' + linkCol + ';font-size:11px;font-weight:500;padding:2px 8px;border-radius:4px;text-decoration:none;">Call</a>';
                 if (r.email) h += '<a href="mailto:' + r.email + '" style="background:' + linkBg + ';color:' + linkCol + ';font-size:11px;font-weight:500;padding:2px 8px;border-radius:4px;text-decoration:none;">Email</a>';

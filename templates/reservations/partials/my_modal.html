@@ -31,9 +31,21 @@
   }
 
   .resv-action-cell{
-    width: 72px;
+    width: 120px;
     text-align: center;
     white-space: nowrap;
+  }
+
+  .resv-cancelled-badge{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: rgba(0,0,0,.06);
+    color: rgba(0,0,0,.58);
+    font-size: 12px;
+    font-weight: 700;
   }
 
   .resv-icon-btn{
@@ -170,6 +182,26 @@
   @media (max-width: 720px){
     .resv-highlight { outline-width: 4px; }
   }
+.resv-cancelled-badge{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(46, 125, 50, 0.10);
+  color: #1b5e20;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.resv-icon-btn--call{
+  opacity: 1;
+  cursor: pointer;
+}
+
+.resv-icon-btn--call:hover{
+  background: rgba(141, 26, 31, 0.10);
+}
 </style>
 
 <div class="resv-auth">
@@ -186,7 +218,7 @@
             <th>Personen</th>
             <th>Name</th>
             <th>Telefon</th>
-            <th class="resv-action-cell">Aktion</th>
+            <th class="resv-action-cell">Aktionen</th>
           </tr>
         </thead>
 
@@ -210,18 +242,60 @@
               {% endif %}
             </td>
 
-            <td class="resv-action-cell" data-label="Aktion">
-              {% if r.can_edit %}
-                <button type="button" class="resv-icon-btn" data-edit-resv="{{ r.id }}" aria-label="Bearbeiten">✏️</button>
-              {% else %}
-                <button type="button" class="resv-icon-btn resv-icon-btn--disabled" aria-disabled="true" data-edit-disabled="1">
-                  ✏️
-                  <span class="resv-tooltip">
-                    Änderungen nur bis 3 Tage vorher möglich. Bitte rufen Sie das Restaurant an.
-                  </span>
-                </button>
-              {% endif %}
-            </td>
+<td class="resv-action-cell" data-label="Aktionen">
+
+  {% if r.status == "cancelled" %}
+    <span class="resv-cancelled-badge">✓ Storniert</span>
+
+  {% else %}
+    <div style="display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;">
+
+      {% if r.can_edit %}
+        <button type="button" class="resv-icon-btn" data-edit-resv="{{ r.id }}" aria-label="Bearbeiten">✏️</button>
+      {% else %}
+        <button
+          type="button"
+          class="resv-icon-btn resv-icon-btn--call"
+          data-edit-disabled="1"
+          aria-label="Restaurant wegen Änderung anrufen"
+          title="Restaurant anrufen"
+        >
+          ✏️
+        </button>
+      {% endif %}
+
+      {% if r.can_cancel %}
+        <form
+          method="post"
+          action="{% url 'reservations:cancel' r.id %}"
+          data-cancel-form
+          style="display:inline;"
+        >
+          {% csrf_token %}
+          <button
+            type="submit"
+            class="resv-icon-btn"
+            aria-label="Reservierung stornieren"
+          >
+            🗑️
+          </button>
+        </form>
+      {% else %}
+        <button
+          type="button"
+          class="resv-icon-btn resv-icon-btn--call"
+          data-cancel-disabled="1"
+          aria-label="Restaurant wegen Stornierung anrufen"
+          title="Restaurant anrufen"
+        >
+          🗑️
+        </button>
+      {% endif %}
+
+    </div>
+  {% endif %}
+
+</td>
           </tr>
           {% endfor %}
         </tbody>

@@ -17,4 +17,5 @@ path("my-modal/", views.my_modal, name="my_modal"),
 path("edit/<int:pk>/", views.edit_reservation_ajax, name="edit"),
 path("update/<int:pk>/", views.update_reservation_ajax, name="update"),
 path("r/<int:pk>/", views.reservation_detail, name="reservation_detail"),
+path("cancel/<int:pk>/", views.cancel_reservation_ajax, name="cancel"),
 ]

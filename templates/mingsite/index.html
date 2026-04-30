@@ -334,7 +334,7 @@
           <p class="kontakt-card__text">Mo - So: 12:00 - 22:00 Uhr</p>
 
         <div class="kontakt-card__actions">
-          <a class="kontakt-card__btn" href="mailto:info@ming-dynastie.de">E-MAIL SCHREIBEN</a>
+          <a class="kontakt-card__btn" href="mailto:mingeast@ming-dynastie.de">E-MAIL SCHREIBEN</a>
 
           <button
             class="kontakt-card__btn kontakt-card__btn--outline"
@@ -372,7 +372,7 @@
 
           <p class="kontakt-card__text">Mo - So: 12:00 - 22:00 Uhr</p>
 
-          <a class="kontakt-card__btn" href="mailto:info@ming-dynastie.de">E-MAIL SCHREIBEN</a>
+          <a class="kontakt-card__btn" href="mailto:mingwest@wsiholding.com">E-MAIL SCHREIBEN</a>
         </div>
       </article>
     </div>
@@ -3006,25 +3006,145 @@ authForm.addEventListener("submit", async (ev) => {
       }
     });
 
+// CLICK delegation: edit not allowed -> call restaurant popup
 mount.addEventListener("click", (e) => {
   const btn = e.target.closest("[data-edit-disabled]");
   if (!btn) return;
 
   e.preventDefault();
+  e.stopPropagation();
 
-  const tip = btn.querySelector(".resv-tooltip");
-  if (!tip) return;
+  document.getElementById("resvPopupTitle").textContent = "Bitte Restaurant anrufen";
+  document.getElementById("resvPopupText").innerHTML =
+    "Diese Reservierung kann online nicht mehr geändert werden.<br>Bitte rufen Sie das Restaurant direkt an.";
 
-  tip.style.opacity = "1";
-  tip.style.visibility = "visible";
+  openCallPopup();
+});
+// CLICK delegation: cancel not allowed -> call restaurant popup
+mount.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-cancel-disabled]");
+  if (!btn) return;
 
-  clearTimeout(btn._tipTimer);
-  btn._tipTimer = setTimeout(() => {
-    tip.style.opacity = "";
-    tip.style.visibility = "";
-  }, 2200);
+  e.preventDefault();
+
+  document.getElementById("resvPopupTitle").textContent = "Bitte Restaurant anrufen";
+  document.getElementById("resvPopupText").innerHTML =
+    "Diese Reservierung kann online nur bis <b>24 Stunden vorher</b> storniert werden.<br>Bitte rufen Sie das Restaurant direkt an.";
+
+  openCallPopup();
 });
 
+
+// SUBMIT delegation: cancel reservation via AJAX
+mount.addEventListener("submit", async (e) => {
+  const cancelForm = e.target.closest("[data-cancel-form]");
+  if (!cancelForm) return;
+
+  e.preventDefault();
+
+  const ok = confirm("Möchten Sie diese Reservierung wirklich stornieren?");
+  if (!ok) return;
+
+  const btn = cancelForm.querySelector("button[type='submit']");
+  const oldText = btn ? btn.textContent : "";
+
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "…";
+  }
+
+  try {
+    const csrfToken =
+      cancelForm.querySelector("[name=csrfmiddlewaretoken]")?.value ||
+      getCookie("csrftoken");
+
+    const res = await fetch(cancelForm.action, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "X-Requested-With": "XMLHttpRequest",
+        "X-CSRFToken": csrfToken,
+      },
+      body: new FormData(cancelForm),
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (data.ok && data.html) {
+      setInlineHTML(data.html);
+      return;
+    }
+
+    if (data.popup) {
+      document.getElementById("resvPopupTitle").textContent = data.popup.title;
+      document.getElementById("resvPopupText").innerHTML = data.popup.text;
+      openCallPopup();
+      return;
+    }
+
+    alert("Stornierung nicht möglich. Bitte rufen Sie das Restaurant an.");
+  } catch (err) {
+    console.error("Cancel failed:", err);
+    alert("Netzwerkfehler. Bitte erneut versuchen.");
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = oldText || "🗑️";
+    }
+  }
+});
+
+mount.addEventListener("submit", async (e) => {
+  const cancelForm = e.target.closest("[data-cancel-form]");
+  if (!cancelForm) return;
+
+  e.preventDefault();
+
+  const ok = confirm("Möchten Sie diese Reservierung wirklich stornieren?");
+  if (!ok) return;
+
+  const btn = cancelForm.querySelector("button[type='submit']");
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "…";
+  }
+
+  try {
+    const res = await fetch(cancelForm.action, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "X-Requested-With": "XMLHttpRequest",
+        "X-CSRFToken": getCookie("csrftoken"),
+      },
+      body: new FormData(cancelForm),
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (data.ok && data.html) {
+      setInlineHTML(data.html);
+      return;
+    }
+
+    if (data.popup) {
+      document.getElementById("resvPopupTitle").textContent = data.popup.title;
+      document.getElementById("resvPopupText").innerHTML = data.popup.text;
+      openCallPopup();
+      return;
+    }
+
+    alert("Stornierung nicht möglich. Bitte rufen Sie das Restaurant an.");
+  } catch (err) {
+    console.error("Cancel failed:", err);
+    alert("Netzwerkfehler. Bitte erneut versuchen.");
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = "🗑️";
+    }
+  }
+});
 
     // SUBMIT delegation (edit form)
     mount.addEventListener("submit", async (e) => {
@@ -3514,9 +3634,33 @@ if (callPopup){
     statusBox.className = ok ? "form-status form-status--ok" : "form-status form-status--err";
   }
 
+  function getCookie(name) {
+    for (const c of document.cookie.split(";")) {
+      const t = c.trim();
+      if (t.startsWith(name + "=")) {
+        return decodeURIComponent(t.slice(name.length + 1));
+      }
+    }
+    return "";
+  }
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     statusBox.innerHTML = "";
+
+    const partyInput = document.getElementById("jannowitz-party");
+    const partySize = parseInt(partyInput?.value || "0", 10);
+
+    if (partySize > 6) {
+      document.getElementById("resvPopupTitle").textContent = "Bitte Restaurant anrufen";
+      document.getElementById("resvPopupText").innerHTML =
+        "Online-Reservierungen sind bis maximal <b>6 Personen</b> möglich.<br><br>" +
+        "Für größere Gruppen rufen Sie bitte direkt im Restaurant an:<br>" +
+        "<b>📞 030 - 308 756 80</b>";
+
+      openCallPopup();
+      return;
+    }
 
     setLoading(true);
 
@@ -3525,12 +3669,23 @@ if (callPopup){
       const res = await fetch(form.action, {
         method: "POST",
         body: new FormData(form),
+        credentials: "same-origin",
         headers: {
           "X-Requested-With": "XMLHttpRequest",
+          "X-CSRFToken": getCookie("csrftoken"),
         }
       });
 
-      const data = await res.json();
+      const rawText = await res.text();
+
+      let data = {};
+      try {
+        data = rawText ? JSON.parse(rawText) : {};
+      } catch (err) {
+        console.error("Reservation returned non-JSON:", res.status, rawText.slice(0, 500));
+        showStatus("Serverfehler: Status " + res.status, false);
+        return;
+      }
 
       if (data.ok) {
         showStatus(data.message, true);

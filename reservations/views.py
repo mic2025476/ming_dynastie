@@ -8,7 +8,7 @@ from core_settings.models import SiteSettings
 from .models import DaySlotBlockModel, ReservationModel, TimeSlotModel
 from .forms import ReservationCreateForm
 from django.views.decorators.http import require_GET
-from datetime import timedelta
+from datetime import datetime, timedelta
 from urllib.parse import quote
 from django.conf import settings
 from django.utils import timezone
@@ -33,6 +33,22 @@ def create_reservation(request):
     if form.is_valid():
         reservation = form.save(commit=False)
         reservation.slot = form.cleaned_data["slot"]
+
+        if reservation.party_size and reservation.party_size > 6:
+            return JsonResponse({
+                "ok": False,
+                "code": "GROUP_TOO_LARGE",
+                "errors": {},
+                "popup": {
+                    "title": "Bitte Restaurant anrufen",
+                    "text": (
+                        "Online-Reservierungen sind bis maximal "
+                        "<b>6 Personen</b> möglich.<br><br>"
+                        "Für größere Gruppen rufen Sie bitte direkt im Restaurant an:<br>"
+                        "<b>📞 030 - 308 756 80</b>"
+                    )
+                }
+            }, status=400)
 
         try:
             with transaction.atomic():
@@ -82,6 +98,7 @@ def create_reservation(request):
                         slot_id=reservation.slot_id,
                         slot__is_active=True
                     )
+                    .exclude(status=ReservationModel.Status.CANCELLED)
                     .aggregate(total=Sum("party_size"))["total"] or 0
                 )
 
@@ -127,7 +144,7 @@ def create_reservation(request):
                 send_reservation_confirmation_via_gas(
                     to_email=reservation.email.strip().lower(),
                     edit_cancel_url=magic_url,
-                    restaurant_name="Ming Dynastie",
+                    restaurant_name="Ming Dynastie Jannowitzbrücke",
                     reservation_date=reservation.date.strftime("%d.%m.%Y"),
                     reservation_time=reservation.time.strftime("%H:%M"),
                     party_size=reservation.party_size,
@@ -337,11 +354,8 @@ def my_modal(request):
         html = render_to_string("reservations/partials/start_modal.html", {}, request=request)
         return JsonResponse({"ok": True, "html": html})
 
-    reservations = ReservationModel.objects.filter(email=email).order_by("-date")
-    for r in reservations:
-        r.can_edit = _can_edit_reservation(r)
-        print(f'r.can_editr.can_edit11 {r.can_edit}')
-
+    reservations = ReservationModel.objects.filter(email=email).order_by("-date", "-created_at")
+    _prepare_reservation_flags(reservations)
     html = render_to_string(
         "reservations/partials/my_modal.html",
         {"email": email, "reservations": reservations},
@@ -349,12 +363,49 @@ def my_modal(request):
     )
     return JsonResponse({"ok": True, "html": html})
 
+def _is_cancelled(r: ReservationModel) -> bool:
+    return getattr(r, "status", ReservationModel.Status.CONFIRMED) == ReservationModel.Status.CANCELLED
+
+
+def _reservation_start_datetime(r: ReservationModel):
+    reservation_dt = datetime.combine(r.date, r.time)
+    if timezone.is_naive(reservation_dt):
+        reservation_dt = timezone.make_aware(reservation_dt, timezone.get_current_timezone())
+    return reservation_dt
+
+
+def _reservation_start_datetime(r: ReservationModel):
+    reservation_dt = datetime.combine(r.date, r.time)
+
+    if timezone.is_naive(reservation_dt):
+        reservation_dt = timezone.make_aware(
+            reservation_dt,
+            timezone.get_current_timezone()
+        )
+
+    return reservation_dt
+
+
 def _can_edit_reservation(r: ReservationModel) -> bool:
-    # editable only until 3 days before reservation date
-    today = timezone.localdate()
-    return today <= (r.date - timedelta(days=3))
+    # edit allowed until 24 hours before exact reservation date + time
+    if getattr(r, "status", "confirmed") == "cancelled":
+        return False
+
+    return timezone.now() <= (_reservation_start_datetime(r) - timedelta(hours=24))
+
+def _can_cancel_reservation(r: ReservationModel) -> bool:
+    # cancellable only until 24 hours before exact reservation date + time
+    if _is_cancelled(r):
+        return False
+
+    return timezone.now() <= (_reservation_start_datetime(r) - timedelta(hours=24))
 
 
+def _prepare_reservation_flags(reservations):
+    for r in reservations:
+        r.can_edit = _can_edit_reservation(r)
+        r.can_cancel = _can_cancel_reservation(r)
+    return reservations
 
 @require_GET
 def edit_reservation_ajax(request, pk: int):
@@ -431,8 +482,8 @@ def update_reservation_ajax(request, pk: int):
 
     # return updated list (same template you already use)
     reservations = ReservationModel.objects.filter(email=email).order_by("-date", "-created_at")
-    for rr in reservations:
-        rr.can_edit = _can_edit_reservation(rr)
+    _prepare_reservation_flags(reservations)
+
     html = render_to_string(
         "reservations/partials/my_modal.html",
         {"email": email, "reservations": reservations},
@@ -460,3 +511,64 @@ def reservation_detail(request, pk: int):
         "email": email,
         "reservation": r,
     })
+
+
+@require_POST
+def cancel_reservation_ajax(request, pk: int):
+    email = get_verified_email(request)
+    if not email:
+        return JsonResponse({"ok": False, "error": "not_authenticated"}, status=401)
+
+    with transaction.atomic():
+        r = (
+            ReservationModel.objects
+            .select_for_update()
+            .filter(pk=pk, email=email)
+            .first()
+        )
+
+        if not r:
+            return JsonResponse({"ok": False, "error": "not_found"}, status=404)
+
+        if _is_cancelled(r):
+            reservations = ReservationModel.objects.filter(email=email).order_by("-date", "-created_at")
+            _prepare_reservation_flags(reservations)
+
+            html = render_to_string(
+                "reservations/partials/my_modal.html",
+                {"email": email, "reservations": reservations},
+                request=request
+            )
+            return JsonResponse({"ok": True, "html": html})
+
+        if not _can_cancel_reservation(r):
+            return JsonResponse({
+                "ok": False,
+                "code": "cancel_not_allowed",
+                "popup": {
+                    "title": "Bitte Restaurant anrufen",
+                    "text": (
+                        "Diese Reservierung kann online nur bis "
+                        "<b>24 Stunden vorher</b> storniert werden.<br>"
+                        "Bitte rufen Sie das Restaurant direkt an."
+                    )
+                }
+            }, status=403)
+
+        r.status = ReservationModel.Status.CANCELLED
+        r.cancelled_at = timezone.now()
+        r.cancelled_by = "customer"
+        r.cancellation_note = "Cancelled by customer via online reservation area."
+        r.save(update_fields=["status", "cancelled_at", "cancelled_by", "cancellation_note", "updated_at"])
+
+    reservations = ReservationModel.objects.filter(email=email).order_by("-date", "-created_at")
+    _prepare_reservation_flags(reservations)
+
+    html = render_to_string(
+        "reservations/partials/my_modal.html",
+        {"email": email, "reservations": reservations},
+        request=request
+    )
+    if request.headers.get("X-Requested-With") != "XMLHttpRequest":
+        return redirect("/#my-reservations")
+    return JsonResponse({"ok": True, "html": html})

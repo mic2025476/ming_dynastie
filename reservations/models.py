@@ -43,10 +43,11 @@ class TimeSlotModel(models.Model):
         today = timezone.localdate()
 
         qs = (self.reservations
-              .filter(date__gte=today)
-              .values("date")
-              .annotate(total=Sum("party_size"))
-              .order_by())
+            .filter(date__gte=today)
+            .exclude(status=ReservationModel.Status.CANCELLED)
+            .values("date")
+            .annotate(total=Sum("party_size"))
+            .order_by())
 
         # Find the maximum booked on any single date
         max_booked = 0
@@ -68,10 +69,23 @@ def default_time():
     return timezone.localtime(timezone.now()).time()
   
 class ReservationModel(models.Model):
+    class Status(models.TextChoices):
+        CONFIRMED = "confirmed", "Confirmed"
+        CANCELLED = "cancelled", "Cancelled"
+
     name = models.CharField(max_length=120)
     email = models.EmailField()
     phone = models.CharField(max_length=40)
 
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.CONFIRMED,
+        db_index=True,
+    )
+    cancelled_at = models.DateTimeField(null=True, blank=True)
+    cancelled_by = models.CharField(max_length=20, blank=True, default="")
+    cancellation_note = models.TextField(blank=True, default="")
     date = models.DateField()
     slot = models.ForeignKey(TimeSlotModel, on_delete=models.PROTECT, related_name="reservations")
     time = models.TimeField(default=default_time)
@@ -87,8 +101,9 @@ class ReservationModel(models.Model):
             models.Index(fields=["date", "slot"]),
             models.Index(fields=["email", "phone"]),
             models.Index(fields=["date", "time"]),
+            models.Index(fields=["email", "status"]),
+            models.Index(fields=["status", "date", "time"]),
         ]
-
 
 class BlockedDayModel(models.Model):
     date = models.DateField(unique=True)
@@ -142,6 +157,7 @@ class DaySlotBlockModel(models.Model):
         booked = (
             ReservationModel.objects
             .filter(date=self.blocked_day.date, slot=self.slot)
+            .exclude(status=ReservationModel.Status.CANCELLED)
             .aggregate(total=Sum("party_size"))["total"] or 0
         )
 
