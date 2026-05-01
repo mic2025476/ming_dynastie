@@ -1341,6 +1341,14 @@
                 if (status === 'noshow')  return 'background:#FEF2F2;color:#991B1B;border:1px solid #FECACA;';
                 return 'background:#EFF6FF;color:#1D4ED8;border:1px solid #BFDBFE;';
               }
+              function escapeHtml(value) {
+                return String(value || '')
+                  .replace(/&/g, '&amp;')
+                  .replace(/</g, '&lt;')
+                  .replace(/>/g, '&gt;')
+                  .replace(/"/g, '&quot;')
+                  .replace(/'/g, '&#039;');
+              }
               function chipHTML(r) {
                 var status   = chipStatus(r);
                 var style    = chipStyle(status);
@@ -1368,6 +1376,11 @@
 
                 h += '</div>';
                 h += '</div>';
+                if (r.message) {
+                  h += '<div style="margin-top:8px;margin-bottom:10px;background:rgba(255,255,255,0.9);border:1px dashed rgba(0,0,0,0.14);border-radius:7px;padding:8px 9px 10px;font-size:11px;line-height:1.45;color:#374151;word-break:break-word;white-space:pre-wrap;">';
+                  h += escapeHtml(r.message);
+                  h += '</div>';
+                }
                 h += '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;">';
                 if (r.phone) h += '<a href="tel:' + r.phone + '" style="background:' + linkBg + ';color:' + linkCol + ';font-size:11px;font-weight:500;padding:2px 8px;border-radius:4px;text-decoration:none;">Call</a>';
                 if (r.email) h += '<a href="mailto:' + r.email + '" style="background:' + linkBg + ';color:' + linkCol + ';font-size:11px;font-weight:500;padding:2px 8px;border-radius:4px;text-decoration:none;">Email</a>';

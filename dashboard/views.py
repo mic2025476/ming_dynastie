@@ -32,8 +32,10 @@ def reservation_mark_arrived(request, pk):
     if request.method != "POST":
         return redirect(_reservation_list_url())
 
-    reservation = get_object_or_404(ReservationModel, pk=pk)
-
+    reservation = get_object_or_404(
+        ReservationModel.objects.exclude(status=ReservationModel.Status.CANCELLED),
+        pk=pk
+    )
     reservation.is_arrived = not reservation.is_arrived
 
     if reservation.is_arrived:
@@ -41,7 +43,6 @@ def reservation_mark_arrived(request, pk):
     else:
         reservation.arrival_marked_at = None
 
-    reservation.save(update_fields=["is_arrived", "arrival_marked_at"])
     reservation.save(update_fields=["is_arrived", "arrival_marked_at"])
 
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
@@ -51,8 +52,11 @@ def reservation_mark_arrived(request, pk):
         slot_filter = request.GET.get("slot_filter", "")
         search = request.GET.get("search", "").strip()
 
-        reservations = ReservationModel.objects.select_related("slot")
-
+        reservations = (
+            ReservationModel.objects
+            .select_related("slot")
+            .exclude(status=ReservationModel.Status.CANCELLED)
+        )
         if date_filter == "today":
             reservations = reservations.filter(date=today)
         elif date_filter == "upcoming":
@@ -119,24 +123,29 @@ def dashboard_home(request):
     today               = date.today()
     now_time = datetime.now().time()
 
+    active_reservations = ReservationModel.objects.exclude(
+        status=ReservationModel.Status.CANCELLED
+    )
+
     today_reservations = (
-        ReservationModel.objects.select_related("slot")
+        active_reservations
+        .select_related("slot")
         .filter(date=today)
         .order_by("time")
     )
-    print(f'today {today}')
-    print(f'now_time {now_time}')
-    no_shows_today = ReservationModel.objects.filter(
+
+    no_shows_today = active_reservations.filter(
         date=today,
         time__lt=now_time,
         is_arrived=False,
     ).count()
-    print(f'no_shows_today {no_shows_today}')
+
     total_today_reservations = today_reservations.count()
     total_today_guests = sum((r.party_size or 0) for r in today_reservations)
 
     next_reservation = (
-        ReservationModel.objects.select_related("slot")
+        active_reservations
+        .select_related("slot")
         .filter(
             Q(date__gt=today) |
             Q(date=today, time__gte=now_time)
@@ -194,7 +203,12 @@ def dashboard_home(request):
         reservation_id = request.GET.get("reservation_id", "")
         selected_date = request.GET.get("selected_date", "").strip()
 
-        reservations = ReservationModel.objects.select_related("slot").order_by("-date", "-time")
+        reservations = (
+            ReservationModel.objects
+            .select_related("slot")
+            .exclude(status=ReservationModel.Status.CANCELLED)
+            .order_by("-date", "-time")
+        )
         if selected_date:
             try:
                 parsed_selected_date = datetime.strptime(selected_date, "%Y-%m-%d").date()
@@ -243,14 +257,15 @@ def dashboard_home(request):
         # ── Calendar JSON for the weekly calendar view ──
         reservations_json = json.dumps([
             {
-                "id":     r.id,
-                "date":   r.date.strftime("%Y-%m-%d"),
-                "time":   r.time.strftime("%H:%M") if r.time else (r.slot.start_time.strftime("%H:%M") if r.slot else ""),
-                "name":   r.name,
-                "guests": r.party_size or 0,
-                "status": "arrived" if r.is_arrived else "confirmed",
-                "phone":  r.phone or "",
-                "email":  r.email or "",
+                "id":      r.id,
+                "date":    r.date.strftime("%Y-%m-%d"),
+                "time":    r.time.strftime("%H:%M") if r.time else (r.slot.start_time.strftime("%H:%M") if r.slot else ""),
+                "name":    r.name,
+                "guests":  r.party_size or 0,
+                "status":  "arrived" if r.is_arrived else "confirmed",
+                "phone":   r.phone or "",
+                "email":   r.email or "",
+                "message": r.message or "",
             }
             for r in reservations
         ], default=str)
@@ -609,9 +624,13 @@ def reservation_create(request):
 
     slots        = TimeSlotModel.objects.all().order_by("sort_order", "start_time")
     blocked_days = BlockedDayModel.objects.prefetch_related("slot_blocks__slot").order_by("-date")
-    reservations = ReservationModel.objects.select_related("slot").filter(
-        date__gte=date.today()
-    ).order_by("-date", "-time")
+    reservations = (
+        ReservationModel.objects
+        .select_related("slot")
+        .exclude(status=ReservationModel.Status.CANCELLED)
+        .filter(date__gte=date.today())
+        .order_by("-date", "-time")
+    )
     messages.error(request, "Please fix the form errors and try again.")
 
     slots_data = list(
@@ -718,9 +737,13 @@ def reservation_update(request, pk):
         return redirect(_reservation_list_url())
     slots = TimeSlotModel.objects.all().order_by("sort_order", "start_time")
     blocked_days = BlockedDayModel.objects.prefetch_related("slot_blocks__slot").order_by("-date")
-    reservations = ReservationModel.objects.select_related("slot").filter(
-        date__gte=date.today()
-    ).order_by("-date", "-time")
+    reservations = (
+        ReservationModel.objects
+        .select_related("slot")
+        .exclude(status=ReservationModel.Status.CANCELLED)
+        .filter(date__gte=date.today())
+        .order_by("-date", "-time")
+    )
     messages.error(request, "Please fix the form errors and try again.")
 
     slots_data = list(
@@ -771,8 +794,11 @@ def reservation_delete(request, pk):
         slot_filter = request.GET.get("slot_filter", "")
         search      = request.GET.get("search", "").strip()
 
-        reservations = ReservationModel.objects.select_related("slot")
-
+        reservations = (
+            ReservationModel.objects
+            .select_related("slot")
+            .exclude(status=ReservationModel.Status.CANCELLED)
+        )
         if date_filter == "today":
             reservations = reservations.filter(date=today)
         elif date_filter == "upcoming":
