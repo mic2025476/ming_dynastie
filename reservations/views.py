@@ -34,7 +34,7 @@ def create_reservation(request):
         reservation = form.save(commit=False)
         reservation.slot = form.cleaned_data["slot"]
 
-        if reservation.party_size and reservation.party_size > 6:
+        if reservation.party_size and reservation.party_size > 10:
             return JsonResponse({
                 "ok": False,
                 "code": "GROUP_TOO_LARGE",
@@ -43,7 +43,7 @@ def create_reservation(request):
                     "title": "Bitte Restaurant anrufen",
                     "text": (
                         "Online-Reservierungen sind bis maximal "
-                        "<b>6 Personen</b> möglich.<br><br>"
+                        "<b>10 Personen</b> möglich.<br><br>"
                         "Für größere Gruppen rufen Sie bitte direkt im Restaurant an:<br>"
                         "<b>📞 030 - 308 756 80</b>"
                     )

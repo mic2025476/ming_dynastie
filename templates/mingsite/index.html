@@ -3651,10 +3651,10 @@ if (callPopup){
     const partyInput = document.getElementById("jannowitz-party");
     const partySize = parseInt(partyInput?.value || "0", 10);
 
-    if (partySize > 6) {
+    if (partySize > 10) {
       document.getElementById("resvPopupTitle").textContent = "Bitte Restaurant anrufen";
       document.getElementById("resvPopupText").innerHTML =
-        "Online-Reservierungen sind bis maximal <b>6 Personen</b> möglich.<br><br>" +
+        "Online-Reservierungen sind bis maximal <b>10 Personen</b> möglich.<br><br>" +
         "Für größere Gruppen rufen Sie bitte direkt im Restaurant an:<br>" +
         "<b>📞 030 - 308 756 80</b>";
 

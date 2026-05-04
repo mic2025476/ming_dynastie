@@ -754,6 +754,386 @@
       height: 10px;
       border-radius: 3px;
     }
+
+  /* ── SINGLE DAY HORIZONTAL BOARD ── */
+.single-day-shell {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: white;
+  overflow: hidden;
+}
+
+.single-day-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #F9FAFB;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.single-day-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.single-day-subtitle {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+.single-day-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.single-day-searchbar {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: #FFFFFF;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.single-day-search-input {
+  flex: 1;
+  min-width: 260px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.92rem;
+}
+
+.single-day-search-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.10);
+}
+
+.single-day-search-meta {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* Important: fixed-width horizontal cards */
+.single-day-rail {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 16px;
+  scroll-snap-type: x proximity;
+  align-items: stretch;
+}
+
+.single-day-res-card {
+  flex: 0 0 260px;
+  width: 260px;
+  min-width: 260px;
+  max-width: 260px;
+  scroll-snap-align: start;
+}
+
+/* Same size reservation cards only inside selected-day view */
+.single-day-res-card .cal-chip {
+  width: 100%;
+  height: 220px;
+  min-height: 220px;
+  max-height: 220px;
+  margin: 0;
+  padding: 10px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  cursor: default;
+}
+
+.single-day-empty {
+  width: 100%;
+  padding: 32px 20px;
+  text-align: center;
+  color: var(--muted);
+  background: #F9FAFB;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+}
+
+/* Reservation card internals */
+.cal-chip-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 7px;
+}
+
+.cal-chip-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.cal-chip-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: rgba(255,255,255,0.85);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 10.5px;
+  font-weight: 800;
+}
+
+.cal-chip-note {
+  background: rgba(255,255,255,0.9);
+  border: 1px dashed rgba(0,0,0,0.14);
+  border-radius: 8px;
+  padding: 7px 8px;
+  font-size: 11px;
+  line-height: 1.35;
+  color: #374151;
+  min-height: 60px;
+  max-height: 60px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.cal-chip-note.is-open {
+  overflow-y: auto;
+}
+
+.cal-chip-note-title {
+  font-weight: 900;
+  margin-bottom: 3px;
+}
+
+.cal-chip-note-preview {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cal-chip-note-full {
+  display: none;
+  white-space: pre-wrap;
+}
+
+.cal-chip-note-empty {
+  color: #9CA3AF;
+  font-style: italic;
+}
+
+.cal-chip-note-toggle {
+  border: none;
+  background: transparent;
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 900;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 3px;
+}
+
+.cal-chip-actions {
+  margin-top: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+}
+
+.cal-chip-action {
+  text-align: center;
+  background: rgba(37,99,235,0.08);
+  color: var(--primary);
+  border-radius: 6px;
+  padding: 5px 4px;
+  font-size: 11px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.cal-chip-action:hover {
+  background: rgba(37,99,235,0.14);
+}
+
+.cal-chip-arrived-btn {
+  width: 100%;
+  margin-top: 6px;
+  border: none;
+  border-radius: 7px;
+  padding: 7px 8px;
+  background: var(--primary);
+  color: white;
+  font-size: 11px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.cal-chip-arrived-btn.is-arrived {
+  background: var(--success);
+}
+
+@media (max-width: 640px) {
+  .single-day-rail {
+    padding: 12px;
+  }
+
+  .single-day-res-card {
+    flex-basis: 235px;
+    width: 235px;
+    min-width: 235px;
+    max-width: 235px;
+  }
+
+  .single-day-res-card .cal-chip {
+    height: 220px;
+  }
+}
+
+.res-note-preview {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #4B5563;
+}
+
+.res-note-full {
+  display: none;
+  white-space: pre-wrap;
+}
+
+.res-note-toggle {
+  margin-top: 6px;
+  border: none;
+  background: transparent;
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  padding: 0;
+}
+/* ── SINGLE DAY HORIZONTAL BOARD ── */
+.single-day-shell {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: white;
+  overflow: hidden;
+}
+
+.single-day-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #F9FAFB;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.single-day-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.single-day-subtitle {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+.single-day-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.single-day-searchbar {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: #FFFFFF;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.single-day-search-input {
+  flex: 1;
+  min-width: 260px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.92rem;
+}
+
+.single-day-search-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.10);
+}
+
+.single-day-search-meta {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.single-day-rail {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 16px;
+  scroll-snap-type: x proximity;
+  min-height: 260px;
+}
+
+.single-day-res-card {
+  flex: 0 0 285px;
+  scroll-snap-align: start;
+}
+
+.single-day-card-time {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 6px;
+}
+
+.single-day-res-card .cal-chip {
+  margin-bottom: 0;
+  height: 100%;
+}
+
+.single-day-empty {
+  width: 100%;
+  padding: 32px 20px;
+  text-align: center;
+  color: var(--muted);
+  background: #F9FAFB;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+}
   </style>
 </head>
 <body>
@@ -1245,12 +1625,29 @@
               // filtered slice of rawData for current view
               var viewData = rawData.slice();
               var isMobile = window.innerWidth < 700;
+              var singleDayMode = false;
+              var selectedExactDate = null;
+              var singleDaySearchText = '';
+              var singleDayMode = false;
+              var selectedExactDate = null;
 
               function fmt(d) {
                 return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
               }
               function isToday(d) { return fmt(d) === fmt(today); }
+              function weekStartFromDate(dateObj) {
+                var d = new Date(dateObj);
+                var day = d.getDay();
+                d.setDate(d.getDate() - (day === 0 ? 6 : day - 1));
+                d.setHours(0,0,0,0);
+                return d;
+              }
 
+              function prettyDate(d) {
+                return DAY_NAMES[d.getDay()] + ', ' + String(d.getDate()).padStart(2, '0') + '.'
+                  + String(d.getMonth() + 1).padStart(2, '0') + '.'
+                  + d.getFullYear();
+              }
               function getDays() {
                 var days = [];
                 for (var i = 0; i < 7; i++) {
@@ -1280,7 +1677,12 @@
 
               // ── Quick filter pills ──
               window.applyQuickFilter = function(filter) {
+                singleDayMode = false;
+                selectedExactDate = null;
+                singleDaySearchText = '';
                 activeFilter = filter;
+                singleDayMode = false;
+                selectedExactDate = null;
                 // update pill styles
                 ['today','week','next7','past'].forEach(function(f){
                   var el = document.getElementById('qp-' + f);
@@ -1341,55 +1743,113 @@
                 if (status === 'noshow')  return 'background:#FEF2F2;color:#991B1B;border:1px solid #FECACA;';
                 return 'background:#EFF6FF;color:#1D4ED8;border:1px solid #BFDBFE;';
               }
-              function escapeHtml(value) {
-                return String(value || '')
-                  .replace(/&/g, '&amp;')
-                  .replace(/</g, '&lt;')
-                  .replace(/>/g, '&gt;')
-                  .replace(/"/g, '&quot;')
-                  .replace(/'/g, '&#039;');
-              }
-              function chipHTML(r) {
-                var status   = chipStatus(r);
-                var style    = chipStyle(status);
-                var editUrl  = '?section=reservations&mode=edit&id=' + r.id;
-                var btnBg    = status === 'arrived' ? '#059669' : '#2563EB';
-                var btnLabel = status === 'arrived' ? '✓ Arrived — undo?' : 'Mark as arrived';
-                var linkBg   = status === 'arrived' ? '#D1FAE5' : '#DBEAFE';
-                var linkCol  = status === 'arrived' ? '#065F46' : '#1E40AF';
-                var h = '<div style="' + style + 'border-radius:8px;padding:8px 10px;margin-bottom:4px;">';
-                h += '<div style="margin-bottom:6px;">';
+function escapeHtml(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
 
-                h += '<div style="font-size:13px;font-weight:700;line-height:1.35;word-break:break-word;">'
-                  + (r.name || '—')
-                  + '</div>';
+function chipHTML(r) {
+  var cls = r.status || 'confirmed';
+  var isArrived = cls === 'arrived';
 
-                h += '<div style="display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:nowrap;">';
+  var phone = r.phone || '';
+  var email = r.email || '';
+  var editUrl = "{% url 'dashboard:home' %}?section=reservations&mode=edit&id=" + encodeURIComponent(r.id);
 
-                h += '<span style="background:rgba(255,255,255,0.75);border:1px solid rgba(0,0,0,0.08);border-radius:999px;padding:3px 8px;font-size:11px;font-weight:700;white-space:nowrap;">👥 '
-                  + (r.guests || '?')
-                  + ' </span>';
+  var safeName = escapeHtml(r.name || '');
+  var safeMessage = escapeHtml(r.message || '');
+  var shortMessage = escapeHtml(
+    r.message && r.message.length > 70
+      ? r.message.substring(0, 70) + '…'
+      : (r.message || '')
+  );
 
-                h += '<span style="background:rgba(255,255,255,0.75);border:1px solid rgba(0,0,0,0.08);border-radius:999px;padding:3px 8px;font-size:11px;font-weight:700;white-space:nowrap;">🕐 '
-                  + (r.time || '—')
-                  + '</span>';
+  var h = '';
 
-                h += '</div>';
-                h += '</div>';
-                if (r.message) {
-                  h += '<div style="margin-top:8px;margin-bottom:10px;background:rgba(255,255,255,0.9);border:1px dashed rgba(0,0,0,0.14);border-radius:7px;padding:8px 9px 10px;font-size:11px;line-height:1.45;color:#374151;word-break:break-word;white-space:pre-wrap;">';
-                  h += escapeHtml(r.message);
-                  h += '</div>';
-                }
-                h += '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;">';
-                if (r.phone) h += '<a href="tel:' + r.phone + '" style="background:' + linkBg + ';color:' + linkCol + ';font-size:11px;font-weight:500;padding:2px 8px;border-radius:4px;text-decoration:none;">Call</a>';
-                if (r.email) h += '<a href="mailto:' + r.email + '" style="background:' + linkBg + ';color:' + linkCol + ';font-size:11px;font-weight:500;padding:2px 8px;border-radius:4px;text-decoration:none;">Email</a>';
-                h += '<a href="' + editUrl + '" style="background:' + linkBg + ';color:' + linkCol + ';font-size:11px;font-weight:500;padding:2px 8px;border-radius:4px;text-decoration:none;">Edit</a>';
-                h += '</div>';
-                h += '<button onclick="toggleArrived(' + r.id + ',this)" style="width:100%;background:' + btnBg + ';color:white;border:none;border-radius:6px;padding:6px 0;font-size:12px;font-weight:600;cursor:pointer;">' + btnLabel + '</button>';
-                h += '</div>';
-                return h;
-              }
+  h += '<div class="cal-chip ' + cls + '">';
+
+  h += '<div class="cal-chip-name" title="' + escapeAttr(r.name || '') + '">';
+  h += safeName;
+  h += '</div>';
+
+  h += '<div class="cal-chip-meta">';
+  h += '<span class="cal-chip-pill">👥 ' + escapeHtml(String(r.guests || 0)) + '</span>';
+  h += '<span class="cal-chip-pill">🕐 ' + escapeHtml(r.time || '') + '</span>';
+  h += '</div>';
+
+  if (r.message) {
+    h += '<div id="reservation-note-box-' + r.id + '" class="cal-chip-note">';
+    h += '<div class="cal-chip-note-title">💬 Note</div>';
+
+    h += '<div id="reservation-note-preview-' + r.id + '" class="cal-chip-note-preview">';
+    h += shortMessage;
+    h += '</div>';
+
+    h += '<div id="reservation-note-full-' + r.id + '" class="cal-chip-note-full">';
+    h += safeMessage;
+    h += '</div>';
+
+    if (r.message.length > 70) {
+      h += '<button type="button" class="cal-chip-note-toggle" onclick="toggleReservationNote(' + r.id + ', this)">Show full note</button>';
+    }
+
+    h += '</div>';
+  } else {
+    h += '<div class="cal-chip-note cal-chip-note-empty">No note</div>';
+  }
+
+  h += '<div class="cal-chip-actions">';
+
+  if (phone) {
+    h += '<a class="cal-chip-action" href="tel:' + escapeAttr(phone) + '" onclick="event.stopPropagation()">Call</a>';
+  } else {
+    h += '<span class="cal-chip-action" style="opacity:.45;">Call</span>';
+  }
+
+  if (email) {
+    h += '<a class="cal-chip-action" href="mailto:' + escapeAttr(email) + '" onclick="event.stopPropagation()">Email</a>';
+  } else {
+    h += '<span class="cal-chip-action" style="opacity:.45;">Email</span>';
+  }
+
+  h += '<a class="cal-chip-action" href="' + editUrl + '" onclick="event.stopPropagation()">Edit</a>';
+
+  h += '</div>';
+
+  h += '<button type="button" class="cal-chip-arrived-btn ' + (isArrived ? 'is-arrived' : '') + '" onclick="toggleArrived(' + r.id + ', this)">';
+  h += isArrived ? 'Arrived ✓' : 'Mark as arrived';
+  h += '</button>';
+
+  h += '</div>';
+
+  return h;
+}
+
+window.toggleReservationNote = function(id, btn) {
+  var box = document.getElementById('reservation-note-box-' + id);
+  var preview = document.getElementById('reservation-note-preview-' + id);
+  var full = document.getElementById('reservation-note-full-' + id);
+
+  if (!box || !preview || !full) return;
+
+  var isOpen = full.style.display === 'block';
+
+  if (isOpen) {
+    full.style.display = 'none';
+    preview.style.display = 'block';
+    box.classList.remove('is-open');
+    btn.textContent = 'Show full note';
+  } else {
+    full.style.display = 'block';
+    preview.style.display = 'none';
+    box.classList.add('is-open');
+    btn.textContent = 'Hide note';
+  }
+};
 
               function updateRangeLabel(first, last) {
                 var opts = {day:'numeric', month:'short'};
@@ -1474,10 +1934,191 @@
 
               window.selectMobileDay = function(idx) { selectedDayIndex = idx; renderMobile(); };
 
-              function render() {
-                isMobile = window.innerWidth < 700;
-                if (isMobile) renderMobile(); else renderDesktop();
+function render() {
+  isMobile = window.innerWidth < 700;
+
+  if (singleDayMode) {
+    renderSingleDay();
+    return;
+  }
+
+  if (isMobile) {
+    renderMobile();
+  } else {
+    renderDesktop();
+  }
+}
+
+              function weekStartFromDate(dateObj) {
+                var d = new Date(dateObj);
+                var day = d.getDay();
+                d.setDate(d.getDate() - (day === 0 ? 6 : day - 1));
+                d.setHours(0, 0, 0, 0);
+                return d;
               }
+
+              function prettyDate(d) {
+                return DAY_NAMES[d.getDay()] + ', ' +
+                  String(d.getDate()).padStart(2, '0') + '.' +
+                  String(d.getMonth() + 1).padStart(2, '0') + '.' +
+                  d.getFullYear();
+              }
+
+function escapeAttr(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+              function reservationMatchesSearch(r) {
+                var q = singleDaySearchText.trim().toLowerCase();
+                if (!q) return true;
+
+                var text = [
+                  r.name || '',
+                  r.phone || '',
+                  r.email || '',
+                  r.message || '',
+                  r.time || '',
+                  String(r.guests || '')
+                ].join(' ').toLowerCase();
+
+                return text.indexOf(q) !== -1;
+              }
+function renderSingleDay() {
+  var selected = new Date(selectedExactDate || today);
+  selected.setHours(0, 0, 0, 0);
+
+  updateStats([selected]);
+
+  var selectedKey = fmt(selected);
+
+  var allDayRes = rawData
+    .filter(function(r) {
+      return r.date === selectedKey;
+    })
+    .sort(function(a, b) {
+      var timeCompare = String(a.time || '').localeCompare(String(b.time || ''));
+      if (timeCompare !== 0) return timeCompare;
+      return String(a.name || '').localeCompare(String(b.name || ''));
+    });
+
+  var dayRes = allDayRes.filter(reservationMatchesSearch);
+
+  var totalGuests = dayRes.reduce(function(sum, r) {
+    return sum + (Number(r.guests) || 0);
+  }, 0);
+
+  var html = '';
+
+  html += '<div class="single-day-shell">';
+
+  html += '<div class="single-day-header">';
+  html += '<div>';
+  html += '<div class="single-day-title">📅 ' + prettyDate(selected) + '</div>';
+  html += '<div class="single-day-subtitle">';
+  html += dayRes.length + ' of ' + allDayRes.length + ' reservations shown · ' + totalGuests + ' guests';
+  html += '</div>';
+  html += '</div>';
+
+  html += '<div class="single-day-actions">';
+  html += '<button type="button" class="cal-nav-btn" onclick="moveSingleDay(-1)">← Previous day</button>';
+  html += '<button type="button" class="cal-nav-btn" onclick="exitSingleDay()">Back to week</button>';
+  html += '<button type="button" class="cal-nav-btn" onclick="moveSingleDay(1)">Next day →</button>';
+  html += '</div>';
+  html += '</div>';
+
+  html += '<div class="single-day-searchbar">';
+  html += '<input id="single-day-search" class="single-day-search-input" type="search" ';
+  html += 'placeholder="Search by name, phone, email, time or note..." ';
+  html += 'value="' + escapeAttr(singleDaySearchText) + '" ';
+  html += 'oninput="handleSingleDaySearch(this)">';
+
+  html += '<div class="single-day-search-meta">🔎 ' + dayRes.length + ' result(s)</div>';
+
+  if (singleDaySearchText.trim()) {
+    html += '<button type="button" class="cal-nav-btn" onclick="clearSingleDaySearch()">Clear</button>';
+  }
+
+  html += '</div>';
+
+  html += '<div class="single-day-rail">';
+
+  if (allDayRes.length === 0) {
+    html += '<div class="single-day-empty">No reservations for this day</div>';
+  } else if (dayRes.length === 0) {
+    html += '<div class="single-day-empty">No reservation matches your search</div>';
+  } else {
+    dayRes.forEach(function(r) {
+      html += '<div class="single-day-res-card">';
+      html += chipHTML(r);
+      html += '</div>';
+    });
+  }
+
+  html += '</div>';
+  html += '</div>';
+
+  document.getElementById('cal-grid-container').innerHTML = html;
+}
+
+window.handleSingleDaySearch = function(input) {
+  var cursorStart = input.selectionStart || 0;
+
+  singleDaySearchText = input.value || '';
+  renderSingleDay();
+
+  setTimeout(function() {
+    var nextInput = document.getElementById('single-day-search');
+    if (nextInput) {
+      nextInput.focus();
+      nextInput.setSelectionRange(cursorStart, cursorStart);
+    }
+  }, 0);
+};
+
+window.moveSingleDay = function(direction) {
+  if (!selectedExactDate) {
+    selectedExactDate = new Date(today);
+  }
+
+  selectedExactDate.setDate(selectedExactDate.getDate() + direction);
+  selectedExactDate.setHours(0, 0, 0, 0);
+
+  anchorDate = weekStartFromDate(selectedExactDate);
+  singleDaySearchText = '';
+
+  var input = document.getElementById('cal-date-jump');
+  if (input) input.value = fmt(selectedExactDate);
+
+  render();
+};
+
+window.exitSingleDay = function() {
+  singleDayMode = false;
+  singleDaySearchText = '';
+
+  if (selectedExactDate) {
+    anchorDate = weekStartFromDate(selectedExactDate);
+    selectedDayIndex = selectedExactDate.getDay() === 0
+      ? 6
+      : selectedExactDate.getDay() - 1;
+  }
+
+  render();
+};
+
+window.clearSingleDaySearch = function() {
+  singleDaySearchText = '';
+  renderSingleDay();
+
+  setTimeout(function() {
+    var input = document.getElementById('single-day-search');
+    if (input) input.focus();
+  }, 0);
+};
 
               document.getElementById('cal-prev').addEventListener('click', function() {
                 anchorDate.setDate(anchorDate.getDate() - 7);
@@ -1499,20 +2140,51 @@
                 render();
               });
 
-              document.getElementById('cal-date-jump').addEventListener('change', function() {
-                if (!this.value) return;
-                var picked = new Date(this.value + 'T00:00:00');
-                var d = picked.getDay();
-                picked.setDate(picked.getDate() - (d === 0 ? 6 : d - 1));
-                anchorDate = picked;
-                selectedDayIndex = pickBestDay(anchorDate);
-                ['today','week','next7','past'].forEach(function(f){
-                  var el = document.getElementById('qp-' + f);
-                  if (el) el.classList.remove('active');
-                });
-                render();
-              });
+document.getElementById('cal-date-jump').addEventListener('change', function() {
+  if (!this.value) return;
 
+  var picked = new Date(this.value + 'T00:00:00');
+  picked.setHours(0, 0, 0, 0);
+
+  selectedExactDate = picked;
+  anchorDate = weekStartFromDate(picked);
+  singleDayMode = true;
+  singleDaySearchText = '';
+
+  ['today', 'week', 'next7', 'past'].forEach(function(f) {
+    var el = document.getElementById('qp-' + f);
+    if (el) el.classList.remove('active');
+  });
+
+  render();
+});
+
+window.moveSingleDay = function(direction) {
+  if (!selectedExactDate) {
+    selectedExactDate = new Date(today);
+  }
+
+  selectedExactDate.setDate(selectedExactDate.getDate() + direction);
+  selectedExactDate.setHours(0,0,0,0);
+
+  anchorDate = weekStartFromDate(selectedExactDate);
+
+  var input = document.getElementById('cal-date-jump');
+  if (input) input.value = fmt(selectedExactDate);
+
+  render();
+};
+
+window.exitSingleDay = function() {
+  singleDayMode = false;
+
+  if (selectedExactDate) {
+    anchorDate = weekStartFromDate(selectedExactDate);
+    selectedDayIndex = selectedExactDate.getDay() === 0 ? 6 : selectedExactDate.getDay() - 1;
+  }
+
+  render();
+};
               window.toggleArrived = function(id, btn) {
                 fetch('/dashboard/reservations/' + id + '/arrived/', {
                   method: 'POST',
